@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Expensave Expense Tracker</title>
+  </head>
+  <body class="min-h-screen bg-gray-200">
+    <section class="px-2 py-4 md:px-0 md:py-16">
+      <div class="max-w-[500px] mx-auto">
+        <h1 class="text-center text-3xl mb-8">
+          Know the ins and outs of your financial life
+        </h1>
+        <form class="grid gap-4 p-8 bg-white rounded-md shadow">
+          <div class="flex flex-col gap-1">
+            <label for="items">What did you buy</label>
+            <input
+              required
+              name="items"
+              class="border rounded p-2 bg-gray-100"
+              type="text"
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+              <label for="price">How much did you spend</label>
+              <input
+                required
+                name="price"
+                class="border rounded p-2 bg-gray-100"
+                type="number"
+              />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label for="currency">What currency?</label>
+              <input
+                required
+                name="currency"
+                class="border rounded p-2 bg-gray-100"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="location">Where did you buy it</label>
+            <input
+              required
+              name="location"
+              class="border rounded p-2 bg-gray-100"
+              type="text"
+            />
+          </div>
+          <button class="bg-gray-900 text-white px-3 py-1 rounded">Save</button>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>
