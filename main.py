@@ -10,7 +10,13 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    currency = "TWD"
+    context={"currency": currency}
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context=context
+    )
 
 @app.post("/track-purchase")
 def track_purchase(
@@ -20,4 +26,10 @@ def track_purchase(
     currency: Annotated[str, Form()],
     location: Annotated[str, Form()]
     ):
-    return templates.TemplateResponse("track-purchase-form.html", {"request": request})
+    currency = "TWD"
+    context={"currency": currency}
+    return templates.TemplateResponse(
+        request=request,
+        name="track-purchase-form.html",
+        context=context
+        )
