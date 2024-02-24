@@ -3,9 +3,10 @@ from typing import Annotated
 from fastapi import FastAPI, Request, Form, Response
 from fastapi.templating import Jinja2Templates
 
-import app.auth.auth_service as auth_service
+from app.auth import auth_service, auth_router
 
 app = FastAPI()
+app.include_router(auth_router.router)
 
 templates = Jinja2Templates(directory="templates")
 
@@ -33,27 +34,27 @@ def get_sign_up_page(request: Request):
         name="signup.html",
     )
 
-@app.post("/signup", response_class=Response)
-def signup(
-    request: Request,
-    response: Response,
-    email: Annotated[str, Form()],
-    password: Annotated[str, Form()],
-    # db: Annotated[Session, Depends(get_db)],
-    ):
-    """Sign up a user"""
-    response = Response(status_code=200)
-    session_cookie = 'abc'
-    response.set_cookie(
-        key="session-id",
-        value=session_cookie,
-        httponly=True,
-        secure=True,
-        samesite="Lax"
-    )
-    response.headers["HX-Redirect"] = "/"
+# @app.post("/signup", response_class=Response)
+# def signup(
+#     request: Request,
+#     response: Response,
+#     email: Annotated[str, Form()],
+#     password: Annotated[str, Form()],
+#     # db: Annotated[Session, Depends(get_db)],
+#     ):
+#     """Sign up a user"""
+#     response = Response(status_code=200)
+#     session_cookie = 'abc'
+#     response.set_cookie(
+#         key="session-id",
+#         value=session_cookie,
+#         httponly=True,
+#         secure=True,
+#         samesite="Lax"
+#     )
+#     response.headers["HX-Redirect"] = "/"
 
-    return response
+#     return response
 
 @app.post("/track-purchase")
 def track_purchase(
