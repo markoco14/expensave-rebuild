@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.auth import auth_service
 from app.core.database import get_db
+from app.services import user_service
+from app.schemas import user_schemas
 
 
 router = APIRouter()
@@ -24,22 +26,22 @@ def signup(
     ):
     """Sign up a user"""
     # check if user exists
-    # db_user: User = USERS.get(email)
-    # db_user = user_repository.get_user_by_email(db=db, email=email)
-    # return db_user
-    # if db_user:
+    db_user = user_service.get_user_by_email(db=db, email=email)
+    if db_user:
+        response = Response(status_code=400, content="Problem with user/password combination. Please try again.")
+        return response
     #     return templates.TemplateResponse(
     #         request=request,
     #         name="/auth/form-error.html",
     #         context={"request": request, "error": "Invalid email or password."}
     #     )
     # Hash password
-    # hashed_password = auth_service.get_password_hash(password)
+    hashed_password = auth_service.get_password_hash(password)
+    
     
     # create new user with encrypted password
-    # new_user = schemas.CreateUserHashed(email=email, hashed_password=hashed_password)
-    # add user to USERS
-    # app_user = user_repository.create_user(db=db, user=new_user)
+    new_user = user_schemas.CreateUserHashed(email=email, hashed_password=hashed_password)
+    app_user = user_service.create_user(db=db, user=new_user)
     # USERS.update({email: new_user})
 
     # return response with session cookie and redirect to index
@@ -118,14 +120,18 @@ def signup(
 #     return response
 
 
-# @router.get("/signout", response_class=HTMLResponse)
-# def signout(request: Request, response: Response, db: Annotated[Session, Depends(get_db)],):
-#     """Sign out a user"""
-#     session_id = request.cookies.get("session-id")
-#     if session_id:
-#         session_repository.destroy_session(db=db, session_id=session_id)
+@router.get("/signout", response_class=HTMLResponse)
+def signout(
+    request: Request,
+    response: Response,
+    db: Annotated[Session, Depends(get_db)]
+    ):
+    """Sign out a user"""
+    session_id = request.cookies.get("session-id")
+    # if session_id:
+    #     session_repository.destroy_session(db=db, session_id=session_id)
 
-#     response = Response(status_code=200)
-#     response.delete_cookie(key="session-id")
-#     response.headers["HX-Redirect"] = "/signin"
-#     return response
+    response = Response(status_code=200)
+    response.delete_cookie(key="session-id")
+    response.headers["HX-Redirect"] = "/"
+    return response
