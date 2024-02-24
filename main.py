@@ -3,6 +3,8 @@ from typing import Annotated
 from fastapi import FastAPI, Request, Form, Response
 from fastapi.templating import Jinja2Templates
 
+import auth_service
+
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
@@ -10,6 +12,12 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 def get_index_page(request: Request):
+    if not auth_service.get_session_cookie(request.cookies):
+        return templates.TemplateResponse(
+            request=request,
+            name="landing-page.html",
+        )
+    
     currency = "TWD"
     context={"currency": currency}
     return templates.TemplateResponse(
@@ -35,13 +43,14 @@ def signup(
     ):
     """Sign up a user"""
     response = Response(status_code=200)
-    # response.set_cookie(
-    #     key="session-id",
-    #     value=session_cookie,
-    #     httponly=True,
-    #     secure=True,
-    #     samesite="Lax"
-    # )
+    session_cookie = 'abc'
+    response.set_cookie(
+        key="session-id",
+        value=session_cookie,
+        httponly=True,
+        secure=True,
+        samesite="Lax"
+    )
     response.headers["HX-Redirect"] = "/"
 
     return response
