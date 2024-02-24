@@ -1,9 +1,15 @@
 """ Main application file """
+from decimal import Decimal
+from pprint import pprint
 from typing import Annotated
-from fastapi import FastAPI, Request, Form, Response
+from fastapi import Depends, FastAPI, Request, Form, Response
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
 
 from app.auth import auth_service, auth_router
+from app.core.database import get_db
+from app.purchases import purchase_schemas
+from app.purchases.purchase_model import DBPurchase
 
 app = FastAPI()
 app.include_router(auth_router.router)
@@ -40,38 +46,30 @@ def get_sign_in_page(request: Request):
         name="signin.html",
     )
 
-# @app.post("/signup", response_class=Response)
-# def signup(
-#     request: Request,
-#     response: Response,
-#     email: Annotated[str, Form()],
-#     password: Annotated[str, Form()],
-#     # db: Annotated[Session, Depends(get_db)],
-#     ):
-#     """Sign up a user"""
-#     response = Response(status_code=200)
-#     session_cookie = 'abc'
-#     response.set_cookie(
-#         key="session-id",
-#         value=session_cookie,
-#         httponly=True,
-#         secure=True,
-#         samesite="Lax"
-#     )
-#     response.headers["HX-Redirect"] = "/"
-
-#     return response
-
 @app.post("/track-purchase")
 def track_purchase(
     request: Request,
     items: Annotated[str, Form()],
-    price: Annotated[str, Form()],
+    price: Annotated[Decimal, Form()],
     currency: Annotated[str, Form()],
-    location: Annotated[str, Form()]
+    location: Annotated[str, Form()],
+    db: Session = Depends(get_db),
     ):
+
+    new_purchase = purchase_schemas.PurchaseCreate(
+        items=items,
+        price=price,
+        currency=currency,
+        location=location
+    )
+
+    db_purchase = DBPurchase(**new_purchase.model_dump())
+    db.add(db_purchase)
+    db.commit()
+    db.refresh(db_purchase)
+
     currency = "TWD"
-    context={"currency": currency}
+    context={"currency": currency, "message": "Purchase tracked!"}
     return templates.TemplateResponse(
         request=request,
         name="track-purchase-form.html",
