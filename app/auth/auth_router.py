@@ -30,7 +30,7 @@ def signup(
     # check if user exists
     existing_user = user_service.get_user_by_email(db=db, email=email)
     if existing_user:
-        response = Response(status_code=400, content="Problem with user/password combination. Please try again.")
+        response = Response(status_code=400, content="Invalid email or password")
         return response
     #     return templates.TemplateResponse(
     #         request=request,
@@ -67,57 +67,61 @@ def signup(
     return response
 
 
-# @router.post("/signin", response_class=Response)
-# def signin(
-#     request: Request,
-#     response: Response,
-#     email: Annotated[str, Form()],
-#     password: Annotated[str, Form()],
-#     db: Annotated[Session, Depends(get_db)],
-#     ):
-#     """Sign in a user"""
-#     # check if user exists
-#     db_user = user_repository.get_user_by_email(db=db, email=email)
-#     if not db_user:
-#         return templates.TemplateResponse(
-#             request=request,
-#             name="/auth/form-error.html",
-#             context={"request": request, "error": "Invalid email or password."}
+@router.post("/signin", response_class=Response)
+def signin(
+    request: Request,
+    response: Response,
+    email: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+    db: Annotated[Session, Depends(get_db)],
+    ):
+    """Sign in a user"""
+    # check if user exists
+    db_user = user_service.get_user_by_email(db=db, email=email)
+    if not db_user:
+        response = Response(status_code=400, content="Invalid email or password")
+        return response
+        # return templates.TemplateResponse(
+        #     request=request,
+        #     name="/auth/form-error.html",
+        #     context={"request": request, "error": "Invalid email or password."}
             
-#         )
-#     # verify the password
-#     if not auth_service.verify_password(
-#         plain_password=password,
-#         hashed_password=db_user.hashed_password
-#         ):
-#         return templates.TemplateResponse(
-#             request=request,
-#             name="/auth/form-error.html",
-#             context={"request": request, "error": "Invalid email or password"}
+        # )
+    # verify the password
+    if not auth_service.verify_password(
+        plain_password=password,
+        hashed_password=db_user.hashed_password
+        ):
+        response = Response(status_code=400, content="Invalid email or password")
+        return response
+        # return templates.TemplateResponse(
+        #     request=request,
+        #     name="/auth/form-error.html",
+        #     context={"request": request, "error": "Invalid email or password"}
             
-#         )
+        # )
 
-#     # return response with session cookie and redirect to index
-#     session_cookie = auth_service.generate_session_token()
+    # return response with session cookie and redirect to index
+    session_cookie = auth_service.generate_session_token()
 
-#     new_session = schemas.CreateUserSession(
-#         session_id=session_cookie,
-#         user_id=db_user.id,
-#         expires_at=auth_service.generate_session_expiry()
-#     )
-#     # store user session
-#     session_repository.create_session(db=db, session=new_session)
+    new_session = auth_schemas.CreateUserSession(
+        session_id=session_cookie,
+        user_id=db_user.id,
+        expires_at=auth_service.generate_session_expiry()
+    )
+    # store user session
+    session_service.create_session(db=db, session=new_session)
     
-#     response = Response(status_code=200)
-#     response.set_cookie(
-#         key="session-id",
-#         value=session_cookie,
-#         httponly=True,
-#         secure=True,
-#         samesite="Lax"
-#     )
-#     response.headers["HX-Redirect"] = "/"
-#     return response
+    response = Response(status_code=200)
+    response.set_cookie(
+        key="session-id",
+        value=session_cookie,
+        httponly=True,
+        secure=True,
+        samesite="Lax"
+    )
+    response.headers["HX-Redirect"] = "/"
+    return response
 
 
 @router.get("/signout", response_class=HTMLResponse)
