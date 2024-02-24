@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import FastAPI, Request, Form, Response
 from fastapi.templating import Jinja2Templates
 
-import auth_service
+import app.auth.auth_service as auth_service
 
 app = FastAPI()
 
