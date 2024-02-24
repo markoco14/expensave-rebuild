@@ -9,13 +9,20 @@ templates = Jinja2Templates(directory="templates")
 
 
 @app.get("/")
-def read_root(request: Request):
+def get_index_page(request: Request):
     currency = "TWD"
     context={"currency": currency}
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context=context
+    )
+
+@app.get("/signup")
+def get_sign_up_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="signup.html",
     )
 
 @app.post("/track-purchase")
