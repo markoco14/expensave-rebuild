@@ -1,9 +1,15 @@
 """ Main application file """
+from decimal import Decimal
+from pprint import pprint
 from typing import Annotated
-from fastapi import FastAPI, Request, Form, Response
+from fastapi import Depends, FastAPI, Request, Form, Response
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
 
 from app.auth import auth_service, auth_router
+from app.core.database import get_db
+from app.purchases import purchase_schemas
+from app.purchases.purchase_model import DBPurchase
 
 app = FastAPI()
 app.include_router(auth_router.router)
@@ -44,12 +50,26 @@ def get_sign_in_page(request: Request):
 def track_purchase(
     request: Request,
     items: Annotated[str, Form()],
-    price: Annotated[str, Form()],
+    price: Annotated[Decimal, Form()],
     currency: Annotated[str, Form()],
-    location: Annotated[str, Form()]
+    location: Annotated[str, Form()],
+    db: Session = Depends(get_db),
     ):
+
+    new_purchase = purchase_schemas.PurchaseCreate(
+        items=items,
+        price=price,
+        currency=currency,
+        location=location
+    )
+
+    db_purchase = DBPurchase(**new_purchase.model_dump())
+    db.add(db_purchase)
+    db.commit()
+    db.refresh(db_purchase)
+
     currency = "TWD"
-    context={"currency": currency}
+    context={"currency": currency, "message": "Purchase tracked!"}
     return templates.TemplateResponse(
         request=request,
         name="track-purchase-form.html",
