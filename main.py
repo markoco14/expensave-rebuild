@@ -33,6 +33,12 @@ def get_sign_up_page(request: Request):
         request=request,
         name="signup.html",
     )
+@app.get("/signin")
+def get_sign_in_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="signin.html",
+    )
 
 # @app.post("/signup", response_class=Response)
 # def signup(
