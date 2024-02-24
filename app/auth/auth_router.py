@@ -6,10 +6,12 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from app.auth import auth_service
+from app.auth import auth_service, auth_schemas
 from app.core.database import get_db
 from app.services import user_service
 from app.schemas import user_schemas
+from app.auth import session_service
+
 
 
 router = APIRouter()
@@ -26,8 +28,8 @@ def signup(
     ):
     """Sign up a user"""
     # check if user exists
-    db_user = user_service.get_user_by_email(db=db, email=email)
-    if db_user:
+    existing_user = user_service.get_user_by_email(db=db, email=email)
+    if existing_user:
         response = Response(status_code=400, content="Problem with user/password combination. Please try again.")
         return response
     #     return templates.TemplateResponse(
@@ -38,21 +40,19 @@ def signup(
     # Hash password
     hashed_password = auth_service.get_password_hash(password)
     
-    
     # create new user with encrypted password
     new_user = user_schemas.CreateUserHashed(email=email, hashed_password=hashed_password)
-    app_user = user_service.create_user(db=db, user=new_user)
-    # USERS.update({email: new_user})
+    db_user = user_service.create_user(db=db, user=new_user)
 
     # return response with session cookie and redirect to index
     session_cookie = auth_service.generate_session_token()
-    # new_session = schemas.CreateUserSession(
-    #     session_id=session_cookie,
-    #     user_id=app_user.id,
-    #     expires_at=auth_service.generate_session_expiry()
-    # )
+    new_session = auth_schemas.CreateUserSession(
+        session_id=session_cookie,
+        user_id=db_user.id,
+        expires_at=auth_service.generate_session_expiry()
+    )
     # store user session
-    # session_repository.create_session(db=db, session=new_session)
+    session_service.create_session(db=db, session=new_session)
     
     response = Response(status_code=200)
     response.set_cookie(
@@ -128,8 +128,8 @@ def signout(
     ):
     """Sign out a user"""
     session_id = request.cookies.get("session-id")
-    # if session_id:
-    #     session_repository.destroy_session(db=db, session_id=session_id)
+    if session_id:
+        session_service.destroy_session(db=db, session_id=session_id)
 
     response = Response(status_code=200)
     response.delete_cookie(key="session-id")
