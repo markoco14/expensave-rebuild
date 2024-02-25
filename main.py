@@ -1,11 +1,10 @@
 """ Main application file """
 from decimal import Decimal
-from pprint import pprint
 from typing import Annotated
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
-from fastapi import Depends, FastAPI, Request, Form, Response
+from fastapi import Depends, FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -52,13 +51,16 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         ).order_by(DBPurchase.purchase_time.desc()).all()
     taipei_time = ZoneInfo("Asia/Taipei")
 
+    totalSpent = 0
     for purchase in purchases:
         purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
+        totalSpent += purchase.price
 
     currency = "TWD"
     context={"currency": currency,
              "nav_links": authenticated_navlinks,
-             "purchases": purchases
+             "purchases": purchases,
+             "totalSpent": totalSpent,
             }
     return templates.TemplateResponse(
         request=request,
@@ -94,12 +96,43 @@ def get_today_purchases(
         purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
 
     context={
-             "purchases": purchases
+             "purchases": purchases,
             }
     return templates.TemplateResponse(
         request=request,
         name="today-purchase-list.html",
         context=context
+    )
+
+@app.get("/calculate-total-spent")
+def calculate_total_sepnt(
+    request: Request,
+    db: Session = Depends(get_db)
+    ):
+    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
+    if not current_user:
+        context={"nav_links": unauthenticated_navlinks}
+        return templates.TemplateResponse(
+            request=request,
+            name="landing-page.html",
+            context=context
+        )
+    start_of_day = datetime.combine(datetime.now(), time.min)
+    end_of_day = datetime.combine(datetime.now(), time.max)
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        DBPurchase.purchase_time >= start_of_day,
+        DBPurchase.purchase_time <= end_of_day
+        ).order_by(DBPurchase.purchase_time.desc()).all()
+    
+    totalSpent = 0
+    for purchase in purchases:
+        totalSpent += purchase.price
+
+    return templates.TemplateResponse(
+        request=request,
+        name="fragments/total-spent-span.html",
+        context={"totalSpent": totalSpent}
     )
 
 @app.get("/signup")
@@ -174,6 +207,7 @@ def track_purchase(
         "message": "Purchase tracked!"
         }
     return templates.TemplateResponse(
+        headers={"HX-Trigger": "calculateTotalSpent"},
         request=request,
         name="fragments/track-purchase-form-response.html",
         context=context
