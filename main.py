@@ -151,10 +151,13 @@ def track_purchase(
     db.refresh(db_purchase)
 
     currency = "TWD"
-    context={"currency": currency, "message": "Purchase tracked!"}
+    context={
+        "currency": currency,
+        "purchase": db_purchase,
+        "message": "Purchase tracked!"
+        }
     return templates.TemplateResponse(
-        headers={"HX-Trigger": "newPurchase"},
         request=request,
-        name="track-purchase-form.html",
+        name="fragments/track-purchase-form-response.html",
         context=context
         )
