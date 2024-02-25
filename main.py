@@ -16,17 +16,31 @@ app.include_router(auth_router.router)
 
 templates = Jinja2Templates(directory="templates")
 
+unauthenticated_navlinks = [
+    {"text": "Home", "target": "/"},
+    {"text": "Sign In", "target": "/signin"},
+    {"text": "Sign Up", "target": "/signup"}
+    ]
+
+authenticated_navlinks = [
+    {"text": "Home", "target": "/"},
+    {"text": "Sign Out", "target": "/signout"}
+    ]
+
 
 @app.get("/")
 def get_index_page(request: Request):
     if not auth_service.get_session_cookie(request.cookies):
+        context={"nav_links": unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
             name="landing-page.html",
+            context=context
         )
     
     currency = "TWD"
-    context={"currency": currency}
+    context={"currency": currency,
+             "nav_links": authenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -35,15 +49,19 @@ def get_index_page(request: Request):
 
 @app.get("/signup")
 def get_sign_up_page(request: Request):
+    context={"nav_links": unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
         name="signup.html",
+        context=context
     )
 @app.get("/signin")
 def get_sign_in_page(request: Request):
+    context={"nav_links": unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
         name="signin.html",
+        context=context
     )
 
 @app.post("/track-purchase")
