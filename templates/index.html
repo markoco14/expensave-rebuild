@@ -22,12 +22,7 @@
         {% if purchases|length == 0 %}
         <p>You haven't logged any purchases!</p>
         {% else %}
-        <ul class="grid divide-y gap-4 p-8 bg-white rounded-md shadow">
-          <h2 class="text-3xl text-gray-500">Today's Spending</h2>
-          {% for purchase in purchases %}
-          <li class="pt-2">{{purchase.items}}</li>
-          {% endfor %}
-        </ul>
+        {% include 'today-purchase-list.html'%}
         {% endif%}
       </div>
     </section>
