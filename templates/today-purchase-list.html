@@ -1,12 +1,20 @@
-<ul 
-	class="grid divide-y gap-4 p-8 bg-white rounded-md shadow"
-	hx-get="/today-purchases"
-	hx-target="this"
-	hx-swap="outerHTML"
-	hx-trigger="click"
+
+<ul
+  class="grid divide-y gap-4 p-8 bg-white rounded-md shadow"
+  hx-get="/today-purchases"
+  hx-target="this"
+  hx-swap="outerHTML"
+  hx-trigger="newPurchase from:body"
 >
   <h2 class="text-3xl text-gray-500">Today's Spending</h2>
   {% for purchase in purchases %}
-  <li class="pt-2">{{purchase.items}}</li>
+  <li class="grid grid-cols-2 gap-2 pt-2">
+	<span>
+  {{purchase.items}}
+	</span>
+	
+	<span class="text-right">
+    ${{purchase.price}}</li>
+	</span>
   {% endfor %}
 </ul>
