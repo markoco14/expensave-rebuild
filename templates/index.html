@@ -14,17 +14,18 @@
   <body class="min-h-screen bg-gray-200">
     {% include 'header.html' %}
     <section class="px-2 py-4 md:px-0 md:py-16">
-      <div class="max-w-[500px] mx-auto">
-        <h1 class="text-center text-3xl mb-8">
+      <div class="grid gap-8 max-w-[500px] mx-auto">
+        <h1 class="text-center text-3xl">
           Know the ins and outs of your financial life
         </h1>
         {% include 'track-purchase-form.html' %} 
         {% if purchases|length == 0 %}
         <p>You haven't logged any purchases!</p>
         {% else %}
-        <ul>
+        <ul class="grid divide-y gap-4 p-8 bg-white rounded-md shadow">
+          <h2 class="text-3xl text-gray-500">Today's Spending</h2>
           {% for purchase in purchases %}
-          <li>{{purchase.items}}</li>
+          <li class="pt-2">{{purchase.items}}</li>
           {% endfor %}
         </ul>
         {% endif%}
