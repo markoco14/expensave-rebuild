@@ -54,7 +54,6 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
 
     for purchase in purchases:
         purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
-        print(purchase.purchase_time)
 
     currency = "TWD"
     context={"currency": currency,
@@ -64,6 +63,42 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(
         request=request,
         name="index.html",
+        context=context
+    )
+
+@app.get("/today-purchases")
+def get_today_purchases(
+    request: Request,
+    db: Session = Depends(get_db)
+    ):
+    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
+    if not current_user:
+        context={"nav_links": unauthenticated_navlinks}
+        return templates.TemplateResponse(
+            request=request,
+            name="landing-page.html",
+            context=context
+        )
+    
+    start_of_day = datetime.combine(datetime.now(), time.min)
+    end_of_day = datetime.combine(datetime.now(), time.max)
+    
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        DBPurchase.purchase_time >= start_of_day,
+        DBPurchase.purchase_time <= end_of_day
+        ).order_by(DBPurchase.purchase_time.desc()).all()
+    taipei_time = ZoneInfo("Asia/Taipei")
+
+    for purchase in purchases:
+        purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
+
+    context={
+             "purchases": purchases
+            }
+    return templates.TemplateResponse(
+        request=request,
+        name="today-purchase-list.html",
         context=context
     )
 
