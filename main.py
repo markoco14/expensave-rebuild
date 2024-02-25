@@ -29,7 +29,7 @@ authenticated_navlinks = [
 
 
 @app.get("/")
-def get_index_page(request: Request):
+def get_index_page(request: Request, db: Session = Depends(get_db)):
     if not auth_service.get_session_cookie(request.cookies):
         context={"nav_links": unauthenticated_navlinks}
         return templates.TemplateResponse(
@@ -38,9 +38,17 @@ def get_index_page(request: Request):
             context=context
         )
     
+    # get start of day
+    # get end of day
+    # filter purchases for time between start and end of day
+    
+    purchases = db.query(DBPurchase).filter(DBPurchase.user_id == 1).order_by(DBPurchase.created_at.desc()).all()
+
     currency = "TWD"
     context={"currency": currency,
-             "nav_links": authenticated_navlinks}
+             "nav_links": authenticated_navlinks,
+             "purchases": purchases
+            }
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -75,6 +83,7 @@ def track_purchase(
     ):
 
     new_purchase = purchase_schemas.PurchaseCreate(
+        user_id=1,
         items=items,
         price=price,
         currency=currency,

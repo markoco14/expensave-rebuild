@@ -18,7 +18,16 @@
         <h1 class="text-center text-3xl mb-8">
           Know the ins and outs of your financial life
         </h1>
-        {% include 'track-purchase-form.html' %}
+        {% include 'track-purchase-form.html' %} 
+        {% if purchases|length == 0 %}
+        <p>You haven't logged any purchases!</p>
+        {% else %}
+        <ul>
+          {% for purchase in purchases %}
+          <li>{{purchase.items}}</li>
+          {% endfor %}
+        </ul>
+        {% endif%}
       </div>
     </section>
   </body>
