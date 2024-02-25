@@ -119,6 +119,23 @@ def get_sign_in_page(request: Request):
         context=context
     )
 
+@app.post("/validate-items")
+def validate_items(request: Request, items: Annotated[str, Form()] = None):
+    if not items:
+        items = []
+        return templates.TemplateResponse(
+            request=request,
+            name="fragments/item-tags.html",
+            context={"items": items}
+        )
+    items.rstrip(" ")
+    items = items.split(", ")
+    return templates.TemplateResponse(
+        request=request,
+        name="fragments/item-tags.html",
+        context={"items": items}
+    )
+
 @app.post("/track-purchase")
 def track_purchase(
     request: Request,
