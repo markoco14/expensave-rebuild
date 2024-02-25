@@ -26,6 +26,7 @@ class DBPurchase(Base):
     updated_at = Column(DateTime(timezone=True), nullable=True,
                         default=None, onupdate=datetime.utcnow)
     
+    user_id = Column(Integer, nullable=False)
     items = Column(Text)
     price = Column(DECIMAL(precision=10, scale=2))
     currency = Column(String(256))
