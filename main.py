@@ -81,9 +81,17 @@ def track_purchase(
     location: Annotated[str, Form()],
     db: Session = Depends(get_db),
     ):
+    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
+    if not current_user:
+        context={"nav_links": unauthenticated_navlinks}
+        return templates.TemplateResponse(
+            request=request,
+            name="landing-page.html",
+            context=context
+        )
 
     new_purchase = purchase_schemas.PurchaseCreate(
-        user_id=1,
+        user_id=current_user.id,
         items=items,
         price=price,
         currency=currency,
