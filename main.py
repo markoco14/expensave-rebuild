@@ -2,6 +2,9 @@
 from decimal import Decimal
 from pprint import pprint
 from typing import Annotated
+from datetime import datetime, time, timedelta
+from zoneinfo import ZoneInfo
+
 from fastapi import Depends, FastAPI, Request, Form, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -39,11 +42,19 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
             context=context
         )
     
-    # get start of day
-    # get end of day
-    # filter purchases for time between start and end of day
+    start_of_day = datetime.combine(datetime.now(), time.min)
+    end_of_day = datetime.combine(datetime.now(), time.max)
     
-    purchases = db.query(DBPurchase).filter(DBPurchase.user_id == current_user.id).order_by(DBPurchase.created_at.desc()).all()
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        DBPurchase.purchase_time >= start_of_day,
+        DBPurchase.purchase_time <= end_of_day
+        ).order_by(DBPurchase.purchase_time.desc()).all()
+    taipei_time = ZoneInfo("Asia/Taipei")
+
+    for purchase in purchases:
+        purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
+        print(purchase.purchase_time)
 
     currency = "TWD"
     context={"currency": currency,
