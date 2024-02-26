@@ -1,7 +1,7 @@
 """ Main application file """
 from decimal import Decimal
 from typing import Annotated
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 from fastapi import Depends, FastAPI, Request, Form
@@ -10,39 +10,34 @@ from sqlalchemy.orm import Session
 
 from app.auth import auth_service, auth_router
 from app.core.database import get_db
+from app.core import links
 from app.purchases import purchase_schemas
 from app.purchases.purchase_model import DBPurchase
+from app.purchases import purchase_router
 
 app = FastAPI()
 app.include_router(auth_router.router)
+app.include_router(purchase_router.router)
 
 templates = Jinja2Templates(directory="templates")
 
-unauthenticated_navlinks = [
-    {"text": "Home", "target": "/"},
-    {"text": "Sign In", "target": "/signin"},
-    {"text": "Sign Up", "target": "/signup"}
-    ]
-
-authenticated_navlinks = [
-    {"text": "Home", "target": "/"},
-    {"text": "Sign Out", "target": "/signout"}
-    ]
 
 
 @app.get("/")
 def get_index_page(request: Request, db: Session = Depends(get_db)):
     current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
     if not current_user:
-        context={"nav_links": unauthenticated_navlinks}
+        context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
             name="landing-page.html",
             context=context
         )
     
-    start_of_day = datetime.combine(datetime.now(), time.min)
-    end_of_day = datetime.combine(datetime.now(), time.max)
+    start_of_day = datetime.combine(
+        datetime.now(), time.min) - timedelta(hours=8)
+    end_of_day = datetime.combine(
+        datetime.now(), time.max) - timedelta(hours=8)
     
     purchases = db.query(DBPurchase).filter(
         DBPurchase.user_id == current_user.id,
@@ -58,7 +53,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
 
     currency = "TWD"
     context={"currency": currency,
-             "nav_links": authenticated_navlinks,
+             "nav_links": links.authenticated_navlinks,
              "purchases": purchases,
              "totalSpent": totalSpent,
             }
@@ -75,7 +70,7 @@ def get_today_purchases(
     ):
     current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
     if not current_user:
-        context={"nav_links": unauthenticated_navlinks}
+        context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
             name="landing-page.html",
@@ -111,7 +106,7 @@ def calculate_total_sepnt(
     ):
     current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
     if not current_user:
-        context={"nav_links": unauthenticated_navlinks}
+        context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
             name="landing-page.html",
@@ -137,7 +132,7 @@ def calculate_total_sepnt(
 
 @app.get("/signup")
 def get_sign_up_page(request: Request):
-    context={"nav_links": unauthenticated_navlinks}
+    context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
         name="signup.html",
@@ -145,10 +140,50 @@ def get_sign_up_page(request: Request):
     )
 @app.get("/signin")
 def get_sign_in_page(request: Request):
-    context={"nav_links": unauthenticated_navlinks}
+    context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
         name="signin.html",
+        context=context
+    )
+
+@app.get("/purchases")
+def get_purchases_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)]
+    ):
+    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
+    if not current_user:
+        context={"nav_links": links.unauthenticated_navlinks}
+        return templates.TemplateResponse(
+            request=request,
+            name="landing-page.html",
+            context=context
+        )
+    
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        ).order_by(DBPurchase.purchase_time.desc()).all()
+    
+    for purchase in purchases:
+        purchase.purchase_time = (purchase.purchase_time + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
+    
+    headings = [
+        "items", 
+        "currency", 
+        "location", 
+        "purchase_time", 
+        "price", 
+        "actions"
+    ]
+    context={
+        "nav_links": links.authenticated_navlinks,
+        "headings": headings,
+        "purchases": purchases
+        }
+    return templates.TemplateResponse(
+        request=request,
+        name="/pages/purchases.html",
         context=context
     )
 
@@ -180,7 +215,7 @@ def track_purchase(
     ):
     current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
     if not current_user:
-        context={"nav_links": unauthenticated_navlinks}
+        context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
             name="landing-page.html",
