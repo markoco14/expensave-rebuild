@@ -1,0 +1,52 @@
+{% from '/macros/table.html' import heading_row%}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/htmx.org@1.9.10"
+      integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+      crossorigin="anonymous"
+    ></script>
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .purchase.htmx-added {
+          opacity: 0;
+        }
+        .purchase {
+          opacity: 1;
+          transition: opacity 1s ease-out;
+        }
+      }
+    </style>
+    <title>Expensave Expense Tracker</title>
+  </head>
+  <body class="min-h-screen bg-gray-200">
+    {% include 'header.html' %}
+    <section class="px-2 py-4 md:px-0 md:py-16">
+      <div class="grid gap-8 max-w-[1000px] mx-auto">
+        <h1 class="text-center text-3xl">The Purchases Page</h1>
+        <table class="table-auto w-full">
+          <thead>
+            {{ heading_row(headings)}}
+          </thead>
+          <tbody>
+            {% for purchase in purchases %}
+            <tr>
+              <td class="px-2 max-w-[100px] overflow-hidden text-nowrap">{{purchase.items|truncate(15,true,'..',0)}}</td>
+              <td class="px-2">{{purchase.currency}}</td>
+              <td class="px-2">{{purchase.location|truncate(14,true,'..',0)}}</td>
+              <td class="px-2">{{purchase.purchase_time}}</td>
+              <td class="px-2 text-right">${{purchase.price}}</td>
+              <td class="px-2">Delete</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+</html>
