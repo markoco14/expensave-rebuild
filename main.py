@@ -1,7 +1,7 @@
 """ Main application file """
 from decimal import Decimal
 from typing import Annotated
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 from fastapi import Depends, FastAPI, Request, Form
@@ -41,8 +41,10 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
             context=context
         )
     
-    start_of_day = datetime.combine(datetime.now(), time.min)
-    end_of_day = datetime.combine(datetime.now(), time.max)
+    start_of_day = datetime.combine(
+        datetime.now(), time.min) - timedelta(hours=8)
+    end_of_day = datetime.combine(
+        datetime.now(), time.max) - timedelta(hours=8)
     
     purchases = db.query(DBPurchase).filter(
         DBPurchase.user_id == current_user.id,
