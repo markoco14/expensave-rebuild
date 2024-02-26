@@ -12,9 +12,11 @@ from app.auth import auth_service, auth_router
 from app.core.database import get_db
 from app.purchases import purchase_schemas
 from app.purchases.purchase_model import DBPurchase
+from app.purchases import purchase_router
 
 app = FastAPI()
 app.include_router(auth_router.router)
+app.include_router(purchase_router.router)
 
 templates = Jinja2Templates(directory="templates")
 
