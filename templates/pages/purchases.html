@@ -20,6 +20,11 @@
           opacity: 1;
           transition: opacity 1s ease-out;
         }
+
+        tr.htmx-swapping td {
+          opacity: 0;
+          transition: opacity 1s ease-out;
+        }
       }
     </style>
     <title>Expensave Expense Tracker</title>
@@ -33,15 +38,25 @@
           <thead>
             {{ heading_row(headings)}}
           </thead>
-          <tbody>
+          <tbody
+            hx-confirm="Are you sure?"
+            hx-target="closest tr"
+            hx-swap="outerHTML swap:1s"
+          >
             {% for purchase in purchases %}
             <tr>
-              <td class="px-2 max-w-[100px] overflow-hidden text-nowrap">{{purchase.items|truncate(15,true,'..',0)}}</td>
+              <td class="px-2 max-w-[100px] overflow-hidden text-nowrap">
+                {{purchase.items|truncate(15,true,'..',0)}}
+              </td>
               <td class="px-2">{{purchase.currency}}</td>
-              <td class="px-2">{{purchase.location|truncate(14,true,'..',0)}}</td>
+              <td class="px-2">
+                {{purchase.location|truncate(14,true,'..',0)}}
+              </td>
               <td class="px-2">{{purchase.purchase_time}}</td>
               <td class="px-2 text-right">${{purchase.price}}</td>
-              <td class="px-2">Delete</td>
+              <td class="px-2" hx-delete="/delete-purchase/{{purchase.id}}">
+                Delete
+              </td>
             </tr>
             {% endfor %}
           </tbody>
