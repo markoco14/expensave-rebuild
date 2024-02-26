@@ -9,16 +9,12 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth import auth_service
 from app.core.database import get_db
+from app.core import links
 from app.purchases.purchase_model import DBPurchase
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-unauthenticated_navlinks = [
-    {"text": "Home", "target": "/"},
-    {"text": "Sign In", "target": "/signin"},
-    {"text": "Sign Up", "target": "/signup"}
-    ]
 
 @router.delete("/delete-purchase/{purchase_id}", response_class=HTMLResponse)
 def delete_purchase(
@@ -30,7 +26,7 @@ def delete_purchase(
     """Sign out a user"""
     current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
     if not current_user:
-        context={"nav_links": unauthenticated_navlinks}
+        context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             status_code=401,
             request=request,
