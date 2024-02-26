@@ -154,6 +154,46 @@ def get_sign_in_page(request: Request):
         context=context
     )
 
+@app.get("/purchases")
+def get_purchases_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)]
+    ):
+    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
+    if not current_user:
+        context={"nav_links": unauthenticated_navlinks}
+        return templates.TemplateResponse(
+            request=request,
+            name="landing-page.html",
+            context=context
+        )
+    
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        ).order_by(DBPurchase.purchase_time.desc()).all()
+    
+    for purchase in purchases:
+        purchase.purchase_time = (purchase.purchase_time + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
+    
+    headings = [
+        "items", 
+        "currency", 
+        "location", 
+        "purchase_time", 
+        "price", 
+        "actions"
+    ]
+    context={
+        "nav_links": authenticated_navlinks,
+        "headings": headings,
+        "purchases": purchases
+        }
+    return templates.TemplateResponse(
+        request=request,
+        name="/pages/purchases.html",
+        context=context
+    )
+
 @app.post("/validate-items")
 def validate_items(request: Request, items: Annotated[str, Form()] = None):
     if not items:
