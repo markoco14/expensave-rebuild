@@ -183,7 +183,7 @@ def get_purchases_page(
         }
     return templates.TemplateResponse(
         request=request,
-        name="/purchases/purchases.html",
+        name="/app/purchases/purchases.html",
         context=context
     )
 
