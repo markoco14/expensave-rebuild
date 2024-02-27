@@ -1,8 +1,8 @@
 """CRUD functions for users table"""
 from sqlalchemy.orm import Session
 
-from app.models.user_model import DBUser
-from app.schemas import user_schemas
+from app.user.user_model import DBUser
+from app.user import user_schemas
 
 
 def get_user_by_email(db: Session, email: str):
