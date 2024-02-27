@@ -59,7 +59,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
             }
     return templates.TemplateResponse(
         request=request,
-        name="home/app-home.html",
+        name="app/app-home.html",
         context=context
     )
 
@@ -95,7 +95,7 @@ def get_today_purchases(
             }
     return templates.TemplateResponse(
         request=request,
-        name="home/home-purchase-list.html",
+        name="app/home-purchase-list.html",
         context=context
     )
 
@@ -126,7 +126,7 @@ def calculate_total_sepnt(
 
     return templates.TemplateResponse(
         request=request,
-        name="home/total-spent-span.html",
+        name="app/total-spent-span.html",
         context={"totalSpent": totalSpent}
     )
 
@@ -193,14 +193,14 @@ def validate_items(request: Request, items: Annotated[str, Form()] = None):
         items = []
         return templates.TemplateResponse(
             request=request,
-            name="home/item-tags.html",
+            name="app/item-tags.html",
             context={"items": items}
         )
     items.rstrip(" ")
     items = items.split(", ")
     return templates.TemplateResponse(
         request=request,
-        name="home/item-tags.html",
+        name="app/item-tags.html",
         context={"items": items}
     )
 
@@ -244,6 +244,6 @@ def track_purchase(
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
         request=request,
-        name="home/home-purchase-form-response.html",
+        name="app/home-purchase-form-response.html",
         context=context
         )
