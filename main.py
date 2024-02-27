@@ -30,9 +30,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         )
     
     start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
-
-    end_of_day = datetime.combine(
-        datetime.now(), time.max) - timedelta(hours=8)
+    end_of_day = time_service.get_utc_end_of_day(utc_offset=8)
     
     purchases = db.query(DBPurchase).filter(
         DBPurchase.user_id == current_user.id,

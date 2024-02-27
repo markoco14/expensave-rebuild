@@ -153,7 +153,7 @@ def get_today_purchases(
         )
     
     start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
-    end_of_day = datetime.combine(datetime.now(), time.max)
+    end_of_day = time_service.get_utc_end_of_day(utc_offset=8)
     
     purchases = db.query(DBPurchase).filter(
         DBPurchase.user_id == current_user.id,
@@ -190,7 +190,8 @@ def calculate_total_sepnt(
             context=context
         )
     start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
-    end_of_day = datetime.combine(datetime.now(), time.max)
+    end_of_day = time_service.get_utc_end_of_day(utc_offset=8)
+
     purchases = db.query(DBPurchase).filter(
         DBPurchase.user_id == current_user.id,
         DBPurchase.purchase_time >= start_of_day,

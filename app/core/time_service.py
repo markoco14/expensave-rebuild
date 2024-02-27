@@ -17,6 +17,16 @@ def get_utc_start_of_day(utc_offset: int):
         datetime.now(), time.min) - timedelta(hours=utc_offset)
 
 
+def get_utc_end_of_day(utc_offset: int):
+    """ 
+    Gets the end of the day in utc
+    adjusts for user's timezone
+    used for retrieving purchases from the database
+    """
+    return datetime.combine(
+        datetime.now(), time.max) - timedelta(hours=utc_offset)
+
+
 # Timezone related functions
 
 def adjust_purchase_dates_for_local_time(
