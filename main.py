@@ -30,7 +30,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/website/web-home.html",
             context=context
         )
     
@@ -59,7 +59,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
             }
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
+        name="app/app-home.html",
         context=context
     )
 
@@ -73,7 +73,7 @@ def get_today_purchases(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/website/web-home.html",
             context=context
         )
     
@@ -95,7 +95,7 @@ def get_today_purchases(
             }
     return templates.TemplateResponse(
         request=request,
-        name="today-purchase-list.html",
+        name="app/home-purchase-list.html",
         context=context
     )
 
@@ -109,7 +109,7 @@ def calculate_total_sepnt(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/website/web-home.html",
             context=context
         )
     start_of_day = datetime.combine(datetime.now(), time.min)
@@ -126,7 +126,7 @@ def calculate_total_sepnt(
 
     return templates.TemplateResponse(
         request=request,
-        name="fragments/total-spent-span.html",
+        name="app/total-spent-span.html",
         context={"totalSpent": totalSpent}
     )
 
@@ -135,7 +135,7 @@ def get_sign_up_page(request: Request):
     context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
-        name="signup.html",
+        name="website/signup.html",
         context=context
     )
 @app.get("/signin")
@@ -143,7 +143,7 @@ def get_sign_in_page(request: Request):
     context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
-        name="signin.html",
+        name="website/signin.html",
         context=context
     )
 
@@ -157,7 +157,7 @@ def get_purchases_page(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/website/web-home.html",
             context=context
         )
     
@@ -183,7 +183,7 @@ def get_purchases_page(
         }
     return templates.TemplateResponse(
         request=request,
-        name="/pages/purchases.html",
+        name="/app/purchases/purchases.html",
         context=context
     )
 
@@ -193,14 +193,14 @@ def validate_items(request: Request, items: Annotated[str, Form()] = None):
         items = []
         return templates.TemplateResponse(
             request=request,
-            name="fragments/item-tags.html",
+            name="app/item-tags.html",
             context={"items": items}
         )
     items.rstrip(" ")
     items = items.split(", ")
     return templates.TemplateResponse(
         request=request,
-        name="fragments/item-tags.html",
+        name="app/item-tags.html",
         context={"items": items}
     )
 
@@ -218,7 +218,7 @@ def track_purchase(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/website/web-home.html",
             context=context
         )
 
@@ -244,6 +244,6 @@ def track_purchase(
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
         request=request,
-        name="fragments/track-purchase-form-response.html",
+        name="app/home-purchase-form-response.html",
         context=context
         )

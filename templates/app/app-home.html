@@ -9,18 +9,29 @@
       integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
       crossorigin="anonymous"
     ></script>
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .purchase.htmx-added {
+          opacity: 0;
+        }
+        .purchase {
+          opacity: 1;
+          transition: opacity 1s ease-out;
+        }
+      }
+    </style>
     <title>Expensave Expense Tracker</title>
   </head>
   <body class="min-h-screen bg-gray-200">
-    {% include 'header.html' %}
+    {% include 'ui/header.html' %}
     <section class="px-2 py-4 md:px-0 md:py-16">
-      <div class="max-w-[500px] mx-auto">
-        <h1 class="text-center text-3xl mb-8">
+      <div class="grid gap-8 max-w-[500px] mx-auto">
+        <h1 class="text-center text-3xl">
           Know the ins and outs of your financial life
         </h1>
-        <p>The simplest way to track your spending</p>
-		<p>Across all payment methods</p>
-		<p>In any currency</p>
+        {% include 'app/home-purchase-form.html' %} {% if purchases|length == 0 %}
+        <p>You haven't logged any purchases!</p>
+        {% else %} {% include 'app/home-purchase-list.html'%} {% endif%}
       </div>
     </section>
   </body>
