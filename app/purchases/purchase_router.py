@@ -15,7 +15,7 @@ from sqlalchemy.exc import IntegrityError
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-from app.purchases import purchase_schemas
+from app.purchases import purchase_schemas, purchase_service
 from app.purchases.purchase_model import DBPurchase
 
 router = APIRouter()
@@ -197,9 +197,7 @@ def calculate_total_sepnt(
         DBPurchase.purchase_time <= end_of_day
         ).order_by(DBPurchase.purchase_time.desc()).all()
     
-    totalSpent = 0
-    for purchase in purchases:
-        totalSpent += purchase.price
+    totalSpent = purchase_service.calculate_day_total_spent(purchases=purchases)
 
     return templates.TemplateResponse(
         request=request,

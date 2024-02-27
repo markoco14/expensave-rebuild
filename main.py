@@ -11,7 +11,7 @@ from app.auth import auth_service, auth_router
 from app.core.database import get_db
 from app.core import links
 from app.purchases.purchase_model import DBPurchase
-from app.purchases import purchase_router
+from app.purchases import purchase_router, purchase_service
 
 app = FastAPI()
 app.include_router(auth_router.router)
@@ -45,10 +45,10 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
     
 
     taipei_time = ZoneInfo("Asia/Taipei")
-    totalSpent = 0
     for purchase in purchases:
         purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
-        totalSpent += purchase.price
+
+    totalSpent = purchase_service.calculate_day_total_spent(purchases=purchases)
 
     currency = "TWD"
     context={"currency": currency,
