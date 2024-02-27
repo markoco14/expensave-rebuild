@@ -30,7 +30,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/landing-pages/landing-page.html",
             context=context
         )
     
@@ -73,7 +73,7 @@ def get_today_purchases(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/landing-pages/landing-page.html",
             context=context
         )
     
@@ -109,7 +109,7 @@ def calculate_total_sepnt(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/landing-pages/landing-page.html",
             context=context
         )
     start_of_day = datetime.combine(datetime.now(), time.min)
@@ -135,7 +135,7 @@ def get_sign_up_page(request: Request):
     context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
-        name="authentication/signup.html",
+        name="landing-pages/signup.html",
         context=context
     )
 @app.get("/signin")
@@ -143,7 +143,7 @@ def get_sign_in_page(request: Request):
     context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
-        name="authentication/signin.html",
+        name="landing-pages/signin.html",
         context=context
     )
 
@@ -157,7 +157,7 @@ def get_purchases_page(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/landing-pages/landing-page.html",
             context=context
         )
     
@@ -218,7 +218,7 @@ def track_purchase(
         context={"nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
             request=request,
-            name="landing-page.html",
+            name="/landing-pages/landing-page.html",
             context=context
         )
 
