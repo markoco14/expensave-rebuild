@@ -135,7 +135,7 @@ def get_sign_up_page(request: Request):
     context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
-        name="signup.html",
+        name="authentication/signup.html",
         context=context
     )
 @app.get("/signin")
@@ -143,7 +143,7 @@ def get_sign_in_page(request: Request):
     context={"nav_links": links.unauthenticated_navlinks}
     return templates.TemplateResponse(
         request=request,
-        name="signin.html",
+        name="authentication/signin.html",
         context=context
     )
 
