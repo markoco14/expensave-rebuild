@@ -14,7 +14,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth import auth_service
 from app.core.database import get_db
-from app.core import links
+from app.core import links, time_service
 from app.purchases import purchase_schemas, purchase_service
 from app.purchases.purchase_model import DBPurchase
 
@@ -152,7 +152,7 @@ def get_today_purchases(
             context=context
         )
     
-    start_of_day = datetime.combine(datetime.now(), time.min)
+    start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
     end_of_day = datetime.combine(datetime.now(), time.max)
     
     purchases = db.query(DBPurchase).filter(
@@ -189,7 +189,7 @@ def calculate_total_sepnt(
             name="/website/web-home.html",
             context=context
         )
-    start_of_day = datetime.combine(datetime.now(), time.min)
+    start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
     end_of_day = datetime.combine(datetime.now(), time.max)
     purchases = db.query(DBPurchase).filter(
         DBPurchase.user_id == current_user.id,
