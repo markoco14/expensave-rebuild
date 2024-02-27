@@ -1,0 +1,7 @@
+<div hx-swap-oob="afterbegin:#today-purchases">
+  <li class="purchase grid grid-cols-2 gap-2 pt-2">
+    <span> {{purchase.items}} </span>
+    <span class="text-right"> ${{purchase.price}} </span>
+  </li>
+</div>
+{% include 'home/home-purchase-form.html' %}

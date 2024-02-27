@@ -244,6 +244,6 @@ def track_purchase(
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
         request=request,
-        name="fragments/track-purchase-form-response.html",
+        name="home/home-purchase-form-response.html",
         context=context
         )
