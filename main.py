@@ -126,7 +126,7 @@ def calculate_total_sepnt(
 
     return templates.TemplateResponse(
         request=request,
-        name="fragments/total-spent-span.html",
+        name="home/total-spent-span.html",
         context={"totalSpent": totalSpent}
     )
 
@@ -193,14 +193,14 @@ def validate_items(request: Request, items: Annotated[str, Form()] = None):
         items = []
         return templates.TemplateResponse(
             request=request,
-            name="fragments/item-tags.html",
+            name="home/item-tags.html",
             context={"items": items}
         )
     items.rstrip(" ")
     items = items.split(", ")
     return templates.TemplateResponse(
         request=request,
-        name="fragments/item-tags.html",
+        name="home/item-tags.html",
         context={"items": items}
     )
 
