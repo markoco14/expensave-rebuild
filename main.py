@@ -1,7 +1,5 @@
 """ Main application file """
-
 from datetime import datetime, time, timedelta
-from zoneinfo import ZoneInfo
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.templating import Jinja2Templates
@@ -10,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.auth import auth_service, auth_router
 from app.core.database import get_db
 from app.core import links
+from app.core import timezone_service
 from app.purchases.purchase_model import DBPurchase
 from app.purchases import purchase_router, purchase_service
 
@@ -43,11 +42,10 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         DBPurchase.purchase_time <= end_of_day
         ).order_by(DBPurchase.purchase_time.desc()).all()
     
-
-    taipei_time = ZoneInfo("Asia/Taipei")
-    for purchase in purchases:
-        purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
-
+    user_timezone = "Asia/Taipei" # replace with user's timezone one day
+    purchases = timezone_service.adjust_purchase_dates_for_local_time(
+        purchases=purchases, user_timezone=user_timezone)
+    
     totalSpent = purchase_service.calculate_day_total_spent(purchases=purchases)
 
     currency = "TWD"
