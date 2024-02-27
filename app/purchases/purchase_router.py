@@ -44,10 +44,10 @@ def get_purchases_page(
     
     headings = [
         "items", 
-        "currency", 
-        "location", 
-        "purchase_time", 
         "price", 
+        "purchase_time", 
+        "location", 
+        "currency", 
         "actions"
     ]
     context={
