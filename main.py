@@ -95,7 +95,7 @@ def get_today_purchases(
             }
     return templates.TemplateResponse(
         request=request,
-        name="today-purchase-list.html",
+        name="home/home-purchase-list.html",
         context=context
     )
 
