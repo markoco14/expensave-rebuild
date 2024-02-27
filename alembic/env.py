@@ -7,7 +7,7 @@ from alembic import context
 
 from app.core.config import get_settings
 from app.core.database import Base
-from app.models.user_model import DBUser
+from app.user.user_model import DBUser
 from app.auth.user_session_model import DBUserSession
 from app.purchases.purchase_model import DBPurchase
 

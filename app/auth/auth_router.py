@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.auth import auth_service, auth_schemas
 from app.core.database import get_db
-from app.services import user_service
-from app.schemas import user_schemas
+from app.user import user_service
+from app.user import user_schemas
 from app.auth import session_service
 
 
