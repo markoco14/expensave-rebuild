@@ -30,7 +30,7 @@ def delete_purchase(
         return templates.TemplateResponse(
             status_code=401,
             request=request,
-            name="/landing-pages/landing-page.html",
+            name="/website/web-home.html",
             context=context
         )
     
