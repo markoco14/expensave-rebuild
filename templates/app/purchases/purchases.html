@@ -35,12 +35,13 @@
       <div class="grid gap-8 max-w-[1000px] mx-auto">
         <h1 class="text-center text-3xl">The Purchases Page</h1>
         <div class="p-8 bg-white rounded-md shadow">
-          <table class="table-auto w-full">
-            <thead>
+          <table class="min-w-full divide-y divide-gray-400">
+            <thead class="">
               {# {{ heading_row(headings)}} #}
               {% include 'app/purchases/purchase-table-header.html'%}
             </thead>
             <tbody
+            class="divide-y divide-gray-200 bg-white"
               hx-confirm="Are you sure?"
               hx-target="closest tr"
               hx-swap="outerHTML swap:1s"
