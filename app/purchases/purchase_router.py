@@ -79,7 +79,16 @@ def store_purchase(
             name="/website/web-home.html",
             context=context
         )
-
+    
+    start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
+    end_of_day = time_service.get_utc_end_of_day(utc_offset=8)
+    
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        DBPurchase.purchase_time >= start_of_day,
+        DBPurchase.purchase_time <= end_of_day
+        ).order_by(DBPurchase.purchase_time.desc()).all()
+    
     new_purchase = purchase_schemas.PurchaseCreate(
         user_id=current_user.id,
         items=items,
@@ -93,6 +102,22 @@ def store_purchase(
     db.commit()
     db.refresh(db_purchase)
 
+    if len(purchases) == 0:
+        purchases.append(db_purchase)
+        currency = "TWD"
+        context={
+            "currency": currency,
+            "purchases": purchases,
+            "message": "Purchase tracked!"
+            }
+        return templates.TemplateResponse(
+            headers={"HX-Trigger": "calculateTotalSpent"},
+            request=request,
+            name="app/spending-form-list-response.html",
+            context=context
+            )
+
+
     currency = "TWD"
     context={
         "currency": currency,
@@ -102,7 +127,7 @@ def store_purchase(
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
         request=request,
-        name="app/spending-oob-row-response.html",
+        name="app/spending-form-row-response.html",
         context=context
         )
 

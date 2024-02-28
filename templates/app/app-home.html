@@ -29,9 +29,17 @@
         <h1 class="text-center text-3xl">
           Know the ins and outs of your financial life
         </h1>
-        {% include 'app/track-spending-form.html' %} {% if purchases|length == 0 %}
-        <p>You haven't logged any purchases!</p>
-        {% else %} {% include 'app/spending-list.html'%} {% endif%}
+        {% include 'app/track-spending-form.html' %} 
+        
+        <div class="grid bg-white rounded-md shadow gap-4 p-8">
+          <h2 class="text-3xl text-gray-500">Today's Spending</h2>
+          {% include "/app/total-spent-span.html" %}
+          {% if purchases|length == 0 %}
+          <p id="today-purchases">You haven't logged any purchases!</p>
+          {% else %}
+          {% include 'app/spending-list.html'%}
+          {% endif%}
+        </div>
       </div>
     </section>
   </body>
