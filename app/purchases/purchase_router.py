@@ -1,10 +1,8 @@
 """User authentication routes"""
 
 from typing import Annotated
-from datetime import datetime, time, timedelta
+from datetime import timedelta
 from decimal import Decimal
-from zoneinfo import ZoneInfo
-
 
 from fastapi import APIRouter, Depends, Request, Response, Form
 from fastapi.responses import HTMLResponse
@@ -14,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth import auth_service
 from app.core.database import get_db
-from app.core import links, time_service
+from app.core import links
 from app.purchases import purchase_schemas, purchase_service
 from app.purchases.purchase_model import DBPurchase
 
@@ -80,6 +78,8 @@ def store_purchase(
             context=context
         )
 
+    purchases = purchase_service.get_user_today_purchases(current_user_id=current_user.id, db=db)
+    
     new_purchase = purchase_schemas.PurchaseCreate(
         user_id=current_user.id,
         items=items,
@@ -93,6 +93,22 @@ def store_purchase(
     db.commit()
     db.refresh(db_purchase)
 
+    if len(purchases) == 0:
+        purchases.append(db_purchase)
+        currency = "TWD"
+        context={
+            "currency": currency,
+            "purchases": purchases,
+            "message": "Purchase tracked!"
+            }
+        return templates.TemplateResponse(
+            headers={"HX-Trigger": "calculateTotalSpent"},
+            request=request,
+            name="app/home/spending-form-list-response.html",
+            context=context
+            )
+
+
     currency = "TWD"
     context={
         "currency": currency,
@@ -102,7 +118,7 @@ def store_purchase(
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
         request=request,
-        name="app/home-purchase-form-response.html",
+        name="app/home/spending-form-row-response.html",
         context=context
         )
 
@@ -138,44 +154,6 @@ def delete_purchase(
     return response
 
 
-@router.get("/today-purchases")
-def get_today_purchases(
-    request: Request,
-    db: Session = Depends(get_db)
-    ):
-    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
-    if not current_user:
-        context={"nav_links": links.unauthenticated_navlinks}
-        return templates.TemplateResponse(
-            request=request,
-            name="/website/web-home.html",
-            context=context
-        )
-    
-    start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
-    end_of_day = time_service.get_utc_end_of_day(utc_offset=8)
-    
-    purchases = db.query(DBPurchase).filter(
-        DBPurchase.user_id == current_user.id,
-        DBPurchase.purchase_time >= start_of_day,
-        DBPurchase.purchase_time <= end_of_day
-        ).order_by(DBPurchase.purchase_time.desc()).all()
-    
-    taipei_time = ZoneInfo("Asia/Taipei")
-
-    for purchase in purchases:
-        purchase.purchase_time = purchase.purchase_time.astimezone(taipei_time)
-
-    context={
-             "purchases": purchases,
-            }
-    return templates.TemplateResponse(
-        request=request,
-        name="app/home-purchase-list.html",
-        context=context
-    )
-
-
 @router.get("/calculate-total-spent")
 def calculate_total_sepnt(
     request: Request,
@@ -189,20 +167,14 @@ def calculate_total_sepnt(
             name="/website/web-home.html",
             context=context
         )
-    start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
-    end_of_day = time_service.get_utc_end_of_day(utc_offset=8)
 
-    purchases = db.query(DBPurchase).filter(
-        DBPurchase.user_id == current_user.id,
-        DBPurchase.purchase_time >= start_of_day,
-        DBPurchase.purchase_time <= end_of_day
-        ).order_by(DBPurchase.purchase_time.desc()).all()
+    purchases = purchase_service.get_user_today_purchases(current_user_id=current_user.id, db=db)
     
     totalSpent = purchase_service.calculate_day_total_spent(purchases=purchases)
 
     return templates.TemplateResponse(
         request=request,
-        name="app/total-spent-span.html",
+        name="app/home/total-spent-span.html",
         context={"totalSpent": totalSpent}
     )
 
@@ -213,13 +185,13 @@ def validate_items(request: Request, items: Annotated[str, Form()] = None):
         items = []
         return templates.TemplateResponse(
             request=request,
-            name="app/item-tags.html",
+            name="app/home/item-tags.html",
             context={"items": items}
         )
     items.rstrip(" ")
     items = items.split(", ")
     return templates.TemplateResponse(
         request=request,
-        name="app/item-tags.html",
+        name="app/home/item-tags.html",
         context={"items": items}
     )

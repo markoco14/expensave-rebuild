@@ -1,0 +1,10 @@
+
+  <ul id="today-purchases" class="grid divide-y gap-4">
+    {% for purchase in purchases %}
+    <li class="purchase grid grid-cols-2 gap-2 pt-2">
+      <span> {{purchase.items}} </span>
+
+      <span class="text-right"> ${{purchase.price}} </span>
+    </li>
+    {% endfor %}
+  </ul>
