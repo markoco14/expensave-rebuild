@@ -171,7 +171,7 @@ def get_today_purchases(
             }
     return templates.TemplateResponse(
         request=request,
-        name="app/home-purchase-list.html",
+        name="app/spending-list.html",
         context=context
     )
 
