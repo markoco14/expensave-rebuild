@@ -29,14 +29,9 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
             context=context
         )
     
-    start_of_day = time_service.get_utc_start_of_day(utc_offset=8)
-    end_of_day = time_service.get_utc_end_of_day(utc_offset=8)
     
-    purchases = db.query(DBPurchase).filter(
-        DBPurchase.user_id == current_user.id,
-        DBPurchase.purchase_time >= start_of_day,
-        DBPurchase.purchase_time <= end_of_day
-        ).order_by(DBPurchase.purchase_time.desc()).all()
+    
+    purchases = purchase_service.get_user_today_purchases(current_user_id=current_user.id, db=db)
     
     user_timezone = "Asia/Taipei" # replace with user's timezone one day
     purchases = time_service.adjust_purchase_dates_for_local_time(
