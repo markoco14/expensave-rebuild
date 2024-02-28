@@ -9,8 +9,13 @@
       integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
     <style type="text/tailwindcss">
       @layer utilities {
+
+        
         .purchase.htmx-added {
           opacity: 0;
         }
@@ -33,10 +38,12 @@
 
         <div class="grid bg-white rounded-md shadow gap-4 p-8">
           <h2 class="text-3xl text-gray-500">Today's Spending</h2>
-          {% include "/app/home/total-spent-span.html" %} {% if
-          purchases|length == 0 %}
+          {% include "/app/home/total-spent-span.html" %} 
+          {% if purchases|length == 0 %}
           <p id="today-purchases">You haven't logged any purchases!</p>
-          {% else %} {% include 'app/home/spending-list.html'%} {% endif%}
+          {% else %} 
+          {% include 'app/home/spending-list.html'%} 
+          {% endif %}
         </div>
       </div>
     </section>

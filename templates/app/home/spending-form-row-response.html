@@ -1,4 +1,7 @@
 <div hx-swap-oob="afterbegin:#today-purchases">
-  {% include "app/home/spending-list-item.html" %}
+  <li class="new-purchase purchase grid grid-cols-2 gap-2 pt-2">
+  <span> {{purchase.items}} </span>
+  <span class="text-right"> ${{purchase.price}} </span>
+</li>
 </div>
 {% include 'app/home/track-spending-form.html' %}
