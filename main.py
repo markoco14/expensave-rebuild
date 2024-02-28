@@ -47,7 +47,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
             }
     return templates.TemplateResponse(
         request=request,
-        name="app/app-home.html",
+        name="app/home/app-home.html",
         context=context
     )
 

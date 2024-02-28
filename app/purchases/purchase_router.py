@@ -104,7 +104,7 @@ def store_purchase(
         return templates.TemplateResponse(
             headers={"HX-Trigger": "calculateTotalSpent"},
             request=request,
-            name="app/spending-form-list-response.html",
+            name="app/home/spending-form-list-response.html",
             context=context
             )
 
@@ -118,7 +118,7 @@ def store_purchase(
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
         request=request,
-        name="app/spending-form-row-response.html",
+        name="app/home/spending-form-row-response.html",
         context=context
         )
 
@@ -174,7 +174,7 @@ def calculate_total_sepnt(
 
     return templates.TemplateResponse(
         request=request,
-        name="app/total-spent-span.html",
+        name="app/home/total-spent-span.html",
         context={"totalSpent": totalSpent}
     )
 
@@ -185,13 +185,13 @@ def validate_items(request: Request, items: Annotated[str, Form()] = None):
         items = []
         return templates.TemplateResponse(
             request=request,
-            name="app/item-tags.html",
+            name="app/home/item-tags.html",
             context={"items": items}
         )
     items.rstrip(" ")
     items = items.split(", ")
     return templates.TemplateResponse(
         request=request,
-        name="app/item-tags.html",
+        name="app/home/item-tags.html",
         context={"items": items}
     )
