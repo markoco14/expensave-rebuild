@@ -7,7 +7,7 @@
   <td class="px-2 py-2 hidden md:table-cell">{{purchase.time}}</td>
   <td class="px-2 py-2 hidden sm:table-cell">{{purchase.location|truncate(14,true,'..',0)}}</td>
   <td class="px-2 py-2 hidden md:table-cell">{{purchase.currency}}</td>
-  <td class="px-2 py-2 text-red-700 text-right" hx-delete="/delete-purchase/{{purchase.id}}">
+  <td class="px-2 py-2 text-red-700 text-right cursor-pointer" hx-delete="/delete-purchase/{{purchase.id}}">
     Delete
   </td>
 </tr>
