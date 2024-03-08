@@ -38,12 +38,14 @@ def get_purchases_page(
         ).order_by(DBPurchase.purchase_time.desc()).all()
     
     for purchase in purchases:
-        purchase.purchase_time = (purchase.purchase_time + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
+        purchase.date = (purchase.purchase_time + timedelta(hours=8)).strftime("%b %d")
+        purchase.time = (purchase.purchase_time + timedelta(hours=8)).strftime("%H:%M")
     
     headings = [
         "items", 
         "price", 
-        "purchase_time", 
+        "date",
+        "time",
         "location", 
         "currency", 
         "actions"
