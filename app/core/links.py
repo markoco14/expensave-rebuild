@@ -7,5 +7,6 @@ unauthenticated_navlinks = [
 authenticated_navlinks = [
     {"text": "Home", "target": "/"},
     {"text": "Purchases", "target": "/purchases"},
+    {"text": "Totals", "target": "/totals"},
     {"text": "Sign Out", "target": "/signout"},
     ]
