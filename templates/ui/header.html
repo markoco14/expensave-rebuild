@@ -1,14 +1,48 @@
 <header class="py-4 px-2 md:px-0">
-  <div class="flex justify-between max-w-[800px] mx-auto">
-    <span>MoneyLife</span>
-    <nav class="flex gap-4">
-      {% for link in nav_links %}
-      {%if link.target != "/signout"%}
-        <a href="{{link.target}}">{{link.text}}</a>
-        {% else %}
-        <button hx-get="{{link.target}}">Sign Out</button>
-      {% endif %} 
-      {% endfor %}
-    </nav>
-  </div>
+	<div class="flex justify-between max-w-[800px] mx-auto">
+		<span>MoneyLife</span>
+		<nav>
+			<ul class="flex gap-2">
+				<li>
+					<a href="/">Home</a>
+				</li>
+				<li>
+					<a href="/purchases">Purchases</a>
+				</li>
+				<li>
+					<a href="/totals">Totals</a>
+				</li>
+				<li x-data="{ dropdownOpen: false}"
+					class="relative">
+					<a @click="dropdownOpen = !dropdownOpen"
+					   @click.away="dropdownOpen = false">NewUser0001</a>
+					<div x-show="dropdownOpen"
+						 x-cloak
+						 class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
+						 x-transition:enter="duration-300 ease-out"
+						 x-transition:enter-start="opacity-0 -translate-y-5 scale-90">
+						<ul>
+							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
+								<a href="/purchases"
+								   class="text-right">Purchases</a>
+							</li>
+							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
+								<button hx-get="/signout"
+										class="text-right">Sign Out</button>
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</nav>
+		{# <nav class="flex gap-4">
+			{% for link in nav_links %}
+			{%if link.target != "/signout"%}
+			<a href="{{link.target}}">{{link.text}}</a>
+			{% else %}
+			<button hx-get="{{link.target}}">Sign Out</button>
+			{% endif %}
+			{% endfor %} #}
+		</nav>
+	</div>
 </header>
