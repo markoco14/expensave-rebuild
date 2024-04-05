@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+Ennytime Profile Page
+{% endblock title%}
+
+{% block content %}
+<div class="py-8">
+	<section class="">
+		<div class="max-w-[800px] mx-auto p-2 md:px-0">
+			<a hx-get="/admin"
+			   hx-push-url="true"
+			   hx-target="closest body">Back</a>
+			<h1 class="text-3xl">Users</h1>
+			<table>
+				<thead>
+					<tr>
+						<td>Display Name</td>
+						<td>Email</td>
+						<td>Actions</td>
+					</tr>
+				</thead>
+				<tbody hx-confirm="Are you sure?"
+					   hx-target="closest tr"
+					   hx-swap="outerHTML swap:1s">
+					{% for user in  users %}
+					<tr>
+						<td>
+							{% if user.display_name %}
+							{{user.display_name}}
+							{% else %}
+							Unnamed User {{loop.index}}
+							{% endif %}
+						</td>
+						<td>
+							{{user.email}}
+						</td>
+						<td>
+							<button class="text-red-600"
+									hx-delete="/admin/users/{{user.id}}">Delete</button>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+</div>
+{% endblock content %}

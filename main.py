@@ -1,7 +1,4 @@
 """ Main application file """
-from pprint import pprint
-from datetime import datetime, time, timedelta
-
 from fastapi import Depends, FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -11,12 +8,13 @@ from app.auth import auth_service, auth_router
 from app.core.database import get_db
 from app.core import links
 from app.core import time_service
-from app.purchases.purchase_model import DBPurchase
 from app.purchases import purchase_router, purchase_service
+from app.admin import admin_router
 
 app = FastAPI()
 app.include_router(auth_router.router)
 app.include_router(purchase_router.router)
+app.include_router(admin_router.router)
 
 templates = Jinja2Templates(directory="templates")
 
@@ -44,12 +42,18 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         purchases=purchases)
 
     currency = "TWD"
-    context = {"request": request,
-               "currency": currency,
-               "nav_links": links.authenticated_navlinks,
-               "purchases": purchases,
-               "totalSpent": totalSpent,
-               }
+    user_data = {
+        "display_name": current_user.display_name,
+        "is_admin": current_user.is_admin,
+    }
+    context = {
+        "user": user_data,
+        "request": request,
+        "currency": currency,
+        "nav_links": links.authenticated_navlinks,
+        "purchases": purchases,
+        "totalSpent": totalSpent,
+    }
     return templates.TemplateResponse(
         name="app/home/app-home.html",
         context=context
@@ -91,7 +95,6 @@ def get_totals_page(
             context=context
         )
 
-
     query = text(
         """
         SELECT 
@@ -109,12 +112,17 @@ def get_totals_page(
     for result in query_results:
         results_dict.append(result._asdict())
         grand_total += result.total_spent
+    user_data = {
+        "display_name": current_user.display_name,
+        "is_admin": current_user.is_admin,
+    }
     context = {
+        "user": user_data,
         "request": request,
         "nav_links": links.authenticated_navlinks,
         "totals": results_dict,
         "grand_total": grand_total
-        }
+    }
     return templates.TemplateResponse(
         name="/app/totals/totals-page.html",
         context=context
