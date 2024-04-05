@@ -1,14 +1,14 @@
 """User authentication routes"""
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, Request, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
+from app.user.user_model import DBUser
 
 
 router = APIRouter(
@@ -98,16 +98,60 @@ def read_admin_users_page(
             name="/app/home/app-home.html",
             context=context,
         )
-    
+
     user_data = {
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
     }
+
+    db_users = db.query(DBUser).all()
     context = {
         "user": user_data,
         "request": request,
+        "users": db_users
     }
     return templates.TemplateResponse(
         name="/app/admin/users.html",
         context=context
     )
+
+
+@router.delete("/users/{user_id}")
+def delete_user(
+    request: Request,
+    user_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Hard deletes a user and their data"""
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    if not current_user.is_admin:
+        user_data = {
+            "display_name": current_user.display_name,
+            "is_admin": current_user.is_admin,
+        }
+        context = {
+            "user": user_data,
+            "request": request,
+        }
+
+        # return RedirectResponse(url="/", status_code=401)
+        return templates.TemplateResponse(
+            name="/app/home/app-home.html",
+            context=context,
+        )
+    db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
+    db.delete(db_user)
+    db.commit()
+
+    return Response(status_code=200)
