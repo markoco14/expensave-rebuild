@@ -1,78 +1,44 @@
 {% from '/macros/table.html' import heading_row%}
-
-<!DOCTYPE html>
-<html lang="en">
-
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport"
-			  content="width=device-width, initial-scale=1.0" />
-		<script src="https://cdn.tailwindcss.com"></script>
-		<script src="https://unpkg.com/htmx.org@1.9.10"
-				integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-				crossorigin="anonymous"></script>
-		<script defer
-				src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-		<style type="text/tailwindcss">
-			@layer utilities {
-				[cloak] {
-			display: none;
-		}
-        .purchase.htmx-added {
-          opacity: 0;
-        }
-        .purchase {
-          opacity: 1;
-          transition: opacity 1s ease-out;
-        }
-
-        tr.htmx-swapping td {
-          opacity: 0;
-          transition: opacity 1s ease-out;
-        }
-      }
-    </style>
-		<title>MYML Totals Page</title>
-	</head>
-
-	<body class="min-h-screen bg-gray-200">
-		{% include 'ui/header.html' %}
-		<section class="px-2 py-4 md:px-0 md:py-16">
-			<div class="grid gap-8 max-w-[1000px] mx-auto">
-				<h1 class="text-center text-3xl">The Totals Page</h1>
-				<div class="p-8 bg-white rounded-md shadow">
-					<p class="text-right">Grand Total ${{grand_total}}</p>
-					<table class="w-full border-spacing-2 border border-gray-500">
-						<thead>
-							<tr>
-								<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases
-								</th>
-								<th class="px-2 py-1 border border-gray-300">Total Spent</th>
-								<th class="px-2 py-1 border border-gray-300">Purchase Date</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for total in totals %}
-							<tr>
-								<td class="hidden md:table-cell px-2 py-1 border border-gray-300">
-									{{total.number_of_purchases}}</td>
-								{% if total.total_spent > 500 %}
-								<td class="text-red-600 px-2 py-1 text-right border border-gray-300">
-									{% elif total.total_spent > 500/2 %}
-								<td class="text-orange-600 px-2 py-1 text-right border border-gray-300">
-									{% else %}
-								<td class="text-green-600 px-2 py-1 text-right border border-gray-300">
-									{% endif %}
-									${{total.total_spent}}
-								</td>
-								<td class="text-right px-2 py-1 border border-gray-300">{{total.purchase_date}}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</section>
-	</body>
-
-</html>
+{% extends "base.html" %}
+{% block title %}
+MySaveMoneyLife - Total Spending Page
+{% endblock title %}
+{% block content %}
+<section class="px-2 py-4 md:px-0 md:py-16">
+	<div class="grid gap-8 max-w-[1000px] mx-auto">
+		<h1 class="text-center text-3xl">The Totals Page</h1>
+		<div class="p-8 bg-white rounded-md shadow">
+			<p class="text-right">Grand Total ${{grand_total}}</p>
+			<table class="w-full border-spacing-2 border border-gray-500">
+				<thead>
+					<tr>
+						<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases
+						</th>
+						<th class="px-2 py-1 border border-gray-300">Total Spent</th>
+						<th class="px-2 py-1 border border-gray-300">Purchase Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for total in totals %}
+					<tr>
+						<td class="hidden md:table-cell px-2 py-1 border border-gray-300">
+							{{total.number_of_purchases}}
+						</td>
+						{% if total.total_spent > 500 %}
+						<td class="text-red-600 px-2 py-1 text-right border border-gray-300">
+							{% elif total.total_spent > 500/2 %}
+						<td class="text-orange-600 px-2 py-1 text-right border border-gray-300">
+							{% else %}
+						<td class="text-green-600 px-2 py-1 text-right border border-gray-300">
+							{% endif %}
+							${{total.total_spent}}
+						</td>
+						<td class="text-right px-2 py-1 border border-gray-300">{{total.purchase_date}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+{% endblock content %}
