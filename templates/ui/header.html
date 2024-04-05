@@ -78,6 +78,12 @@
 						 x-transition:enter="duration-300 ease-out"
 						 x-transition:enter-start="opacity-0 -translate-y-5 scale-90">
 						<ul>
+							{% if user.is_admin %}
+							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
+								<a href="/admin"
+								   class="text-right">Admin</a>
+							</li>
+							{% endif %}
 							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
 								<button hx-get="/signout"
 										class="text-right">Sign Out</button>

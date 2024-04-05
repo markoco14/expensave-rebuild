@@ -1,7 +1,4 @@
 """ Main application file """
-from pprint import pprint
-from datetime import datetime, time, timedelta
-
 from fastapi import Depends, FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -11,12 +8,13 @@ from app.auth import auth_service, auth_router
 from app.core.database import get_db
 from app.core import links
 from app.core import time_service
-from app.purchases.purchase_model import DBPurchase
 from app.purchases import purchase_router, purchase_service
+from app.admin import admin_router
 
 app = FastAPI()
 app.include_router(auth_router.router)
 app.include_router(purchase_router.router)
+app.include_router(admin_router.router)
 
 templates = Jinja2Templates(directory="templates")
 
