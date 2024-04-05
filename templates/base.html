@@ -18,8 +18,7 @@
 		<script defer
 				src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 		<style type="text/tailwindcss">
-			@layer utilities {
-			
+			@layer utilities {			
 				[cloak] {
 					display: none;
 				}
@@ -42,13 +41,17 @@
 		<title>{% block title %}{%endblock title%}</title>
 	</head>
 
-	<body>
-		{% block header %}
+	<body class="min-h-screen bg-gray-300">
+		<header>
+			{% block header %}
 
-		{% include "ui/header.html" %}
-		{% endblock header %}
-		{% block content %}
-		{% endblock content %}
+			{% include "ui/header.html" %}
+			{% endblock header %}
+		</header>
+		<main class="">
+			{% block content %}
+			{% endblock content %}
+		</main>
 	</body>
 
 </html>
