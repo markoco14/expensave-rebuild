@@ -56,7 +56,12 @@ def get_purchases_page(
         "currency",
         "actions"
     ]
+    user_data = {
+        "display_name": current_user.display_name,
+        "is_admin": current_user.is_admin,
+    }
     context = {
+        "user": user_data,
         "request": request,
         "nav_links": links.authenticated_navlinks,
         "headings": headings,

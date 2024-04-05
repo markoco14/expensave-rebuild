@@ -64,7 +64,8 @@
 				<li x-data="{ dropdownOpen: false}"
 					class="relative hidden md:block">
 					<a @click="dropdownOpen = !dropdownOpen"
-					   @click.away="dropdownOpen = false">
+					   @click.away="dropdownOpen = false"
+					   class="select-none cursor-pointer">
 						{% if user.display_name %}
 						{{ user.display_name }}
 						{% else %}
