@@ -8,6 +8,7 @@ MySaveMoneyLife - Admin
 		<h1 class="text-center text-3xl">
 			You're an admin now!
 		</h1>
+		<a hx-get="/admin/users" hx-push-url="true" hx-target="closest body">users</a>
 	</div>
 </section>
 {% endblock content %}

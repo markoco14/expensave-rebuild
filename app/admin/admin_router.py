@@ -63,3 +63,51 @@ def get_admin_page(
         name="/app/admin/admin-home.html",
         context=context
     )
+
+
+@router.get("/users")
+def read_admin_users_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)]
+):
+    """Returns a list of users for admin to review"""
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    if not current_user.is_admin:
+        user_data = {
+            "display_name": current_user.display_name,
+            "is_admin": current_user.is_admin,
+        }
+        context = {
+            "user": user_data,
+            "request": request,
+        }
+
+        # return RedirectResponse(url="/", status_code=401)
+        return templates.TemplateResponse(
+            name="/app/home/app-home.html",
+            context=context,
+        )
+    
+    user_data = {
+        "display_name": current_user.display_name,
+        "is_admin": current_user.is_admin,
+    }
+    context = {
+        "user": user_data,
+        "request": request,
+    }
+    return templates.TemplateResponse(
+        name="/app/admin/users.html",
+        context=context
+    )
