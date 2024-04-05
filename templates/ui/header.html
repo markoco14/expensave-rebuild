@@ -1,8 +1,52 @@
-<header class="py-4 px-2 md:px-0">
+<header x-data="{mobilenavOpen: false}"
+		class="py-4 px-2 md:px-0">
 	<div class="flex justify-between max-w-[800px] mx-auto">
 		<span>MoneyLife</span>
-		<nav>
-			<ul class="flex gap-2">
+		<button x-bind:class="mobilenavOpen ? 'z-20' : ''"
+				class="md:hidden"
+				@click="mobilenavOpen = !mobilenavOpen">
+			<svg x-show="!mobilenavOpen"
+				 class="h-6 w-6 select-none cursor-pointer"
+				 xmlns="http://www.w3.org/2000/svg"
+				 width="24"
+				 height="24"
+				 viewBox="0 0 24 24"
+				 fill="none"
+				 stroke="currentColor"
+				 stroke-width="2"
+				 stroke-linecap="round"
+				 stroke-linejoin="round">
+				<line x1="4"
+					  x2="20"
+					  y1="12"
+					  y2="12"></line>
+				<line x1="4"
+					  x2="20"
+					  y1="6"
+					  y2="6"></line>
+				<line x1="4"
+					  x2="20"
+					  y1="18"
+					  y2="18"></line>
+			</svg>
+
+			<svg x-show="mobilenavOpen"
+				 x-cloak
+				 class="w-6 h-6 select-none cursor-pointer z-20"
+				 xmlns="http://www.w3.org/2000/svg"
+				 x="0px"
+				 y="0px"
+				 viewBox="0 0 50 50">
+				<path
+					  d="M 9.15625 6.3125 L 6.3125 9.15625 L 22.15625 25 L 6.21875 40.96875 L 9.03125 43.78125 L 25 27.84375 L 40.9375 43.78125 L 43.78125 40.9375 L 27.84375 25 L 43.6875 9.15625 L 40.84375 6.3125 L 25 22.15625 Z">
+				</path>
+			</svg>
+		</button>
+		<nav x-show="mobilenavOpen"
+			 x-cloak
+			 class="md:!block h-screen w-screen md:h-auto md:w-auto absolute top-0 left-0 md:relative">
+			<ul
+				class="flex flex-col items-center justify-center h-full w-full bg-white/90 md:bg-transparent md:flex-row gap-2">
 				<li>
 					<a href="/">Home</a>
 				</li>
@@ -12,8 +56,12 @@
 				<li>
 					<a href="/totals">Totals</a>
 				</li>
+				<li class="block md:hidden">
+					<button hx-get="/signout"
+							class="text-right">Sign Out</button>
+				</li>
 				<li x-data="{ dropdownOpen: false}"
-					class="relative">
+					class="relative hidden md:block">
 					<a @click="dropdownOpen = !dropdownOpen"
 					   @click.away="dropdownOpen = false">NewUser0001</a>
 					<div x-show="dropdownOpen"
@@ -22,10 +70,6 @@
 						 x-transition:enter="duration-300 ease-out"
 						 x-transition:enter-start="opacity-0 -translate-y-5 scale-90">
 						<ul>
-							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
-								<a href="/purchases"
-								   class="text-right">Purchases</a>
-							</li>
 							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
 								<button hx-get="/signout"
 										class="text-right">Sign Out</button>
