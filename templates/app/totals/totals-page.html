@@ -11,8 +11,13 @@
 		<script src="https://unpkg.com/htmx.org@1.9.10"
 				integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
 				crossorigin="anonymous"></script>
+		<script defer
+				src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 		<style type="text/tailwindcss">
 			@layer utilities {
+				[cloak] {
+			display: none;
+		}
         .purchase.htmx-added {
           opacity: 0;
         }
@@ -36,11 +41,12 @@
 			<div class="grid gap-8 max-w-[1000px] mx-auto">
 				<h1 class="text-center text-3xl">The Totals Page</h1>
 				<div class="p-8 bg-white rounded-md shadow">
-				<p class="text-right">Grand Total ${{grand_total}}</p>
+					<p class="text-right">Grand Total ${{grand_total}}</p>
 					<table class="w-full border-spacing-2 border border-gray-500">
 						<thead>
 							<tr>
-								<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases</th>
+								<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases
+								</th>
 								<th class="px-2 py-1 border border-gray-300">Total Spent</th>
 								<th class="px-2 py-1 border border-gray-300">Purchase Date</th>
 							</tr>
@@ -48,15 +54,16 @@
 						<tbody>
 							{% for total in totals %}
 							<tr>
-								<td class="hidden md:table-cell px-2 py-1 border border-gray-300">{{total.number_of_purchases}}</td>
+								<td class="hidden md:table-cell px-2 py-1 border border-gray-300">
+									{{total.number_of_purchases}}</td>
 								{% if total.total_spent > 500 %}
 								<td class="text-red-600 px-2 py-1 text-right border border-gray-300">
-								{% elif total.total_spent > 500/2 %}
+									{% elif total.total_spent > 500/2 %}
 								<td class="text-orange-600 px-2 py-1 text-right border border-gray-300">
-								{% else %}
+									{% else %}
 								<td class="text-green-600 px-2 py-1 text-right border border-gray-300">
-								{% endif %}
-								${{total.total_spent}}
+									{% endif %}
+									${{total.total_spent}}
 								</td>
 								<td class="text-right px-2 py-1 border border-gray-300">{{total.purchase_date}}</td>
 							</tr>

@@ -2,17 +2,22 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      src="https://unpkg.com/htmx.org@1.9.10"
-      integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-      crossorigin="anonymous"
-    ></script>
-    <style type="text/tailwindcss">
-      @layer utilities {
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport"
+			  content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://unpkg.com/htmx.org@1.9.10"
+				integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+				crossorigin="anonymous"></script>
+		<script defer
+				src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+		<style type="text/tailwindcss">
+			@layer utilities {
+		[cloak] {
+			display: none;
+		}
         .purchase.htmx-added {
           opacity: 0;
         }
@@ -27,32 +32,32 @@
         }
       }
     </style>
-    <title>Expensave Expense Tracker</title>
-  </head>
-  <body class="min-h-screen bg-gray-200">
-    {% include 'ui/header.html' %}
-    <section class="px-2 py-4 md:px-0 md:py-16">
-      <div class="grid gap-8 max-w-[1000px] mx-auto">
-        <h1 class="text-center text-3xl">The Purchases Page</h1>
-        <div class="p-8 bg-white rounded-md shadow">
-          <table class="min-w-full divide-y divide-gray-400">
-            <thead class="">
-              {# {{ heading_row(headings)}} #}
-              {% include 'app/purchases/purchase-table-header.html'%}
-            </thead>
-            <tbody
-            class="divide-y divide-gray-200 bg-white"
-              hx-confirm="Are you sure?"
-              hx-target="closest tr"
-              hx-swap="outerHTML swap:1s"
-            >
-              {% for purchase in purchases %} 
-              {% include 'app/purchases/purchase-table-row.html' %} 
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  </body>
+		<title>Expensave Expense Tracker</title>
+	</head>
+
+	<body class="min-h-screen bg-gray-200">
+		{% include 'ui/header.html' %}
+		<section class="px-2 py-4 md:px-0 md:py-16">
+			<div class="grid gap-8 max-w-[1000px] mx-auto">
+				<h1 class="text-center text-3xl">The Purchases Page</h1>
+				<div class="p-8 bg-white rounded-md shadow">
+					<table class="min-w-full divide-y divide-gray-400">
+						<thead class="">
+							{# {{ heading_row(headings)}} #}
+							{% include 'app/purchases/purchase-table-header.html'%}
+						</thead>
+						<tbody class="divide-y divide-gray-200 bg-white"
+							   hx-confirm="Are you sure?"
+							   hx-target="closest tr"
+							   hx-swap="outerHTML swap:1s">
+							{% for purchase in purchases %}
+							{% include 'app/purchases/purchase-table-row.html' %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</section>
+	</body>
+
 </html>
