@@ -10,6 +10,8 @@ from app.core import links
 from app.core import time_service
 from app.purchases import purchase_router, purchase_service
 from app.admin import admin_router
+import os
+import time
 
 app = FastAPI()
 app.include_router(auth_router.router)
@@ -17,6 +19,17 @@ app.include_router(purchase_router.router)
 app.include_router(admin_router.router)
 
 templates = Jinja2Templates(directory="templates")
+
+class SleepMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if os.getenv("ENVIRONMENT") == "dev":
+            time.sleep(3)  # Delay for 3000ms (3 seconds)
+        await self.app(scope, receive, send)
+
+app.add_middleware(SleepMiddleware)
 
 
 @app.get("/")

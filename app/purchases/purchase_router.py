@@ -199,7 +199,10 @@ def calculate_total_sepnt(
 
     return templates.TemplateResponse(
         name="app/home/total-spent-span.html",
-        context={"totalSpent": totalSpent}
+        context={
+            "totalSpent": totalSpent,
+            "request": request
+        }
     )
 
 
