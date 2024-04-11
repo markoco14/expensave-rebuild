@@ -22,6 +22,14 @@
 				[cloak] {
 					display: none;
 				}
+
+				.htmx-request .htmx-indicator-content {
+					display: none;
+				}
+				.htmx-request.htmx-indicator-content {
+					display: none;
+				}
+
 				.htmx-indicator {
 					display: none;
 				}
@@ -51,6 +59,7 @@
 				opacity: 0;
 				transition: opacity 1s ease-out;
 				}
+
 			}
 		</style>
 		<title>{% block title %}{%endblock title%}</title>
