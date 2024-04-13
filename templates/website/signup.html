@@ -27,8 +27,11 @@ My Save Money Life - Sign up
 					   name="password"
 					   required />
 			</div>
-			<button class="bg-gray-700 text-white px-3 py-2 rounded">
+			<button class="flex gap-2 justify-center items-center bg-gray-700 text-white px-3 py-2 rounded">
 				Start saving
+				<div>
+					{% include "ui/spinner.html" %}
+				</div>
 			</button>
 		</form>
 	</div>
