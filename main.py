@@ -1,5 +1,6 @@
 """ Main application file """
 from fastapi import Depends, FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
@@ -18,7 +19,10 @@ app.include_router(auth_router.router)
 app.include_router(purchase_router.router)
 app.include_router(admin_router.router)
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 templates = Jinja2Templates(directory="templates")
+
 
 class SleepMiddleware:
     def __init__(self, app):
@@ -26,8 +30,10 @@ class SleepMiddleware:
 
     async def __call__(self, scope, receive, send):
         if os.getenv("ENVIRONMENT") == "dev":
-            time.sleep(3)  # Delay for 3000ms (3 seconds)
+            print("development environment detecting, sleeping for 3 seconds")
+            time.sleep(0)  # Delay for 3000ms (3 seconds)
         await self.app(scope, receive, send)
+
 
 app.add_middleware(SleepMiddleware)
 

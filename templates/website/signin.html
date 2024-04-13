@@ -4,33 +4,41 @@ My Save Money Life - Sign in
 {% endblock title %}
 {% block content %}
 <section class="px-2 py-4 md:px-0 md:py-16">
-	<div class="max-w-[500px] mx-auto">
-		<h1 class="text-center text-3xl mb-8">
-			Know the ins and outs of your financial life
-		</h1>
-		<form hx-post="/signin"
-			  class="grid gap-4 p-8 bg-white rounded-md shadow">
-			<h2 class="text-3xl">Sign in</h2>
-			<div class="flex flex-col gap-1">
-				<label for="email">Email</label>
-				<input id="email"
-					   class="border rounded p-2 bg-gray-100"
-					   type="email"
-					   name="email"
-					   required />
-			</div>
-			<div class="flex flex-col gap-1">
-				<label for="password">Password</label>
-				<input id="password"
-					   class="border rounded p-2 bg-gray-100"
-					   type="password"
-					   name="password"
-					   required />
-			</div>
-			<button class="bg-gray-700 text-white px-3 py-2 rounded">
-				Start saving
-			</button>
-		</form>
+	<h1 class="text-center text-3xl mb-8">
+		Know the ins and outs of your financial life
+	</h1>
+	<div class="flex justify-center">
+		<div class="flex flex-col justify-center w-[500px] bg-white rounded-xl md:rounded-none md:rounded-tl-xl md:rounded-bl-xl">
+			<form hx-post="/signin"
+				  class="grid gap-8 p-8">
+				<h2 class="text-3xl">Sign in</h2>
+				<div class="flex flex-col gap-1">
+					<label for="email">Email</label>
+					<input id="email"
+						   class="border rounded p-2 bg-gray-100"
+						   type="email"
+						   name="email"
+						   required />
+				</div>
+				<div class="flex flex-col gap-1">
+					<label for="password">Password</label>
+					<input id="password"
+						   class="border rounded p-2 bg-gray-100"
+						   type="password"
+						   name="password"
+						   required />
+				</div>
+				<button class="flex gap-2 justify-center items-center bg-gray-700 text-white px-3 py-2 rounded mt-8">
+					Start saving
+					<div>
+						{% include "ui/spinner.html" %}
+					</div>
+				</button>
+			</form>
+		</div>
+		<img src="static/img/catching-money.png"
+			 alt="A young boy catching money in his butterfly net."
+			 class="hidden md:block max-w-[500px] object-cover rounded-tr-xl rounded-br-xl" />
 	</div>
 </section>
 {% endblock content %}
