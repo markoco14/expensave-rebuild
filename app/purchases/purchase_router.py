@@ -73,6 +73,45 @@ def get_purchases_page(
     )
 
 
+@router.get("/purchases/{today_date}")
+def get_purchase_details_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    today_date: str
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    # purchases = db.query(DBPurchase).filter(
+    #     DBPurchase.user_id == current_user.id,
+    # ).order_by(DBPurchase.purchase_time.desc()).all()
+
+    user_data = {
+        "display_name": current_user.display_name,
+        "is_admin": current_user.is_admin,
+    }
+    context = {
+        "user": user_data,
+        "request": request,
+        "nav_links": links.authenticated_navlinks,
+        # "headings": headings,
+        # "purchases": purchases
+    }
+    return templates.TemplateResponse(
+        name="/app/purchases/purchase-detail.html",
+        context=context
+    )
+
+
 @router.post("/track-purchase")
 def store_purchase(
     request: Request,

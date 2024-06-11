@@ -1,4 +1,6 @@
 """ Main application file """
+from datetime import datetime
+
 from fastapi import Depends, FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -65,9 +67,13 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
     }
+
+    today_date = datetime.now()
+
     context = {
         "user": user_data,
         "request": request,
+        "today_date": today_date,
         "currency": currency,
         "nav_links": links.authenticated_navlinks,
         "purchases": purchases,
