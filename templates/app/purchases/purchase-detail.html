@@ -5,9 +5,16 @@ MySaveMoneyLife - Purchase History
 {% endblock title %}
 {% block content %}
 <section class="px-2 py-4 md:px-0 md:py-16">
-	<div class="grid gap-8 max-w-[1000px] mx-auto">
+	<div class="grid gap-4 max-w-[1000px] mx-auto">
 		<h1 class="text-center text-3xl">Purchase Details</h1>
-		<p>You will see all them purchases soon.</p>
+		{% for purchase in purchases  %}
+		<div class="p-4 bg-white rounded-md shadow">
+			<p>{{purchase.price}}</p>
+			<p>{{purchase.location}}</p>
+			<p>{{purchase.purchase_time.strftime("%H:%M:%S")}}</p>
+			<p>{{purchase.items}}</p>
+		</div>
+		{% endfor %}
 	</div>
 </section>
 {% endblock content %}

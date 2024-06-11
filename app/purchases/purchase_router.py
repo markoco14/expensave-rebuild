@@ -1,5 +1,4 @@
 """User authentication routes"""
-
 from typing import Annotated
 from datetime import timedelta
 from decimal import Decimal
@@ -15,6 +14,7 @@ from app.core.database import get_db
 from app.core import links
 from app.purchases import purchase_schemas, purchase_service
 from app.purchases.purchase_model import DBPurchase
+from app.core import time_service as TimeService
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -91,9 +91,14 @@ def get_purchase_details_page(
             context=context
         )
 
-    # purchases = db.query(DBPurchase).filter(
-    #     DBPurchase.user_id == current_user.id,
-    # ).order_by(DBPurchase.purchase_time.desc()).all()
+    start_of_day = TimeService.get_utc_start_of_day(utc_offset=8)
+    end_of_day = TimeService.get_utc_end_of_day(utc_offset=8)
+
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        DBPurchase.purchase_time >= start_of_day,
+        DBPurchase.purchase_time <= end_of_day
+    ).order_by(DBPurchase.purchase_time.desc()).all()
 
     user_data = {
         "display_name": current_user.display_name,
@@ -103,8 +108,7 @@ def get_purchase_details_page(
         "user": user_data,
         "request": request,
         "nav_links": links.authenticated_navlinks,
-        # "headings": headings,
-        # "purchases": purchases
+        "purchases": purchases
     }
     return templates.TemplateResponse(
         name="/app/purchases/purchase-detail.html",
