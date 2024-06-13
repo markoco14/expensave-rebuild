@@ -135,6 +135,17 @@ def get_purchase_detail_row(
     purchase_id: int,
     db: Session = Depends(get_db),
 ):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
 
     db_purchase = db.query(DBPurchase).filter(
         DBPurchase.id == purchase_id
@@ -157,6 +168,17 @@ def get_edit_purchase_form(
     purchase_id: int,
     db: Session = Depends(get_db),
 ):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
 
     db_purchase = db.query(DBPurchase).filter(
         DBPurchase.id == purchase_id
@@ -171,6 +193,8 @@ def get_edit_purchase_form(
         name="/app/purchases/edit-purchase-form.html",
         context=context
     )
+
+
 
 
 @router.post("/track-purchase")
