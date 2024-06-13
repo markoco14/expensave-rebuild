@@ -112,7 +112,6 @@ def get_purchase_details_page(
         DBPurchase.purchase_time <= end_of_day
     ).order_by(DBPurchase.purchase_time.desc()).all()
 
-
     user_data = {
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
@@ -131,6 +130,28 @@ def get_purchase_details_page(
 
 
 @router.get("/purchases/details/{purchase_id}")
+def get_purchase_detail_row(
+    request: Request,
+    purchase_id: int,
+    db: Session = Depends(get_db),
+):
+
+    db_purchase = db.query(DBPurchase).filter(
+        DBPurchase.id == purchase_id
+    ).first()
+
+    context = {
+        "request": request,
+        "purchase": db_purchase,
+    }
+
+    return templates.TemplateResponse(
+        name="/app/purchases/purchase-detail-row.html",
+        context=context
+    )
+
+
+@router.get("/purchases/details/edit/{purchase_id}")
 def get_edit_purchase_form(
     request: Request,
     purchase_id: int,
