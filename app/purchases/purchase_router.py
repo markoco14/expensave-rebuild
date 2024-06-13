@@ -195,6 +195,40 @@ def get_edit_purchase_form(
     )
 
 
+@router.put("/purchases/details/edit/{purchase_id}")
+def update_purchase(
+    request: Request,
+    purchase_id: int,
+    price: Annotated[float, Form()],
+    location: Annotated[str, Form()],
+    items: Annotated[str, Form()],
+    db: Session = Depends(get_db),
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+    
+    db_purchase = db.query(DBPurchase).filter(
+        DBPurchase.id == purchase_id
+    ).first()
+
+    db_purchase.price = price
+    db_purchase.location = location
+    db_purchase.items = items
+    db.commit()
+    db.refresh(db_purchase)
+    print(price)
+    print(location)
+    print(items)
+    pass
 
 
 @router.post("/track-purchase")

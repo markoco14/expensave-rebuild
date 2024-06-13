@@ -30,6 +30,8 @@
 	<button type="button"
 			hx-get="/purchases/details/{{purchase.id}}"
 			hx-target="closest form"
-			hx-swap="outerHTML">Cancel</button>
-	<button type="submit">Save</button>
+			hx-swap="outerHTML">Close</button>
+	<button type="submit"
+			hx-put="/purchases/details/edit/{{purchase.id}}"
+			hx-swap="none">Save</button>
 </form>
