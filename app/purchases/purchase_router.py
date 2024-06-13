@@ -90,9 +90,21 @@ def get_purchase_details_page(
             name="/website/web-home.html",
             context=context
         )
-
-    start_of_day = TimeService.get_utc_start_of_day(utc_offset=8)
-    end_of_day = TimeService.get_utc_end_of_day(utc_offset=8)
+    year = int(today_date.split("-")[0])
+    month = int(today_date.split("-")[1])
+    day = int(today_date.split("-")[2])
+    start_of_day = TimeService.get_utc_start_of_current_day(
+        year=year,
+        month=month,
+        day=day,
+        utc_offset=8
+    )
+    end_of_day = TimeService.get_utc_end_of_current_day(
+        year=year,
+        month=month,
+        day=day,
+        utc_offset=8
+    )
 
     purchases = db.query(DBPurchase).filter(
         DBPurchase.user_id == current_user.id,
@@ -100,10 +112,12 @@ def get_purchase_details_page(
         DBPurchase.purchase_time <= end_of_day
     ).order_by(DBPurchase.purchase_time.desc()).all()
 
+
     user_data = {
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
     }
+
     context = {
         "user": user_data,
         "request": request,
@@ -112,6 +126,28 @@ def get_purchase_details_page(
     }
     return templates.TemplateResponse(
         name="/app/purchases/purchase-detail.html",
+        context=context
+    )
+
+
+@router.get("/purchases/details/{purchase_id}")
+def get_edit_purchase_form(
+    request: Request,
+    purchase_id: int,
+    db: Session = Depends(get_db),
+):
+
+    db_purchase = db.query(DBPurchase).filter(
+        DBPurchase.id == purchase_id
+    ).first()
+
+    context = {
+        "request": request,
+        "purchase": db_purchase,
+    }
+
+    return templates.TemplateResponse(
+        name="/app/purchases/edit-purchase-form.html",
         context=context
     )
 
