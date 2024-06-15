@@ -9,13 +9,15 @@ MySaveMoneyLife - Purchase History
 		<h1 class="text-center text-3xl">Purchase Details</h1>
 		{% for purchase in purchases  %}
 		<div class="p-4 bg-white rounded-md shadow">
-			<button hx-get="/purchases/details/edit/{{purchase.id}}"
-					hx-target="closest div"
-					hx-swap="outerHTML">Edit</button>
-			<p>{{purchase.price}}</p>
-			<p>{{purchase.location}}</p>
-			<p>{{purchase.purchase_time.strftime("%H:%M:%S")}}</p>
-			<p>{{purchase.items}}</p>
+			<header class="flex justify-between items-baseline">
+				<p class="text-2xl">${{purchase.price}}</p>
+				<button hx-get="/purchases/details/edit/{{purchase.id}}"
+						hx-target="closest div"
+						hx-swap="outerHTML">Edit</button>
+			</header>
+			<p class="text-sm text-gray-500 mb-2">{{purchase.purchase_time.strftime("%H:%M:%S")}} @ {{purchase.location}}</p>
+			<hr class="mb-2 border-gray-500"/>
+			<p class="">{{purchase.items}}</p>
 		</div>
 		{% endfor %}
 	</div>
