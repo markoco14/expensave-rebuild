@@ -1,4 +1,6 @@
-<form>
+<form hx-put="/purchases/details/edit/{{purchase.id}}"
+	  hx-swap="none"
+	  hx-target="this">
 	<div class="flex flex-col gap-2 mb-4">
 		<label for="price">Price</label>
 		<input type="number"
@@ -29,7 +31,5 @@
 			hx-swap="innerHTML"
 			class="px-3 py-1 border rounded-md hover:bg-gray-200 active:bg-gray-300">Close</button>
 	<button type="submit"
-			hx-put="/purchases/details/edit/{{purchase.id}}"
-			hx-swap="none"
 			class="px-3 py-1 border rounded-md bg-green-400 hover:bg-green-500 active:bg-green-600">Save</button>
 </form>

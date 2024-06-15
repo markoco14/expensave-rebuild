@@ -1,10 +1,11 @@
 """User authentication routes"""
+import json
 from typing import Annotated
 from datetime import timedelta
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, Request, Response, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -215,7 +216,7 @@ def update_purchase(
             name="/website/web-home.html",
             context=context
         )
-    
+
     db_purchase = db.query(DBPurchase).filter(
         DBPurchase.id == purchase_id
     ).first()
@@ -225,10 +226,17 @@ def update_purchase(
     db_purchase.items = items
     db.commit()
     db.refresh(db_purchase)
-    print(price)
-    print(location)
-    print(items)
-    pass
+    response = {
+        'message': 'Purchase updated successfully!'
+    }
+
+    update_success_event = json.dumps({"notifyUser": response['message']})
+
+    return JSONResponse(
+        status_code=200,
+        content=response,
+        headers={"HX-Trigger": update_success_event}
+    )
 
 
 @router.post("/track-purchase")
