@@ -1,0 +1,80 @@
+{% from '/macros/table.html' import heading_row%}
+{% extends "base.html" %}
+{% block title %}
+MySaveMoneyLife - Purchase History
+{% endblock title %}
+{% block content %}
+<section class="px-2 py-4 md:px-0 md:py-16">
+	<div class="grid gap-4 max-w-[500px] mx-auto">
+		<h1 class="text-center text-3xl">Purchase Details</h1>
+		{% for purchase in purchases  %}
+		<div class="detail-card p-4 bg-white rounded-md shadow">
+			{% include "/app/purchases/purchase-detail-row.html" %}
+		</div>
+		{% endfor %}
+	</div>
+	<span id="toast"
+		  class="opacity-0 fixed top-2 left-2 sm:bottom-5 sm:right-5 p-2 rounded-md shadow bg-green-500 text-white w-[300px] transition-opacity duration-100">aa
+	</span>
+</section>
+<script>
+
+	document.addEventListener('notifyUser', (event) => {
+		
+		const toast = document.getElementById('toast');
+		const message = event.detail.value
+		toast.textContent = message;
+		toast.classList.add('htmx-settling');
+		toast.classList.remove('opacity-0');
+		setTimeout(() => {
+			toast.classList.remove('htmx-settling');
+			toast.classList.add('opacity-0');
+			toast.textContent = "";
+		}, 4000);
+	});
+	document.addEventListener('htmx:beforeRequest', (event) => {
+		const target = event.target;
+		if (target.matches('button')) {
+			const container = target.closest('.detail-card');
+			container.classList.add('animate-pulse');
+		}
+
+		if (target.matches('form')) {
+			const container = target.closest('.detail-card');
+			container.classList.add('animate-pulse');
+		}
+	});
+
+	document.addEventListener('htmx:afterRequest', (event) => {
+		const target = event.target;
+		if (target.matches('.detail-card')) {
+			target.classList.remove('animate-pulse');
+		}
+		if (target.matches('button')) {
+			target.closest('.detail-card').classList.remove('animate-pulse');
+		}
+		if (target.matches('form')) {
+			target.closest('.detail-card').classList.remove('animate-pulse');
+		}
+	});
+
+	document.addEventListener('htmx:beforeSwap', (event) => {
+		const target = event.target;
+		if (target.matches('.detail-card')) {
+			const height = target.offsetHeight;
+			target.style.height = height + 'px';
+		}
+	});
+
+	document.addEventListener('htmx:afterSwap', (event) => {
+		const target = event.target;
+		if (target.matches('.detail-card')) {
+			gsap.fromTo(target,
+				{ height: target.offsetHeight + 'px' },
+				{ height: 'auto', duration: 0.4, ease: 'power2.inOut' }
+			);
+		}
+	});
+
+</script>
+{% endblock content %}

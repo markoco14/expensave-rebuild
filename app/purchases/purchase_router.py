@@ -1,11 +1,11 @@
 """User authentication routes"""
-
+import json
 from typing import Annotated
 from datetime import timedelta
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, Request, Response, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -15,6 +15,7 @@ from app.core.database import get_db
 from app.core import links
 from app.purchases import purchase_schemas, purchase_service
 from app.purchases.purchase_model import DBPurchase
+from app.core import time_service as TimeService
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -70,6 +71,171 @@ def get_purchases_page(
     return templates.TemplateResponse(
         name="/app/purchases/purchases.html",
         context=context
+    )
+
+
+@router.get("/purchases/{today_date}")
+def get_purchase_details_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    today_date: str
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+    year = int(today_date.split("-")[0])
+    month = int(today_date.split("-")[1])
+    day = int(today_date.split("-")[2])
+    start_of_day = TimeService.get_utc_start_of_current_day(
+        year=year,
+        month=month,
+        day=day,
+        utc_offset=8
+    )
+    end_of_day = TimeService.get_utc_end_of_current_day(
+        year=year,
+        month=month,
+        day=day,
+        utc_offset=8
+    )
+
+    purchases = db.query(DBPurchase).filter(
+        DBPurchase.user_id == current_user.id,
+        DBPurchase.purchase_time >= start_of_day,
+        DBPurchase.purchase_time <= end_of_day
+    ).order_by(DBPurchase.purchase_time.desc()).all()
+
+    user_data = {
+        "display_name": current_user.display_name,
+        "is_admin": current_user.is_admin,
+    }
+
+    context = {
+        "user": user_data,
+        "request": request,
+        "nav_links": links.authenticated_navlinks,
+        "purchases": purchases
+    }
+    return templates.TemplateResponse(
+        name="/app/purchases/purchase-detail.html",
+        context=context
+    )
+
+
+@router.get("/purchases/details/{purchase_id}")
+def get_purchase_detail_row(
+    request: Request,
+    purchase_id: int,
+    db: Session = Depends(get_db),
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    db_purchase = db.query(DBPurchase).filter(
+        DBPurchase.id == purchase_id
+    ).first()
+
+    context = {
+        "request": request,
+        "purchase": db_purchase,
+    }
+
+    return templates.TemplateResponse(
+        name="/app/purchases/purchase-detail-row.html",
+        context=context
+    )
+
+
+@router.get("/purchases/details/edit/{purchase_id}")
+def get_edit_purchase_form(
+    request: Request,
+    purchase_id: int,
+    db: Session = Depends(get_db),
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    db_purchase = db.query(DBPurchase).filter(
+        DBPurchase.id == purchase_id
+    ).first()
+
+    context = {
+        "request": request,
+        "purchase": db_purchase,
+    }
+
+    return templates.TemplateResponse(
+        name="/app/purchases/edit-purchase-form.html",
+        context=context
+    )
+
+
+@router.put("/purchases/details/edit/{purchase_id}")
+def update_purchase(
+    request: Request,
+    purchase_id: int,
+    price: Annotated[float, Form()],
+    location: Annotated[str, Form()],
+    items: Annotated[str, Form()],
+    db: Session = Depends(get_db),
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    db_purchase = db.query(DBPurchase).filter(
+        DBPurchase.id == purchase_id
+    ).first()
+
+    db_purchase.price = price
+    db_purchase.location = location
+    db_purchase.items = items
+    db.commit()
+    db.refresh(db_purchase)
+    response = {
+        'message': 'Purchase updated successfully!'
+    }
+
+    update_success_event = json.dumps({"notifyUser": response['message']})
+
+    return JSONResponse(
+        status_code=200,
+        content=response,
+        headers={"HX-Trigger": update_success_event}
     )
 
 

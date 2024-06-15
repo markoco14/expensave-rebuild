@@ -1,4 +1,6 @@
 """ Main application file """
+from datetime import datetime
+
 from fastapi import Depends, FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -30,8 +32,9 @@ class SleepMiddleware:
 
     async def __call__(self, scope, receive, send):
         if os.getenv("ENVIRONMENT") == "dev":
-            print("development environment detecting, sleeping for 3 seconds")
-            time.sleep(0)  # Delay for 3000ms (3 seconds)
+            SLEEP_TIME = 1
+            print(f"development environment detecting, sleeping for {SLEEP_TIME} seconds")
+            time.sleep(SLEEP_TIME)  # Delay for 3000ms (3 seconds)
         await self.app(scope, receive, send)
 
 
@@ -65,9 +68,13 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
     }
+
+    today_date = datetime.now()
+
     context = {
         "user": user_data,
         "request": request,
+        "today_date": today_date,
         "currency": currency,
         "nav_links": links.authenticated_navlinks,
         "purchases": purchases,
