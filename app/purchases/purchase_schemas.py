@@ -12,3 +12,4 @@ class PurchaseCreate(BaseModel):
 	price: Decimal
 	currency: str
 	location: str
+	type: str

@@ -1,12 +1,14 @@
 """
 DB model for purchases
 """
-
+import enum
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, DateTime, Text, DECIMAL
+from sqlalchemy import Column, String, Integer, DateTime, Text, DECIMAL, Enum
 from app.core.database import Base
 
-
+class PurchaseType(enum.Enum):
+    CASH = 'cash'
+    CARD = 'card'
 
 class DBPurchase(Base):
     """
@@ -31,5 +33,7 @@ class DBPurchase(Base):
     price = Column(DECIMAL(precision=10, scale=2))
     currency = Column(String(256))
     location = Column(String(256))
+    
     purchase_time = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    type = Column(Enum(PurchaseType), nullable=True)
     
