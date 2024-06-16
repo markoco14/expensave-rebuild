@@ -246,6 +246,7 @@ def store_purchase(
     price: Annotated[Decimal, Form()],
     currency: Annotated[str, Form()],
     location: Annotated[str, Form()],
+    type: Annotated[str, Form()],
     db: Session = Depends(get_db),
 ):
     current_user = auth_service.get_current_user(
@@ -268,7 +269,8 @@ def store_purchase(
         items=items,
         price=price,
         currency=currency,
-        location=location
+        location=location,
+        type=type
     )
 
     db_purchase = DBPurchase(**new_purchase.model_dump())
