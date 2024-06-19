@@ -13,6 +13,7 @@ from app.core import links
 from app.core import time_service
 from app.purchases import purchase_router, purchase_service
 from app.admin import admin_router
+from app.user import user_router
 import os
 import time
 
@@ -20,6 +21,7 @@ app = FastAPI()
 app.include_router(auth_router.router)
 app.include_router(purchase_router.router)
 app.include_router(admin_router.router)
+app.include_router(user_router.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
