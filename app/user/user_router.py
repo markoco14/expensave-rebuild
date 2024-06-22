@@ -39,13 +39,15 @@ def get_user_profile(
         FROM expense_user_wallet
         WHERE user_id = :user_id
     """)
+
     wallet_data = db.execute(
         wallet_query, {"user_id": current_user.id}).fetchone()
-    print(wallet_data)
 
     context = {
         "request": request,
+        "user": current_user,
     }
+
     if wallet_data:
         digital_balance = wallet_data.digital_balance
         cash_balance = wallet_data.cash_balance
