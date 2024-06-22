@@ -133,6 +133,7 @@ def get_totals_page(
         FROM expense_purchases 
         WHERE user_id = :user_id
         GROUP BY DATE(purchase_time)
+        ORDER BY purchase_date DESC
         """)
     query_results = db.execute(query, {"user_id": current_user.id})
     results_dict = []
