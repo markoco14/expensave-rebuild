@@ -14,7 +14,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.purchases import purchase_schemas, purchase_service
-from app.purchases.purchase_model import DBPurchase
+from app.purchases.purchase_model import Transaction
 from app.core import time_service as TimeService
 
 router = APIRouter()
@@ -38,9 +38,9 @@ def get_purchases_page(
             context=context
         )
 
-    purchases = db.query(DBPurchase).filter(
-        DBPurchase.user_id == current_user.id,
-    ).order_by(DBPurchase.purchase_time.desc()).all()
+    purchases = db.query(Transaction).filter(
+        Transaction.user_id == current_user.id,
+    ).order_by(Transaction.purchase_time.desc()).all()
 
     for purchase in purchases:
         purchase.date = (purchase.purchase_time +
@@ -107,11 +107,11 @@ def get_purchase_details_page(
         utc_offset=8
     )
 
-    purchases = db.query(DBPurchase).filter(
-        DBPurchase.user_id == current_user.id,
-        DBPurchase.purchase_time >= start_of_day,
-        DBPurchase.purchase_time <= end_of_day
-    ).order_by(DBPurchase.purchase_time.desc()).all()
+    purchases = db.query(Transaction).filter(
+        Transaction.user_id == current_user.id,
+        Transaction.purchase_time >= start_of_day,
+        Transaction.purchase_time <= end_of_day
+    ).order_by(Transaction.purchase_time.desc()).all()
 
     user_data = {
         "display_name": current_user.display_name,
@@ -148,8 +148,8 @@ def get_purchase_detail_row(
             context=context
         )
 
-    db_purchase = db.query(DBPurchase).filter(
-        DBPurchase.id == purchase_id
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
     ).first()
 
     context = {
@@ -181,8 +181,8 @@ def get_edit_purchase_form(
             context=context
         )
 
-    db_purchase = db.query(DBPurchase).filter(
-        DBPurchase.id == purchase_id
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
     ).first()
 
     context = {
@@ -217,8 +217,8 @@ def update_purchase(
             context=context
         )
 
-    db_purchase = db.query(DBPurchase).filter(
-        DBPurchase.id == purchase_id
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
     ).first()
 
     db_purchase.price = price
@@ -273,7 +273,7 @@ def store_purchase(
         type=type
     )
 
-    db_purchase = DBPurchase(**new_purchase.model_dump())
+    db_purchase = Transaction(**new_purchase.model_dump())
     db.add(db_purchase)
     db.commit()
     db.refresh(db_purchase)
@@ -329,8 +329,8 @@ def delete_purchase(
         )
 
     try:
-        db.query(DBPurchase).filter(
-            DBPurchase.id == purchase_id
+        db.query(Transaction).filter(
+            Transaction.id == purchase_id
         ).delete()
         db.commit()
     except IntegrityError:
