@@ -1,5 +1,4 @@
 """ Main application file """
-from datetime import datetime
 import os
 import time
 
@@ -9,13 +8,11 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 
-from app.auth import auth_service, auth_router
+from app.auth import auth_router
 from app.core.database import get_db
-from app.core import links
-from app.core import time_service
-from app.purchases import purchase_service
+
 from app.admin import admin_router
-from app.routers import homepage_router, purchase_router, user_router
+from app.routers import purchase_router, user_router, web_homepage_router, app_homepage_router
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -25,7 +22,8 @@ app.include_router(auth_router.router)
 app.include_router(purchase_router.router)
 app.include_router(admin_router.router)
 app.include_router(user_router.router)
-app.include_router(homepage_router.router)
+app.include_router(web_homepage_router.router)
+app.include_router(app_homepage_router.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
