@@ -7,7 +7,8 @@ from sqlalchemy import Column, String, Integer, DateTime, Text, DECIMAL, Enum
 from app.core.database import Base
 
 
-class PurchaseType(enum.Enum):
+
+class PaymentMethod(enum.Enum):
     CASH = 'cash'
     CARD = 'card'
 
@@ -15,11 +16,6 @@ class PurchaseType(enum.Enum):
 # class TransactionType(enum.Enum):
 #     PURCHASE = 'purchase'
 #     TOPUP = 'topup'
-
-
-# class PaymentMethod(enum.Enum):
-#     CASH = 'cash'
-#     CARD = 'card'
 
 
 class Transaction(Base):
@@ -32,7 +28,7 @@ class Transaction(Base):
     location takes a string to store the location of the purchase
     purchase time allows the user to change the time used for sorting. Users can enter data later in the day, and change the time later to reflect the actual time of purchase rather than the time of db creation
     """
-    __tablename__ = 'expense_purchases'
+    __tablename__ = 'expense_transactions'
 
     id = Column(Integer, primary_key=True, index=True)
     created_at = Column(DateTime(timezone=True),
@@ -49,6 +45,7 @@ class Transaction(Base):
     purchase_time = Column(DateTime(timezone=True),
                            nullable=False, default=datetime.utcnow)
     
-    type = Column(Enum(PurchaseType), nullable=True)
+    payment_method = Column(Enum(PaymentMethod), nullable=True)
+
 
     
