@@ -14,7 +14,7 @@ from sqlalchemy.exc import IntegrityError
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-from app.purchases.purchase_model import Transaction
+from app.purchases.transaction_model import Transaction
 from app.core import time_service as TimeService
 
 router = APIRouter()

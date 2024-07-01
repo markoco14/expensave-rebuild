@@ -7,15 +7,38 @@ from sqlalchemy import Column, String, Integer, DateTime, Text, DECIMAL, Enum
 from app.core.database import Base
 
 
-
 class PaymentMethod(enum.Enum):
     CASH = 'cash'
     CARD = 'card'
 
 
 # class TransactionType(enum.Enum):
+#     """
+#     Enumeration to hold info about transaction types availabel in the app
+#     Purchase represents spending money and can either be cash or card.
+#     Topup represents adding money to the digital balance
+#     Withdraw represents removing money from the digital balance
+#     Withdraw also represents adding money to the cash balance
+#     """
 #     PURCHASE = 'purchase'
 #     TOPUP = 'topup'
+#     WITHDRAW = "withdraw"
+
+
+# I buy something. it is a purchase
+# it has a payment method
+# cash or card
+
+
+# I top up my account. it is a topup
+# it has no payment method
+# just goes straight to my 'spending account'
+# it increases my digital balance and decreases my cash balance
+
+
+# I withdraw money from my account. it is a withdrawal
+# it has no payment method
+# it decreases my digital balance and increases my cash balance
 
 
 class Transaction(Base):
@@ -44,8 +67,7 @@ class Transaction(Base):
 
     purchase_time = Column(DateTime(timezone=True),
                            nullable=False, default=datetime.utcnow)
-    
-    payment_method = Column(Enum(PaymentMethod), nullable=True)
 
+    payment_method = Column(Enum(PaymentMethod), nullable=True)
 
     

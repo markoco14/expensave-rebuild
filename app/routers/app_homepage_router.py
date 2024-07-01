@@ -14,7 +14,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.purchases import purchase_schemas, purchase_service
-from app.purchases.purchase_model import Transaction
+from app.purchases.transaction_model import Transaction
 
 
 router = APIRouter()

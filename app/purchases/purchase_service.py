@@ -2,7 +2,7 @@ from typing import List
 from decimal import Decimal
 
 from sqlalchemy.orm import Session
-from app.purchases.purchase_model import Transaction
+from app.purchases.transaction_model import Transaction
 from app.core import time_service
 
 def calculate_day_total_spent(purchases: List[Transaction]) -> Decimal:
