@@ -38,11 +38,12 @@ def get_totals_page(
             DATE(purchase_time) as purchase_date,
             COUNT(*) as number_of_purchases,
             GROUP_CONCAT(items) as items_list
-        FROM expense_purchases 
+        FROM expense_transactions 
         WHERE user_id = :user_id
         GROUP BY DATE(purchase_time)
         ORDER BY purchase_date DESC
         """)
+    
     query_results = db.execute(query, {"user_id": current_user.id})
     results_dict = []
     grand_total = 0

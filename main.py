@@ -12,7 +12,7 @@ from app.auth import auth_router
 from app.core.database import get_db
 
 from app.admin import admin_router
-from app.routers import profile_router, purchase_router, web_homepage_router, app_homepage_router
+from app.routers import profile_router, purchase_router, web_homepage_router, app_homepage_router, totals_router
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -24,6 +24,7 @@ app.include_router(admin_router.router)
 app.include_router(profile_router.router)
 app.include_router(web_homepage_router.router)
 app.include_router(app_homepage_router.router)
+app.include_router(totals_router.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
