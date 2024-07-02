@@ -5,12 +5,11 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import text
 
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-
+from app.purchases import purchase_service
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -34,10 +33,15 @@ def get_user_profile(
             context=context
         )
 
+    lifetime_spent = purchase_service.get_user_lifetime_spent(
+        db=db, current_user_id=current_user.id
+    )
+
 
     context = {
         "request": request,
         "user": current_user,
+        "lifetime_spent": lifetime_spent
     }
 
     return templates.TemplateResponse(

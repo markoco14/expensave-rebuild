@@ -11,24 +11,38 @@ MySaveMoneyLife - User Profile
 			<p class="relative border rounded-md p-4 col-span-2 md:col-span-1 grid">
 				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">Total
 				</span>
-				<span class="text-center p-4 md:p-8 text-5xl">
-					${{user.digital_balance + user.cash_balance}}
+				<span class="text-center p-4 md:p-8 text-5xl overflow-x-hidden">
+					${{user.digital_balance + user.cash_balance - lifetime_spent}}
 				</span>
 			</p>
 			<p class="relative flex-1 border rounded-md p-4 col-span-1 grid">
 				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">
 					Card
 				</span>
-				<span class="text-center p-4 md:p-8 text-5xl">
-					${{user.digital_balance}}
-				</span>
+				{% if user.digital_balance - lifetime_spent < 0 %}
+				<span class="text-center p-4 md:p-8 text-5xl text-red-500 overflow-x-hidden">
+					{% else %}
+					<span class="text-center p-4 md:p-8 text-5xl text-green-500 overflow-x-hidden">
+						{% endif %}
+						${{user.digital_balance - lifetime_spent}}
+					</span>
 			</p>
 			<p class="relative flex-1 border rounded-md p-4 col-span-1 grid">
 				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">
 					Cash
 				</span>
-				<span class="text-center p-4 md:p-8 text-5xl">
+				<span class="text-center p-4 md:p-8 text-5xl overflow-x-hidden">
 					${{user.cash_balance}}
+				</span>
+			</p>
+		</div>
+		<div class="p-4 bg-white rounded-md grid gap-8 gap-x-4 md:gap-8 grid-cols-2 md:grid-cols-3">
+			<h2 class="text-3xl text-gray-500 col-span-2 md:col-span-3 ">Frivolous Spending</h2>
+			<p class="relative border rounded-md p-4 col-span-2 md:col-span-1 grid">
+				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">Total
+				</span>
+				<span class="text-center p-4 md:p-8 text-5xl overflow-x-hidden">
+					${{lifetime_spent}}
 				</span>
 			</p>
 		</div>
