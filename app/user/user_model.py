@@ -3,7 +3,7 @@ DB model for users
 """
 
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, DECIMAL
 from app.core.database import Base
 
 
@@ -30,5 +30,5 @@ class DBUser(Base):
     updated_at = Column(DateTime(timezone=True), nullable=True,
                         default=None, onupdate=datetime.utcnow)
     
-    digital_balance = Column(Float, default=0.00)
-    cash_balance = Column(Float, default=0.00)
+    digital_balance = Column(DECIMAL(precision=10, scale=2))
+    cash_balance = Column(DECIMAL(precision=10, scale=2))
