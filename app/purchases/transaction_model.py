@@ -12,17 +12,17 @@ class PaymentMethod(enum.Enum):
     CARD = 'card'
 
 
-# class TransactionType(enum.Enum):
-#     """
-#     Enumeration to hold info about transaction types availabel in the app
-#     Purchase represents spending money and can either be cash or card.
-#     Topup represents adding money to the digital balance
-#     Withdraw represents removing money from the digital balance
-#     Withdraw also represents adding money to the cash balance
-#     """
-#     PURCHASE = 'purchase'
-#     TOPUP = 'topup'
-#     WITHDRAW = "withdraw"
+class TransactionType(enum.Enum):
+    """
+    Enumeration to hold info about transaction types availabel in the app
+    Purchase represents spending money and can either be cash or card.
+    Topup represents adding money to the digital balance
+    Withdraw represents removing money from the digital balance
+    Withdraw also represents adding money to the cash balance
+    """
+    PURCHASE = 'purchase'
+    TOPUP = 'topup'
+    WITHDRAW = "withdraw"
 
 
 # I buy something. it is a purchase
@@ -50,6 +50,7 @@ class Transaction(Base):
     currency takes a string to store the currency
     location takes a string to store the location of the purchase
     purchase time allows the user to change the time used for sorting. Users can enter data later in the day, and change the time later to reflect the actual time of purchase rather than the time of db creation
+    If transaction type is purchase, payment method is required, cash or card
     """
     __tablename__ = 'expense_transactions'
 
@@ -69,5 +70,7 @@ class Transaction(Base):
                            nullable=False, default=datetime.utcnow)
 
     payment_method = Column(Enum(PaymentMethod), nullable=True)
+    
+    transaction_type = Column(Enum(TransactionType), nullable=False, default=TransactionType.PURCHASE)
 
     
