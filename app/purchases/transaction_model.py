@@ -72,5 +72,7 @@ class Transaction(Base):
     payment_method = Column(Enum(PaymentMethod), nullable=True)
     
     transaction_type = Column(Enum(TransactionType), nullable=False, default=TransactionType.PURCHASE)
+    
+    note = Column(Text, nullable=True)
 
     
