@@ -2,7 +2,7 @@
 import json
 from typing import Annotated
 from datetime import timedelta
-from decimal import Decimal
+
 
 from fastapi import APIRouter, Depends, Request, Response, Form
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -10,11 +10,11 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
+
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-from app.purchases import purchase_schemas, purchase_service
-from app.purchases.purchase_model import DBPurchase
+from app.purchases.transaction_model import Transaction
 from app.core import time_service as TimeService
 
 router = APIRouter()
@@ -38,9 +38,9 @@ def get_purchases_page(
             context=context
         )
 
-    purchases = db.query(DBPurchase).filter(
-        DBPurchase.user_id == current_user.id,
-    ).order_by(DBPurchase.purchase_time.desc()).all()
+    purchases = db.query(Transaction).filter(
+        Transaction.user_id == current_user.id,
+    ).order_by(Transaction.purchase_time.desc()).all()
 
     for purchase in purchases:
         purchase.date = (purchase.purchase_time +
@@ -107,11 +107,11 @@ def get_purchase_details_page(
         utc_offset=8
     )
 
-    purchases = db.query(DBPurchase).filter(
-        DBPurchase.user_id == current_user.id,
-        DBPurchase.purchase_time >= start_of_day,
-        DBPurchase.purchase_time <= end_of_day
-    ).order_by(DBPurchase.purchase_time.desc()).all()
+    purchases = db.query(Transaction).filter(
+        Transaction.user_id == current_user.id,
+        Transaction.purchase_time >= start_of_day,
+        Transaction.purchase_time <= end_of_day
+    ).order_by(Transaction.purchase_time.desc()).all()
 
     user_data = {
         "display_name": current_user.display_name,
@@ -148,8 +148,8 @@ def get_purchase_detail_row(
             context=context
         )
 
-    db_purchase = db.query(DBPurchase).filter(
-        DBPurchase.id == purchase_id
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
     ).first()
 
     context = {
@@ -181,8 +181,8 @@ def get_edit_purchase_form(
             context=context
         )
 
-    db_purchase = db.query(DBPurchase).filter(
-        DBPurchase.id == purchase_id
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
     ).first()
 
     context = {
@@ -217,8 +217,8 @@ def update_purchase(
             context=context
         )
 
-    db_purchase = db.query(DBPurchase).filter(
-        DBPurchase.id == purchase_id
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
     ).first()
 
     db_purchase.price = price
@@ -238,75 +238,7 @@ def update_purchase(
         headers={"HX-Trigger": update_success_event}
     )
 
-
-@router.post("/track-purchase")
-def store_purchase(
-    request: Request,
-    items: Annotated[str, Form()],
-    price: Annotated[Decimal, Form()],
-    currency: Annotated[str, Form()],
-    location: Annotated[str, Form()],
-    type: Annotated[str, Form()],
-    db: Session = Depends(get_db),
-):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/web-home.html",
-            context=context
-        )
-
-    purchases = purchase_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
-
-    new_purchase = purchase_schemas.PurchaseCreate(
-        user_id=current_user.id,
-        items=items,
-        price=price,
-        currency=currency,
-        location=location,
-        type=type
-    )
-
-    db_purchase = DBPurchase(**new_purchase.model_dump())
-    db.add(db_purchase)
-    db.commit()
-    db.refresh(db_purchase)
-
-    if len(purchases) == 0:
-        purchases.append(db_purchase)
-        currency = "TWD"
-        context = {
-            "request": request,
-            "currency": currency,
-            "purchases": purchases,
-            "message": "Purchase tracked!"
-        }
-        return templates.TemplateResponse(
-            headers={"HX-Trigger": "calculateTotalSpent"},
-            name="app/home/spending-form-list-response.html",
-            context=context
-        )
-
-    currency = "TWD"
-    context = {
-        "request": request,
-        "currency": currency,
-        "purchase": db_purchase,
-        "message": "Purchase tracked!"
-    }
-    return templates.TemplateResponse(
-        headers={"HX-Trigger": "calculateTotalSpent"},
-        name="app/home/spending-form-row-response.html",
-        context=context
-    )
-
-
+  
 @router.delete("/delete-purchase/{purchase_id}", response_class=HTMLResponse)
 def delete_purchase(
     request: Request,
@@ -329,8 +261,8 @@ def delete_purchase(
         )
 
     try:
-        db.query(DBPurchase).filter(
-            DBPurchase.id == purchase_id
+        db.query(Transaction).filter(
+            Transaction.id == purchase_id
         ).delete()
         db.commit()
     except IntegrityError:
@@ -341,50 +273,3 @@ def delete_purchase(
     response = Response(status_code=200)
     return response
 
-
-@router.get("/calculate-total-spent")
-def calculate_total_sepnt(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/web-home.html",
-            context=context
-        )
-
-    purchases = purchase_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
-
-    totalSpent = purchase_service.calculate_day_total_spent(
-        purchases=purchases)
-
-    return templates.TemplateResponse(
-        name="app/home/total-spent-span.html",
-        context={
-            "totalSpent": totalSpent,
-            "request": request
-        }
-    )
-
-
-@router.post("/validate-items")
-def validate_items(request: Request, items: Annotated[str, Form()] = None):
-    if not items:
-        items = []
-        return templates.TemplateResponse(
-            name="app/home/item-tags.html",
-            context={"items": items}
-        )
-    items.rstrip(" ")
-    items = items.split(", ")
-    return templates.TemplateResponse(
-        name="app/home/item-tags.html",
-        context={"items": items}
-    )

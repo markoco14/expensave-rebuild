@@ -9,7 +9,8 @@ from app.core.config import get_settings
 from app.core.database import Base
 from app.user.user_model import DBUser
 from app.auth.user_session_model import DBUserSession
-from app.purchases.purchase_model import DBPurchase
+from app.purchases.transaction_model import Transaction
+from app.wallet.user_wallet_model import UserWallet
 
 settings = get_settings()
 

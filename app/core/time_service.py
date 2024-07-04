@@ -3,7 +3,7 @@ from typing import List
 from zoneinfo import ZoneInfo
 from datetime import datetime, time, timedelta
 
-from app.purchases.purchase_model import DBPurchase
+from app.purchases.transaction_model import Transaction
 
 # Time/Date related functions
 
@@ -56,9 +56,9 @@ def get_utc_end_of_current_day(
 
 
 def adjust_purchase_dates_for_local_time(
-    purchases: List[DBPurchase],
+    purchases: List[Transaction],
     user_timezone: str
-) -> List[DBPurchase]:
+) -> List[Transaction]:
     """ 
     Adjust purchase times to user's local timezone
 
