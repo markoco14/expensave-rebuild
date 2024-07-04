@@ -34,12 +34,13 @@ def get_user_profile(
             context=context
         )
 
-    lifetime_spent = purchase_service.get_user_lifetime_spent(
+    current_user.lifetime_spending = purchase_service.get_user_lifetime_spent(
         db=db, current_user_id=current_user.id
     )
 
     total_cash_spend = 0
     total_card_spend = 0
+
 
     total_card_topups = 0 
     total_cash_topups = 0
@@ -70,9 +71,6 @@ def get_user_profile(
     context = {
         "request": request,
         "user": current_user,
-        "lifetime_spent": lifetime_spent,
-        "cash_spend": total_cash_spend,
-        "card_spend": total_card_spend,
     }
 
     return templates.TemplateResponse(
