@@ -14,8 +14,9 @@ from sqlalchemy.exc import IntegrityError
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-from app.purchases.transaction_model import Transaction
+from app.purchases.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -40,6 +41,7 @@ def get_purchases_page(
 
     purchases = db.query(Transaction).filter(
         Transaction.user_id == current_user.id,
+        Transaction.transaction_type == TransactionType.PURCHASE
     ).order_by(Transaction.purchase_time.desc()).all()
 
     for purchase in purchases:
