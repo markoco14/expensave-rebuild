@@ -10,6 +10,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.purchases import purchase_service
+from app.purchases.transaction_model import PaymentMethod
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -37,11 +38,25 @@ def get_user_profile(
         db=db, current_user_id=current_user.id
     )
 
+    total_cash_spend = 0
+    total_card_spend = 0
+    user_transactions = purchase_service.get_user_purchases(
+        db=db,
+        current_user_id=current_user.id
+    )
+
+    for transaction in user_transactions:
+        if transaction.payment_method == PaymentMethod.CASH:
+            total_cash_spend += transaction.price
+        if transaction.payment_method == PaymentMethod.CARD:
+            total_card_spend += transaction.price
 
     context = {
         "request": request,
         "user": current_user,
-        "lifetime_spent": lifetime_spent
+        "lifetime_spent": lifetime_spent,
+        "cash_spend": total_cash_spend,
+        "card_spend": total_card_spend
     }
 
     return templates.TemplateResponse(

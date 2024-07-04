@@ -26,6 +26,17 @@ def get_user_today_purchases(current_user_id: int, db: Session):
     return db_purchases
 
 
+def get_user_purchases(
+        current_user_id: int,
+        db: Session
+):
+    db_purchases = db.query(Transaction).filter(
+        Transaction.user_id == current_user_id
+    ).order_by(Transaction.purchase_time.desc()).all()
+
+    return db_purchases
+
+
 def get_user_lifetime_spent(current_user_id: int, db: Session):
     """returns the total amount of money a user has spent
     in the time they've used the app"""
