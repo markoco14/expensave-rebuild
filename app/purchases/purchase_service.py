@@ -6,6 +6,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import Session
 from app.purchases.transaction_model import Transaction
 from app.core import time_service
+from app.purchases.transaction_model import TransactionType
 
 
 def calculate_day_total_spent(purchases: List[Transaction]) -> Decimal:
@@ -20,7 +21,8 @@ def get_user_today_purchases(current_user_id: int, db: Session):
     db_purchases = db.query(Transaction).filter(
         Transaction.user_id == current_user_id,
         Transaction.purchase_time >= start_of_day,
-        Transaction.purchase_time <= end_of_day
+        Transaction.purchase_time <= end_of_day,
+        Transaction.transaction_type == TransactionType.PURCHASE,
     ).order_by(Transaction.purchase_time.desc()).all()
 
     return db_purchases

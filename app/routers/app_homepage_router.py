@@ -4,7 +4,7 @@ from typing import Annotated
 
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, Request,Form
+from fastapi import APIRouter, Depends, Request, Form
 
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -14,7 +14,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.purchases import purchase_schemas, purchase_service
-from app.purchases.transaction_model import Transaction
+from app.purchases.transaction_model import Transaction, TransactionType
 
 
 router = APIRouter()
@@ -28,7 +28,7 @@ def store_purchase(
     price: Annotated[Decimal, Form()],
     currency: Annotated[str, Form()],
     location: Annotated[str, Form()],
-    type: Annotated[str, Form()],
+    payment_method: Annotated[str, Form()],
     db: Session = Depends(get_db),
 ):
     current_user = auth_service.get_current_user(
@@ -52,8 +52,8 @@ def store_purchase(
         price=price,
         currency=currency,
         location=location,
-        type=type
-    )
+        transaction_type=TransactionType.PURCHASE,
+        payment_method=payment_method)
 
     db_purchase = Transaction(**new_purchase.model_dump())
     db.add(db_purchase)
@@ -87,7 +87,6 @@ def store_purchase(
         name="app/home/spending-form-row-response.html",
         context=context
     )
-
 
 
 @router.get("/calculate-total-spent")
