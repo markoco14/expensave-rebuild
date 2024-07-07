@@ -41,16 +41,24 @@ MySaveMoneyLife - User Account
 			</p>
 		</div>
 		<div class="grid gap-8 md:grid-cols-2">
-			<form class="bg-white p-4 rounded-md">
+			{% block deposit_form %}
+			<form class="bg-white p-4 rounded-md"
+				  hx-post="/deposit-to-card"
+				  hx-swap="outerHTML">
 				<h2 class="text-gray-700 text-xl mb-4">Add to card balance</h2>
 				<p class="mb-2">Add funds to your account here. These funds will be added to your Card Balance and will
 					be used in
 					all card purchases.</p>
-				<label class="sr-only">Deposit</label>
+				<label class="sr-only"
+					   for="deposit_amount">Deposit</label>
 				<input type="number"
-					   class="border border-black rounded-md p-2 mb-2" />
+					   class="border border-black rounded-md p-2 mb-2"
+					   id="deposit_amount"
+					   name="deposit_amount"
+					   required />
 				<button class="border border-black rounded-md p-2">Deposit</button>
 			</form>
+			{% endblock deposit_form %}
 			<form class="bg-white p-4 rounded-md">
 				<h2 class="text-gray-700 text-xl mb-4">Add to cash balance</h2>
 				<p class="mb-2">Move funds from your Card Balance to your Cash Balance here.</p>

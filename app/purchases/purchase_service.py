@@ -52,3 +52,23 @@ def get_user_lifetime_spent(current_user_id: int, db: Session):
                         "user_id": current_user_id}).fetchone().total_spent
 
     return result
+
+
+def create_topup_transaction(
+    db: Session,
+    current_user_id: int,
+    amount: Decimal,
+):
+    """Create a topup transaction"""
+    db_topup = Transaction(
+        user_id=current_user_id,
+        price=amount,
+        currency="TWD",
+        transaction_type=TransactionType.TOPUP,
+        note="Depositing funds to card."
+    )
+
+    db.add(db_topup)
+    db.commit()
+    db.refresh(db_topup)
+    return db_topup
