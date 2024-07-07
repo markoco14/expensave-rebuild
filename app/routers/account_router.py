@@ -10,7 +10,7 @@ from jinja2_fragments.fastapi import Jinja2Blocks
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-from app.purchases import purchase_service
+from app.services import transaction_service
 from app.purchases.transaction_model import PaymentMethod, TransactionType
 
 router = APIRouter()
@@ -36,7 +36,7 @@ def get_user_account(
             context=context
         )
 
-    current_user.lifetime_spending = purchase_service.get_user_lifetime_spent(
+    current_user.lifetime_spending = transaction_service.get_user_lifetime_spent(
         db=db, current_user_id=current_user.id
     )
 
@@ -46,7 +46,7 @@ def get_user_account(
     total_card_topups = 0
     total_cash_topups = 0
 
-    user_transactions = purchase_service.get_user_purchases(
+    user_transactions = transaction_service.get_user_purchases(
         db=db,
         current_user_id=current_user.id
     )
@@ -99,7 +99,7 @@ def deposit_to_card(
             context=context
         )
 
-    db_topup_transaction = purchase_service.create_topup_transaction(
+    db_topup_transaction = transaction_service.create_topup_transaction(
         db=db,
         current_user_id=current_user.id,
         amount=deposit_amount,
@@ -135,7 +135,7 @@ def withdraw_to_cash(
             context=context
         )
 
-    db_withdraw_transaction = purchase_service.create_withdraw_transaction(
+    db_withdraw_transaction = transaction_service.create_withdraw_transaction(
         db=db,
         current_user_id=current_user.id,
         amount=withdraw_amount,

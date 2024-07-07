@@ -10,7 +10,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.core import time_service
-from app.purchases import purchase_service
+from app.services import transaction_service
 
 
 router = APIRouter()
@@ -29,14 +29,14 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
             context=context
         )
 
-    purchases = purchase_service.get_user_today_purchases(
+    purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
 
     user_timezone = "Asia/Taipei"  # replace with user's timezone one day
     purchases = time_service.adjust_purchase_dates_for_local_time(
         purchases=purchases, user_timezone=user_timezone)
 
-    totalSpent = purchase_service.calculate_day_total_spent(
+    totalSpent = transaction_service.calculate_day_total_spent(
         purchases=purchases)
 
     currency = "TWD"
