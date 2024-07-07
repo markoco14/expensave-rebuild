@@ -72,3 +72,23 @@ def create_topup_transaction(
     db.commit()
     db.refresh(db_topup)
     return db_topup
+
+
+def create_withdraw_transaction(
+    db: Session,
+    current_user_id: int,
+    amount: Decimal,
+):
+    """Create a topup transaction"""
+    db_withdraw = Transaction(
+        user_id=current_user_id,
+        price=amount,
+        currency="TWD",
+        transaction_type=TransactionType.WITHDRAW,
+        note="Withdrawing funds from card for cash spending."
+    )
+
+    db.add(db_withdraw)
+    db.commit()
+    db.refresh(db_withdraw)
+    return db_withdraw

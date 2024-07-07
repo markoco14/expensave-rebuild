@@ -114,3 +114,39 @@ def deposit_to_card(
         context=context,
         block_name="deposit_form"
     )
+
+@router.post("/withdraw-to-cash", response_class=HTMLResponse)
+def withdraw_to_cash(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    withdraw_amount: int = Form(...),
+):
+    """ Allow user to deposit money to their card. """
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    db_withdraw_transaction = purchase_service.create_withdraw_transaction(
+        db=db,
+        current_user_id=current_user.id,
+        amount=withdraw_amount,
+    )
+
+    context = {
+        "request": request,
+    }
+
+    return block_templates.TemplateResponse(
+        name="app/account/account-page.html",
+        context=context,
+        block_name="withdraw_form"
+    )
