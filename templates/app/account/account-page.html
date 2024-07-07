@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 {% block title %}
-MySaveMoneyLife - User Profile
+MySaveMoneyLife - User Account
 {% endblock title %}
 {% block content %}
 <section class="px-2 py-4 md:px-0 md:py-16">
 	<div class="grid gap-8 max-w-[1000px] mx-auto">
 		<h1 class="text-center text-3xl">Your Account</h1>
-		<div class="p-4 bg-white rounded-md grid gap-8 gap-x-4 md:gap-8 grid-cols-2 md:grid-cols-3">
+		{% block account_data %}
+		<div hx-get="/account"
+			 hx-swap="outerHTML"
+			 hx-trigger="updateAccountData from:body"
+			 class="p-4 bg-white rounded-md grid gap-8 gap-x-4 md:gap-8 grid-cols-2 md:grid-cols-3">
 			<h2 class="text-3xl text-gray-500 col-span-2 md:col-span-3 ">Available Funds</h2>
 			<p class="relative border rounded-md p-4 col-span-2 md:col-span-1 grid">
 				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">Total
@@ -40,29 +44,42 @@ MySaveMoneyLife - User Profile
 					</span>
 			</p>
 		</div>
-		<div class="p-4 bg-white rounded-md grid gap-8 gap-x-4 md:gap-8 grid-cols-2 md:grid-cols-3">
-			<h2 class="text-3xl text-gray-500 col-span-2 md:col-span-3 ">Frivolous Spending</h2>
-			<p class="relative border rounded-md p-4 col-span-2 md:col-span-1 grid">
-				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">Total
-				</span>
-				<span class="text-center p-4 md:p-8 text-5xl overflow-x-hidden">
-					${{user.lifetime_spending}}
-				</span>
-			</p>
-			<p class="relative border rounded-md p-4 col-span-2 md:col-span-1 grid">
-				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">Card
-				</span>
-				<span class="text-center p-4 md:p-8 text-5xl overflow-x-hidden">
-					${{user.total_card_spend}}
-				</span>
-			</p>
-			<p class="relative border rounded-md p-4 col-span-2 md:col-span-1 grid">
-				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">Cash
-				</span>
-				<span class="text-center p-4 md:p-8 text-5xl overflow-x-hidden">
-					${{user.total_cash_spend}}
-				</span>
-			</p>
+		{% endblock account_data %}
+		<div class="grid gap-8 md:grid-cols-2">
+			{% block deposit_form %}
+			<form class="bg-white p-4 rounded-md"
+				  hx-post="/deposit-to-card"
+				  hx-swap="outerHTML">
+				<h2 class="text-gray-700 text-xl mb-4">Add to card balance</h2>
+				<p class="mb-2">Add funds to your account here. These funds will be added to your Card Balance and will
+					be used in
+					all card purchases.</p>
+				<label class="sr-only"
+					   for="deposit_amount">Deposit</label>
+				<input type="number"
+					   class="border border-black rounded-md p-2 mb-2"
+					   id="deposit_amount"
+					   name="deposit_amount"
+					   required />
+				<button class="border border-black rounded-md p-2">Deposit</button>
+			</form>
+			{% endblock deposit_form %}
+			{% block withdraw_form %}
+			<form class="bg-white p-4 rounded-md"
+				  hx-post="/withdraw-to-cash"
+				  hx-swap="outerHTML">
+				<h2 class="text-gray-700 text-xl mb-4">Add to cash balance</h2>
+				<p class="mb-2">Move funds from your Card Balance to your Cash Balance here.</p>
+				<label class="sr-only"
+					   for="withdraw_amount">Withdraw</label>
+				<input type="number"
+					   class="border border-black rounded-md p-2 mb-2"
+					   id="withdraw_amount"
+					   name="withdraw_amount"
+					   required />
+				<button class="border border-black rounded-md p-2">Withdraw</button>
+			</form>
+			{% endblock withdraw_form %}
 		</div>
 	</div>
 </section>

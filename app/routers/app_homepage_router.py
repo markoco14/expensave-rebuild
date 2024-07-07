@@ -13,8 +13,9 @@ from sqlalchemy.orm import Session
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-from app.purchases import purchase_schemas, purchase_service
+from app.purchases import purchase_schemas
 from app.purchases.transaction_model import Transaction, TransactionType
+from app.services import transaction_service
 
 
 router = APIRouter()
@@ -43,7 +44,7 @@ def store_purchase(
             context=context
         )
 
-    purchases = purchase_service.get_user_today_purchases(
+    purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
 
     new_purchase = purchase_schemas.PurchaseCreate(
@@ -106,10 +107,10 @@ def calculate_total_sepnt(
             context=context
         )
 
-    purchases = purchase_service.get_user_today_purchases(
+    purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
 
-    totalSpent = purchase_service.calculate_day_total_spent(
+    totalSpent = transaction_service.calculate_day_total_spent(
         purchases=purchases)
 
     return templates.TemplateResponse(

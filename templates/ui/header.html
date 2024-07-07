@@ -44,9 +44,9 @@
 		</button>
 		<nav x-show="mobilenavOpen"
 			 x-cloak
-			 class="md:!block h-screen w-screen md:h-auto md:w-auto absolute top-0 left-0 md:relative">
+			 class="md:!block h-screen w-screen md:h-auto md:w-auto absolute top-0 left-0 md:relative z-10">
 			<ul
-				class="flex flex-col items-center justify-center h-full w-full bg-white/90 md:bg-transparent md:flex-row gap-2">
+				class="flex flex-col items-center justify-center h-full w-full bg-green-700/90 md:bg-transparent md:flex-row gap-2 text-white md:text-black text-5xl md:text-base">
 				<li>
 					<a href="/">Home</a>
 				</li>
@@ -58,7 +58,7 @@
 					<a href="/totals">Totals</a>
 				</li>
 				<li>
-					<a href="/profile">Profile</a>
+					<a href="/account">Account</a>
 				</li>
 				<li class="block md:hidden">
 					<button hx-get="/signout"
@@ -86,11 +86,11 @@
 								<a href="/admin"
 								   class="text-right">Admin</a>
 							</li>
-							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
-								<a href="/profile"
-								   class="text-right">Profile</a>
-							</li>
 							{% endif %}
+							{# <li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
+								<a href="/account"
+								   class="text-right">Account</a>
+							</li> #}
 							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
 								<button hx-get="/signout"
 										class="text-right">Sign Out</button>
