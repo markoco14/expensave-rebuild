@@ -58,7 +58,7 @@
 					<a href="/totals">Totals</a>
 				</li>
 				<li>
-					<a href="/profile">Profile</a>
+					<a href="/account">Account</a>
 				</li>
 				<li class="block md:hidden">
 					<button hx-get="/signout"
@@ -86,11 +86,11 @@
 								<a href="/admin"
 								   class="text-right">Admin</a>
 							</li>
-							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
-								<a href="/profile"
-								   class="text-right">Profile</a>
-							</li>
 							{% endif %}
+							{# <li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
+								<a href="/account"
+								   class="text-right">Account</a>
+							</li> #}
 							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
 								<button hx-get="/signout"
 										class="text-right">Sign Out</button>

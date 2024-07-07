@@ -16,8 +16,8 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/profile", response_class=HTMLResponse)
-def get_user_profile(
+@router.get("/account", response_class=HTMLResponse)
+def get_user_account(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
 ):
@@ -74,6 +74,6 @@ def get_user_profile(
     }
 
     return templates.TemplateResponse(
-        name="/app/profile/profile-page.html",
+        name="/app/account/account-page.html",
         context=context
     )
