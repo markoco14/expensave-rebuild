@@ -6,7 +6,11 @@ MySaveMoneyLife - User Account
 <section class="px-2 py-4 md:px-0 md:py-16">
 	<div class="grid gap-8 max-w-[1000px] mx-auto">
 		<h1 class="text-center text-3xl">Your Account</h1>
-		<div class="p-4 bg-white rounded-md grid gap-8 gap-x-4 md:gap-8 grid-cols-2 md:grid-cols-3">
+		{% block account_data %}
+		<div hx-get="/account"
+			 hx-swap="outerHTML"
+			 hx-trigger="updateAccountData from:body"
+			 class="p-4 bg-white rounded-md grid gap-8 gap-x-4 md:gap-8 grid-cols-2 md:grid-cols-3">
 			<h2 class="text-3xl text-gray-500 col-span-2 md:col-span-3 ">Available Funds</h2>
 			<p class="relative border rounded-md p-4 col-span-2 md:col-span-1 grid">
 				<span class="absolute -top-5 left-2 bg-white border rounded-md p-2">Total
@@ -40,6 +44,7 @@ MySaveMoneyLife - User Account
 					</span>
 			</p>
 		</div>
+		{% endblock account_data %}
 		<div class="grid gap-8 md:grid-cols-2">
 			{% block deposit_form %}
 			<form class="bg-white p-4 rounded-md"

@@ -73,6 +73,13 @@ def get_user_account(
         "user": current_user,
     }
 
+    if request.headers.get("HX-Request"):
+        return block_templates.TemplateResponse(
+            name="app/account/account-page.html",
+            context=context,
+            block_name="account_data"
+        )
+
     return templates.TemplateResponse(
         name="/app/account/account-page.html",
         context=context
@@ -112,8 +119,10 @@ def deposit_to_card(
     return block_templates.TemplateResponse(
         name="app/account/account-page.html",
         context=context,
-        block_name="deposit_form"
+        block_name="deposit_form",
+        headers={"HX-Trigger": "updateAccountData"}
     )
+
 
 @router.post("/withdraw-to-cash", response_class=HTMLResponse)
 def withdraw_to_cash(
@@ -148,5 +157,6 @@ def withdraw_to_cash(
     return block_templates.TemplateResponse(
         name="app/account/account-page.html",
         context=context,
-        block_name="withdraw_form"
+        block_name="withdraw_form",
+        headers={"HX-Trigger": "updateAccountData"}
     )
