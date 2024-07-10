@@ -1,7 +1,19 @@
 <div hx-swap-oob="afterbegin:#today-purchases">
-  <li class="new-purchase purchase grid grid-cols-2 gap-2 pt-2">
-  <span> {{purchase.items}} </span>
-  <span class="text-right"> ${{purchase.price}} </span>
-</li>
+	<li class="new-purchase purchase detail-card py-4 px-8 bg-white rounded-md shadow">
+		<div>
+			<header class="flex justify-between items-baseline">
+				<p class="text-2xl">${{purchase.price}}</p>
+				<button hx-get="/purchases/details/edit/{{purchase.id}}"
+						hx-target="closest .detail-card"
+						hx-swap="innerHTML settle:1s">Edit</button>
+			</header>
+			<p class="text-sm text-gray-500 mb-2">
+				{{purchase.purchase_time.strftime("%H:%M:%S")}} @
+				{{purchase.location}}
+			</p>
+			<hr class="mb-2 border-gray-500" />
+			<p class="">{{purchase.items}}</p>
+		</div>
+	</li>
 </div>
 {% include 'app/home/track-spending-form.html' %}
