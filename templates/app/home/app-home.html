@@ -10,10 +10,12 @@ Expense Tracker App
 		</h1>
 		{% include 'app/home/track-spending-form.html' %}
 
-		<div class="grid bg-white rounded-md shadow gap-4 p-8">
-			<h2 class="text-3xl text-gray-500">Spending {{today_date.strftime("%B %d, %Y")}}</h2>
-			<a href="/purchases/{{today_date.strftime('%Y-%m-%d')}}"
-			   class="text-gray-700">View Details</a>
+		<div class="grid rounded-md gap-4">
+			<header class="p-8">
+				<h2 class="text-3xl text-gray-500">Spending {{today_date.strftime("%B %d, %Y")}}</h2>
+				<a href="/purchases/{{today_date.strftime('%Y-%m-%d')}}"
+				   class="text-gray-700">View Details</a>
+			</header>
 			{% include "/app/home/total-spent-span.html" %}
 			{% if purchases|length == 0 %}
 			<p id="today-purchases">You haven't logged any purchases!</p>
