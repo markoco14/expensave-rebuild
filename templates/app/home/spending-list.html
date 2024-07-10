@@ -1,76 +1,141 @@
-<ul id="today-purchases" class="grid divide-y gap-4">
-  {% for purchase in purchases %}
-<li class="bg-white p-8 rounded-md">
-	<header class="flex justify-between items-baseline">
-		<p class="text-2xl">${{purchase.price}}</p>
-		<button hx-get="/purchases/details/edit/{{purchase.id}}"
-				hx-target="closest .detail-card"
-				hx-swap="innerHTML settle:1s">Edit</button>
-	</header>
-	<p class="text-sm text-gray-500 mb-2">{{purchase.purchase_time.strftime("%H:%M:%S")}} @ {{purchase.location}}</p>
-	<hr class="mb-2 border-gray-500" />
-	<p class="">{{purchase.items}}</p>
-</li>
-  {# <li class="purchase grid grid-cols-2 gap-2 pt-2">
+<ul id="today-purchases"
+	class="grid divide-y gap-4">
+	{% for purchase in purchases %}
+	<li class="purchase detail-card p-4 bg-white rounded-md shadow">
+		<div>
+			<header class="flex justify-between items-baseline">
+				<p class="text-2xl">${{purchase.price}}</p>
+				<button hx-get="/purchases/details/edit/{{purchase.id}}"
+						hx-target="closest .detail-card"
+						hx-swap="innerHTML settle:1s">Edit</button>
+			</header>
+			<p class="text-sm text-gray-500 mb-2">
+				{{purchase.purchase_time.strftime("%H:%M:%S")}} @
+				{{purchase.location}}
+			</p>
+			<hr class="mb-2 border-gray-500" />
+			<p class="">{{purchase.items}}</p>
+		</div>
+	</li>
+	{# <li class="purchase grid grid-cols-2 gap-2 pt-2">
     <span> {{purchase.items}} </span>
 
     <span class="text-right"> ${{purchase.price}} </span>
   </li> #}
-  {% endfor %}
+	{% endfor %}
 </ul>
+<span id="toast"
+	  class="opacity-0 fixed top-2 left-2 sm:bottom-5 sm:right-5 p-2 rounded-md shadow bg-green-500 text-white w-[300px] transition-opacity duration-100">aa
+</span>
 <script>
-  gsap.registerPlugin(Flip);
-  window.listInitialState = Flip.getState("#today-purchases .purchase");
-  document.body.addEventListener("htmx:beforeSwap", function (event) {
-    let listContainer = document.getElementById("today-purchases");
-    window.startHeight = listContainer.offsetHeight;
-    window.listInitialState = Flip.getState("#today-purchases .purchase");
-  });
+	gsap.registerPlugin(Flip);
+	{# window.listInitialState = Flip.getState("#today-purchases .purchase");
+	document.body.addEventListener("htmx:beforeSwap", function (event) {
+		let listContainer = document.getElementById("today-purchases");
+		window.startHeight = listContainer.offsetHeight;
+		window.listInitialState = Flip.getState("#today-purchases .purchase");
+	});
 
-  document.body.addEventListener("htmx:afterSwap", function (event) {
-    let listContainer = document.getElementById("today-purchases");
-    requestAnimationFrame(() => {
-      const endHeight = listContainer.scrollHeight + "px";
+	document.body.addEventListener("htmx:afterSwap", function (event) {
+		let listContainer = document.getElementById("today-purchases");
+		requestAnimationFrame(() => {
+			const endHeight = listContainer.scrollHeight + "px";
 
-      // Animate from startHeight to endHeight using GSAP
-      gsap.fromTo(
-        listContainer,
-        { height: window.startHeight + "px" },
-        {
-          height: endHeight,
-          duration: 0.25, // Adjust duration as needed
-          ease: "sine.inOut",
-        }
-      );
+			// Animate from startHeight to endHeight using GSAP
+			gsap.fromTo(
+				listContainer,
+				{ height: window.startHeight + "px" },
+				{
+					height: endHeight,
+					duration: 0.25, // Adjust duration as needed
+					ease: "sine.inOut",
+				}
+			);
 
-      // Now, animate the list items to their new positions using Flip
-      Flip.from(window.listInitialState, {
-        duration: 0.25, // Animation duration; adjust as needed for smoothness
-        ease: "sine.inOut",
-        absolute: true, // Use absolute positioning for the animation
-        onComplete: () => (listContainer.style.height = ""), // Cleanup after animation
-      });
+			// Now, animate the list items to their new positions using Flip
+			Flip.from(window.listInitialState, {
+				duration: 0.25, // Animation duration; adjust as needed for smoothness
+				ease: "sine.inOut",
+				absolute: true, // Use absolute positioning for the animation
+				onComplete: () => (listContainer.style.height = ""), // Cleanup after animation
+			});
 
-      // Specifically target the newly added item for a fade-in effect
-      const newPurchase = listContainer.querySelector(".new-purchase");
-      if (newPurchase) {
-        // Reset any styles that might conflict with the fade-in animation
-        gsap.set(newPurchase, { opacity: 0, y:-100, x:0 });
+			// Specifically target the newly added item for a fade-in effect
+			const newPurchase = listContainer.querySelector(".new-purchase");
+			if (newPurchase) {
+				// Reset any styles that might conflict with the fade-in animation
+				gsap.set(newPurchase, { opacity: 0, y: -100, x: 0 });
 
-        // Animate the opacity from 0 to 1 for the fade-in effect
-        gsap.to(newPurchase, {
-          x: 0,
-          y:0,
-          opacity: 1,
-          duration: 0.5, // Match the duration of the Flip animation for consistency
-          ease: "sine.out",
-          clearProps: "opacity", // Clear inline opacity style after animation completes
-          onComplete: () => {
-            // Optionally, remove the 'new-item' class to reset the state
-            newPurchase.classList.remove("new-item");
-          },
-        });
-      }
-    });
-  });
+				// Animate the opacity from 0 to 1 for the fade-in effect
+				gsap.to(newPurchase, {
+					x: 0,
+					y: 0,
+					opacity: 1,
+					duration: 0.5, // Match the duration of the Flip animation for consistency
+					ease: "sine.out",
+					clearProps: "opacity", // Clear inline opacity style after animation completes
+					onComplete: () => {
+						// Optionally, remove the 'new-item' class to reset the state
+						newPurchase.classList.remove("new-item");
+					},
+				});
+			}
+		});
+	}); #}
+
+	document.addEventListener('notifyUser', (event) => {
+		const toast = document.getElementById('toast');
+		const message = event.detail.value
+		toast.textContent = message;
+		toast.classList.add('htmx-settling');
+		toast.classList.remove('opacity-0');
+		setTimeout(() => {
+			toast.classList.remove('htmx-settling');
+			toast.classList.add('opacity-0');
+			toast.textContent = "";
+		}, 4000);
+	});
+	document.addEventListener('htmx:beforeRequest', (event) => {
+		const target = event.target;
+		if (target.matches('button')) {
+			const container = target.closest('.detail-card');
+			container.classList.add('animate-pulse');
+		}
+
+		if (target.matches('form')) {
+			const container = target.closest('.detail-card');
+			container.classList.add('animate-pulse');
+		}
+	});
+
+	document.addEventListener('htmx:afterRequest', (event) => {
+		const target = event.target;
+		if (target.matches('.detail-card')) {
+			target.classList.remove('animate-pulse');
+		}
+		if (target.matches('button')) {
+			target.closest('.detail-card').classList.remove('animate-pulse');
+		}
+		if (target.matches('form')) {
+			target.closest('.detail-card').classList.remove('animate-pulse');
+		}
+	});
+
+	document.addEventListener('htmx:beforeSwap', (event) => {
+		const target = event.target;
+		if (target.matches('.detail-card')) {
+			const height = target.offsetHeight;
+			target.style.height = height + 'px';
+		}
+	});
+
+	document.addEventListener('htmx:afterSwap', (event) => {
+		const target = event.target;
+		if (target.matches('.detail-card')) {
+			gsap.fromTo(target,
+				{ height: target.offsetHeight + 'px' },
+				{ height: 'auto', duration: 0.4, ease: 'power2.inOut' }
+			);
+		}
+	});
 </script>
