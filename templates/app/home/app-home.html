@@ -11,12 +11,7 @@ Expense Tracker App
 				<h2 class="text-2xl text-gray-500">{{today_date.strftime("%B %d, %Y")}}</h2>
 				{% include "/app/home/total-spent-span.html" %}
 			</header>
-			{% if purchases|length == 0 %}
-			<p id="today-purchases"
-			   class="py-4 px-8 bg-white rounded-md shadow">You haven't bought anything today!</p>
-			{% else %}
 			{% include 'app/home/spending-list.html'%}
-			{% endif %}
 		</div>
 	</div>
 </section>
