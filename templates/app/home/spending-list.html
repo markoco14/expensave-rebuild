@@ -4,9 +4,6 @@
 	{% include "/app/home/spending-list-item.html" %}
 	{% endfor %}
 </ul>
-<span id="toast"
-	  class="opacity-0 fixed top-2 left-2 sm:bottom-5 sm:right-5 p-2 rounded-md shadow bg-green-500 text-white w-[300px] transition-opacity duration-100">
-</span>
 <script>
 	gsap.registerPlugin(Flip);
 	window.listInitialState = Flip.getState("#today-purchases .purchase");
@@ -62,22 +59,6 @@
 			}
 		});
 	});
-
-	document.addEventListener('notifyUser', (event) => {
-		const toast = document.getElementById('toast');
-		const message = event.detail.value
-		if (toast && message) {
-
-			toast.textContent = message;
-			toast.classList.add('htmx-settling');
-			toast.classList.remove('opacity-0');
-			setTimeout(() => {
-				toast.classList.remove('htmx-settling');
-				toast.classList.add('opacity-0');
-				toast.textContent = "";
-			}, 4000);
-		}
-	});
 	document.addEventListener('htmx:beforeRequest', (event) => {
 		const target = event.target;
 		if (target.matches('button')) {
@@ -89,7 +70,6 @@
 
 		if (target.matches('form')) {
 			const container = target.closest('.detail-card');
-			{# because there is a spending form and an edit form our code can mix up which form is the event source. needs a bettter solution. #}
 			if (container) {
 				container.classList.add('animate-pulse');
 			}
