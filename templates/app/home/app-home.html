@@ -12,7 +12,8 @@ Expense Tracker App
 				{% include "/app/home/total-spent-span.html" %}
 			</header>
 			{% if purchases|length == 0 %}
-			<p id="today-purchases">You haven't logged any purchases!</p>
+			<p id="today-purchases"
+			   class="py-4 px-8 bg-white rounded-md shadow">You haven't bought anything today!</p>
 			{% else %}
 			{% include 'app/home/spending-list.html'%}
 			{% endif %}
