@@ -54,13 +54,22 @@ MySaveMoneyLife - User Account
 				<p class="mb-2">Add funds to your account here. These funds will be added to your Card Balance and will
 					be used in
 					all card purchases.</p>
-				<label class="sr-only"
-					   for="deposit_amount">Deposit</label>
-				<input type="number"
-					   class="border border-black rounded-md p-2 mb-2"
-					   id="deposit_amount"
-					   name="deposit_amount"
-					   required />
+				<div>
+					<label class="sr-only"
+						   for="deposit_amount">Deposit</label>
+					<input type="number"
+						   class="border border-black rounded-md p-2 mb-2"
+						   id="deposit_amount"
+						   name="deposit_amount"
+						   required />
+				</div>
+				<div>
+					<label for="deposit_note">Note</label>
+					<input type="text"
+						   class="border border-black rounded-md p-2 mb-2"
+						   id="deposit_note"
+						   name="deposit_note" />
+				</div>
 				<button class="border border-black rounded-md p-2">Deposit</button>
 			</form>
 			{% endblock deposit_form %}
