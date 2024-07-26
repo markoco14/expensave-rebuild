@@ -130,6 +130,7 @@ def withdraw_to_cash(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
     withdraw_amount: int = Form(...),
+    withdraw_note: Annotated[str, Form(...)] = None,
 ):
     """ Allow user to deposit money to their card. """
     current_user = auth_service.get_current_user(
@@ -149,6 +150,7 @@ def withdraw_to_cash(
         db=db,
         current_user_id=current_user.id,
         amount=withdraw_amount,
+        note=withdraw_note,
     )
 
     context = {
