@@ -91,6 +91,7 @@ def deposit_to_card(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
     deposit_amount: int = Form(...),
+    deposit_note: Annotated[str, Form(...)] = None,
 ):
     """ Allow user to deposit money to their card. """
     current_user = auth_service.get_current_user(
@@ -105,11 +106,11 @@ def deposit_to_card(
             name="/website/web-home.html",
             context=context
         )
-
     db_topup_transaction = transaction_service.create_topup_transaction(
         db=db,
         current_user_id=current_user.id,
         amount=deposit_amount,
+        note=deposit_note,
     )
 
     context = {
@@ -129,6 +130,7 @@ def withdraw_to_cash(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
     withdraw_amount: int = Form(...),
+    withdraw_note: Annotated[str, Form(...)] = None,
 ):
     """ Allow user to deposit money to their card. """
     current_user = auth_service.get_current_user(
@@ -148,6 +150,7 @@ def withdraw_to_cash(
         db=db,
         current_user_id=current_user.id,
         amount=withdraw_amount,
+        note=withdraw_note,
     )
 
     context = {

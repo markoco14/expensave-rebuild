@@ -58,14 +58,16 @@ def create_topup_transaction(
     db: Session,
     current_user_id: int,
     amount: Decimal,
+    note: str = None
 ):
     """Create a topup transaction"""
+    
     db_topup = Transaction(
         user_id=current_user_id,
         price=amount,
         currency="TWD",
         transaction_type=TransactionType.TOPUP,
-        note="Depositing funds to card."
+        note=note
     )
 
     db.add(db_topup)
@@ -78,6 +80,7 @@ def create_withdraw_transaction(
     db: Session,
     current_user_id: int,
     amount: Decimal,
+    note: str = None
 ):
     """Create a topup transaction"""
     db_withdraw = Transaction(
@@ -85,7 +88,7 @@ def create_withdraw_transaction(
         price=amount,
         currency="TWD",
         transaction_type=TransactionType.WITHDRAW,
-        note="Withdrawing funds from card for cash spending."
+        note=note
     )
 
     db.add(db_withdraw)
