@@ -240,7 +240,7 @@ def update_purchase(
         headers={"HX-Trigger": update_success_event}
     )
 
-  
+
 @router.delete("/delete-purchase/{purchase_id}", response_class=HTMLResponse)
 def delete_purchase(
     request: Request,
@@ -272,6 +272,9 @@ def delete_purchase(
             status_code=400, content="Unable to delete purchase. Please try again.")
         return response
 
-    response = Response(status_code=200)
+    response = Response(
+        status_code=200,
+        headers={
+            "HX-Trigger": "calculateTotalSpent"
+        },)
     return response
-
