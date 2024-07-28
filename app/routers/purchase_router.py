@@ -261,6 +261,16 @@ def delete_purchase(
             name="/website/web-home.html",
             context=context
         )
+    
+    # TODO: update this route because 1 problem
+    # when last purchase of day deleted
+    # no content returned, and purchase list area just ends up blank
+    # need to send back the "you didn't purhcase anything today" content
+
+    # get the purchase to delete from db
+    # grab the date from it
+    # delete the purchase
+    # 
 
     try:
         db.query(Transaction).filter(
@@ -271,6 +281,8 @@ def delete_purchase(
         response = Response(
             status_code=400, content="Unable to delete purchase. Please try again.")
         return response
+    
+
 
     response = Response(
         status_code=200,
