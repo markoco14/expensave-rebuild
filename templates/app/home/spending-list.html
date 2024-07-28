@@ -1,6 +1,9 @@
 {% if purchases|length == 0 %}
 <p id="today-purchases"
-   class="py-4 px-8 bg-white rounded-md shadow">You haven't bought anything today!</p>
+   class="py-4 px-8 bg-white rounded-md shadow"
+   hx-get="/purchase-list"
+   hx-trigger="getEmptyPurchaseList from:body"
+   hx-swap="outerHTML">You haven't bought anything today!</p>
 {% else %}
 <ul id="today-purchases"
 	class="grid divide-y gap-4"

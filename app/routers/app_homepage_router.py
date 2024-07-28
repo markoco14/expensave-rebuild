@@ -70,9 +70,10 @@ def store_purchase(
             "purchases": purchases,
             "message": "Purchase tracked!"
         }
+        
         return templates.TemplateResponse(
-            headers={"HX-Trigger": "calculateTotalSpent"},
-            name="app/home/spending-form-list-response.html",
+            headers={"HX-Trigger": "calculateTotalSpent, getEmptyPurchaseList"},
+            name="app/home/track-spending-form.html",
             context=context
         )
 
