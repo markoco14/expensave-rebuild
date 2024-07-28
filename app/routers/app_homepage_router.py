@@ -19,7 +19,7 @@ from app.services import transaction_service
 
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="templates")\
 
 
 @router.post("/track-purchase")
@@ -83,6 +83,9 @@ def store_purchase(
         "purchase": db_purchase,
         "message": "Purchase tracked!"
     }
+
+    # TODO: can't change to blocks just yet because
+    # sending form as response with oob row
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
         name="app/home/spending-form-row-response.html",
