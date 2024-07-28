@@ -3,7 +3,10 @@
    class="py-4 px-8 bg-white rounded-md shadow">You haven't bought anything today!</p>
 {% else %}
 <ul id="today-purchases"
-	class="grid divide-y gap-4">
+	class="grid divide-y gap-4"
+	hx-get="/purchase-list"
+	hx-trigger="getEmptyPurchaseList from:body"
+	hx-swap="outerHTML">
 	{% for purchase in purchases %}
 	{% block purchase_list_card scoped %}
 	<li class="purchase detail-card py-4 px-8 bg-white rounded-md shadow">

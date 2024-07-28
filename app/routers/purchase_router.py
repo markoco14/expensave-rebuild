@@ -16,6 +16,7 @@ from app.core.database import get_db
 from app.core import links
 from app.purchases.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
+from app.services import transaction_service
 
 
 router = APIRouter()
@@ -261,16 +262,6 @@ def delete_purchase(
             name="/website/web-home.html",
             context=context
         )
-    
-    # TODO: update this route because 1 problem
-    # when last purchase of day deleted
-    # no content returned, and purchase list area just ends up blank
-    # need to send back the "you didn't purhcase anything today" content
-
-    # get the purchase to delete from db
-    # grab the date from it
-    # delete the purchase
-    # 
 
     try:
         db.query(Transaction).filter(
@@ -281,8 +272,17 @@ def delete_purchase(
         response = Response(
             status_code=400, content="Unable to delete purchase. Please try again.")
         return response
-    
 
+    db_purchases = transaction_service.get_user_today_purchases(
+        current_user_id=current_user.id, db=db)
+
+    if len(db_purchases) == 0:
+        response = Response(
+            status_code=200,
+            headers={
+                "HX-Trigger": "calculateTotalSpent, getEmptyPurchaseList"
+            },)
+        return response
 
     response = Response(
         status_code=200,
@@ -290,3 +290,24 @@ def delete_purchase(
             "HX-Trigger": "calculateTotalSpent"
         },)
     return response
+
+
+@router.get("/purchase-list")
+def get_updated_purchase_list(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)]
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+
+    db_purchases = transaction_service.get_user_today_purchases(
+        current_user_id=current_user.id, db=db)
+
+    context = {
+        "request": request,
+        "purchases": db_purchases
+    }
+    return templates.TemplateResponse(
+        name="/app/home/spending-list.html",
+        context=context
+    )
