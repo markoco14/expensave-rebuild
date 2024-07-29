@@ -68,3 +68,10 @@ def adjust_purchase_dates_for_local_time(
         purchase.purchase_time = purchase.purchase_time.astimezone(timezone)
 
     return purchases
+
+
+# format date from datetime object for date input
+def format_date_for_date_input(purchase_time: datetime) -> str:
+    input_date = (purchase_time +
+                        timedelta(hours=8)).strftime("%Y-%m-%d")
+    return input_date
