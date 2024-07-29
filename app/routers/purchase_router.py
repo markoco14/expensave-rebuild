@@ -7,6 +7,7 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, Request, Response, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+from jinja2_fragments.fastapi import Jinja2Blocks
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -16,10 +17,12 @@ from app.core.database import get_db
 from app.core import links
 from app.purchases.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
+from app.services import transaction_service
 
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
+block_templates = Jinja2Blocks(directory="templates")
 
 
 @router.get("/purchases")
@@ -159,9 +162,10 @@ def get_purchase_detail_row(
         "purchase": db_purchase,
     }
 
-    return templates.TemplateResponse(
-        name="/app/purchases/purchase-detail-row.html",
-        context=context
+    return block_templates.TemplateResponse(
+        name="/app/home/spending-list-item.html",
+        context=context,
+        block_name="content"
     )
 
 
@@ -240,7 +244,7 @@ def update_purchase(
         headers={"HX-Trigger": update_success_event}
     )
 
-  
+
 @router.delete("/delete-purchase/{purchase_id}", response_class=HTMLResponse)
 def delete_purchase(
     request: Request,
@@ -272,6 +276,41 @@ def delete_purchase(
             status_code=400, content="Unable to delete purchase. Please try again.")
         return response
 
-    response = Response(status_code=200)
+    db_purchases = transaction_service.get_user_today_purchases(
+        current_user_id=current_user.id, db=db)
+
+    if len(db_purchases) == 0:
+        response = Response(
+            status_code=200,
+            headers={
+                "HX-Trigger": "calculateTotalSpent, getEmptyPurchaseList"
+            },)
+        return response
+
+    response = Response(
+        status_code=200,
+        headers={
+            "HX-Trigger": "calculateTotalSpent"
+        },)
     return response
 
+
+@router.get("/purchase-list")
+def get_updated_purchase_list(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)]
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+
+    db_purchases = transaction_service.get_user_today_purchases(
+        current_user_id=current_user.id, db=db)
+
+    context = {
+        "request": request,
+        "purchases": db_purchases
+    }
+    return templates.TemplateResponse(
+        name="/app/home/spending-list.html",
+        context=context
+    )
