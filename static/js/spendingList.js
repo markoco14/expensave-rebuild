@@ -1,4 +1,4 @@
-gsap.registerPlugin(Flip);
+
 window.listInitialState = Flip.getState("#today-purchases .purchase");
 document.body.addEventListener("htmx:beforeSwap", function (event) {
 	let listContainer = document.getElementById("today-purchases");
@@ -46,7 +46,7 @@ document.body.addEventListener("htmx:afterSwap", function (event) {
 				clearProps: "opacity", // Clear inline opacity style after animation completes
 				onComplete: () => {
 					// Optionally, remove the 'new-item' class to reset the state
-					newPurchase.classList.remove("new-item");
+					newPurchase.classList.remove("new-purchase");
 				},
 			});
 		}
