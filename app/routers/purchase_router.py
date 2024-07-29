@@ -123,6 +123,8 @@ def get_purchase_details_page(
         "is_admin": current_user.is_admin,
     }
 
+    
+
     context = {
         "user": user_data,
         "request": request,
@@ -190,6 +192,12 @@ def get_edit_purchase_form(
     db_purchase = db.query(Transaction).filter(
         Transaction.id == purchase_id
     ).first()
+    db_purchase.date = TimeService.format_date_for_date_input(purchase_time=db_purchase.purchase_time)
+    # db_purchase.date = (db_purchase.purchase_time +
+    #                     timedelta(hours=8)).strftime("%Y-%m-%d")
+    # db_purchase.time = (db_purchase.purchase_time +
+    #                     timedelta(hours=8)).strftime("%H:%M")
+
 
     context = {
         "request": request,
@@ -209,6 +217,7 @@ def update_purchase(
     price: Annotated[float, Form()],
     location: Annotated[str, Form()],
     items: Annotated[str, Form()],
+    date: Annotated[str, Form()],
     db: Session = Depends(get_db),
 ):
     current_user = auth_service.get_current_user(
@@ -222,7 +231,7 @@ def update_purchase(
             name="/website/web-home.html",
             context=context
         )
-
+    
     db_purchase = db.query(Transaction).filter(
         Transaction.id == purchase_id
     ).first()
@@ -230,6 +239,7 @@ def update_purchase(
     db_purchase.price = price
     db_purchase.location = location
     db_purchase.items = items
+    db_purchase.purchase_time = f"{date} {db_purchase.purchase_time.strftime('%H:%M:%S')}"
     db.commit()
     db.refresh(db_purchase)
     response = {
