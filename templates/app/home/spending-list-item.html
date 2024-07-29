@@ -2,7 +2,18 @@
 	{% block content %}
 	<div>
 		<header class="flex justify-between items-baseline">
-			<p class="text-2xl">${{purchase.price}}</p>
+			<div class="flex gap-2 items-center">
+				<p class="text-2xl">${{purchase.price}}</p>
+				{% if purchase.payment_method.value == 'cash' %}
+				<img src="../../../static/img/cash.png"
+					 alt="Cash"
+					 class="w-6 h-6" />
+				{% else %}
+				<img src="../../../static/img/credit-card.png"
+					 alt="Credit Card"
+					 class="w-6 h-6" />
+				{% endif %}
+			</div>
 			<div>
 				<button hx-get="/purchases/details/edit/{{purchase.id}}"
 						hx-target="closest .detail-card"
