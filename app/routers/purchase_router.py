@@ -124,8 +124,6 @@ def get_purchase_details_page(
         "is_admin": current_user.is_admin,
     }
 
-    
-
     context = {
         "user": user_data,
         "request": request,
@@ -203,9 +201,11 @@ def get_edit_purchase_form(
     ).first()
 
     # correct date time
-    db_purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=db_purchase.purchase_time)
+    db_purchase.purchase_time = TimeService.format_taiwan_time(
+        purchase_time=db_purchase.purchase_time)
 
-    db_purchase.date = TimeService.format_date_for_date_input(purchase_time=db_purchase.purchase_time)
+    db_purchase.date = TimeService.format_date_for_date_input(
+        purchase_time=db_purchase.purchase_time)
     db_purchase.time = db_purchase.purchase_time.strftime("%H:%M:%S")
 
     context = {
@@ -228,6 +228,7 @@ def update_purchase(
     items: Annotated[str, Form()],
     date: Annotated[str, Form()],
     time: Annotated[str, Form()],
+    payment_method: Annotated[str, Form()],
     db: Session = Depends(get_db),
 ):
     current_user = auth_service.get_current_user(
@@ -241,7 +242,6 @@ def update_purchase(
             name="/website/web-home.html",
             context=context
         )
-    
     db_purchase = db.query(Transaction).filter(
         Transaction.id == purchase_id
     ).first()
@@ -249,9 +249,11 @@ def update_purchase(
     db_purchase.location = location
     db_purchase.items = items
 
-    adjusted_time_str = TimeService.format_incoming_date_and_time_utc(date=date, time=time)
+    adjusted_time_str = TimeService.format_incoming_date_and_time_utc(
+        date=date, time=time)
 
     db_purchase.purchase_time = adjusted_time_str
+    db_purchase.payment_method = payment_method
     db.commit()
     db.refresh(db_purchase)
     response = {
