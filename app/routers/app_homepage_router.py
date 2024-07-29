@@ -89,7 +89,7 @@ def store_purchase(
     # sending form as response with oob row
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
-        name="app/home/spending-form-row-response.html",
+        name="app/home/spending-form-oob-response.html",
         context=context
     )
 
