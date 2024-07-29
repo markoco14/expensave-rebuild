@@ -36,9 +36,9 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         purchase.purchase_time = time_service.format_taiwan_time(purchase_time=purchase.purchase_time)
 
 
-    user_timezone = "Asia/Taipei"  # replace with user's timezone one day
-    purchases = time_service.adjust_purchase_dates_for_local_time(
-        purchases=purchases, user_timezone=user_timezone)
+    # user_timezone = "Asia/Taipei"  # replace with user's timezone one day
+    # purchases = time_service.adjust_purchase_dates_for_local_time(
+    #     purchases=purchases, user_timezone=user_timezone)
 
     totalSpent = transaction_service.calculate_day_total_spent(
         purchases=purchases)
