@@ -6,9 +6,14 @@ Expense Tracker App
 <section class="px-2 py-4 md:px-0 md:py-16">
 	<div class="grid gap-8 max-w-[500px] mx-auto">
 		{% include 'app/home/track-spending-form.html' %}
+		<hr class="border border-gray-700" />
 		<div class="grid rounded-md gap-4">
-			<header class="px-8">
-				<h2 class="text-2xl text-gray-500">{{today_date.strftime("%B %d, %Y")}}</h2>
+			<header class="px-8 flex justify-between items-start">
+				<div class="w-full items-center mb-2">
+					<h2 class="text-2xl text-gray-700">{{today_date.strftime("%B %d, %Y")}}</h2>
+					<a href="/purchases/{{today_date.strftime('%Y-%m-%d')}}"
+					   class="underline underline-offset-2 text-gray-600">Details</a>
+				</div>
 				{% include "/app/home/total-spent-span.html" %}
 			</header>
 			{% include 'app/home/spending-list.html'%}
