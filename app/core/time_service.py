@@ -70,14 +70,17 @@ def adjust_purchase_dates_for_local_time(
     return purchases
 
 # format purchase time for display
+
+
 def format_taiwan_time(purchase_time: datetime) -> datetime:
     return purchase_time + timedelta(hours=8)
 
 # format date from datetime object for date input
+
+
 def format_date_for_date_input(purchase_time: datetime) -> str:
-    input_date = (purchase_time +
-                        timedelta(hours=8)).strftime("%Y-%m-%d")
-    return input_date
+    return purchase_time.strftime("%Y-%m-%d")
+
 
 def format_incoming_date_and_time_utc(date: str, time: str) -> datetime:
     # Convert string to datetime object

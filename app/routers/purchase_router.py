@@ -160,6 +160,14 @@ def get_purchase_detail_row(
         Transaction.id == purchase_id
     ).first()
 
+    # correct date time
+    db_purchase.purchase_time = TimeService.format_taiwan_time(
+        purchase_time=db_purchase.purchase_time)
+
+    db_purchase.date = TimeService.format_date_for_date_input(
+        purchase_time=db_purchase.purchase_time)
+    db_purchase.time = db_purchase.purchase_time.strftime("%H:%M:%S")
+
     context = {
         "request": request,
         "purchase": db_purchase,
