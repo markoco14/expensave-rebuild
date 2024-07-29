@@ -7,7 +7,7 @@
 				<button hx-get="/purchases/details/edit/{{purchase.id}}"
 						hx-target="closest .detail-card"
 						hx-swap="innerHTML settle:1s">Edit</button>
-				<button hx-delete="delete-purchase/{{purchase.id}}"
+				<button hx-delete="/delete-purchase/{{purchase.id}}"
 						hx-confirm="Are you sure you want to delete this purchase?"
 						hx-target="closest li"
 						hx-swap="outerHTML swap:1s"
