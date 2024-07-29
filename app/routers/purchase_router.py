@@ -7,6 +7,7 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, Request, Response, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+from jinja2_fragments.fastapi import Jinja2Blocks
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -21,6 +22,7 @@ from app.services import transaction_service
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
+block_templates = Jinja2Blocks(directory="templates")
 
 
 @router.get("/purchases")
@@ -160,9 +162,10 @@ def get_purchase_detail_row(
         "purchase": db_purchase,
     }
 
-    return templates.TemplateResponse(
-        name="/app/purchases/purchase-detail-row.html",
-        context=context
+    return block_templates.TemplateResponse(
+        name="/app/home/spending-list-item.html",
+        context=context,
+        block_name="content"
     )
 
 

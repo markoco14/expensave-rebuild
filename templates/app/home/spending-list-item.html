@@ -1,4 +1,5 @@
 <li class="purchase detail-card py-4 px-8 bg-white rounded-md shadow">
+	{% block content %}
 	<div>
 		<header class="flex justify-between items-baseline">
 			<p class="text-2xl">${{purchase.price}}</p>
@@ -18,4 +19,5 @@
 		<hr class="mb-2 border-gray-500" />
 		<p class="">{{purchase.items}}</p>
 	</div>
+	{% endblock content %}
 </li>
