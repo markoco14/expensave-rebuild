@@ -1,7 +1,6 @@
 <form hx-put="/purchases/details/edit/{{purchase.id}}"
 	  hx-swap="none"
 	  hx-target="this">
-	  <p>{{purchase.date}}</p>
 	<div class="flex flex-col gap-2 mb-4">
 		<label for="price">Price</label>
 		<input type="number"
@@ -32,6 +31,14 @@
 			   name="date"
 			   id="date"
 			   value="{{purchase.date}}"
+			   class="p-2 border rounded-md" />
+	</div>
+	<div class="flex flex-col gap-2 mb-4">
+		<label for="time">Time</label>
+		<input type="time"
+			   name="time"
+			   id="time"
+			   value="{{purchase.time}}"
 			   class="p-2 border rounded-md" />
 	</div>
 	<button type="button"

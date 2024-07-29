@@ -18,6 +18,7 @@ from app.core import links
 from app.purchases.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
 from app.services import transaction_service
+from datetime import datetime, timedelta
 
 
 router = APIRouter()
@@ -192,12 +193,12 @@ def get_edit_purchase_form(
     db_purchase = db.query(Transaction).filter(
         Transaction.id == purchase_id
     ).first()
-    db_purchase.date = TimeService.format_date_for_date_input(purchase_time=db_purchase.purchase_time)
-    # db_purchase.date = (db_purchase.purchase_time +
-    #                     timedelta(hours=8)).strftime("%Y-%m-%d")
-    # db_purchase.time = (db_purchase.purchase_time +
-    #                     timedelta(hours=8)).strftime("%H:%M")
 
+    # correct date time
+    db_purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=db_purchase.purchase_time)
+
+    db_purchase.date = TimeService.format_date_for_date_input(purchase_time=db_purchase.purchase_time)
+    db_purchase.time = db_purchase.purchase_time.strftime("%H:%M:%S")
 
     context = {
         "request": request,
@@ -218,6 +219,7 @@ def update_purchase(
     location: Annotated[str, Form()],
     items: Annotated[str, Form()],
     date: Annotated[str, Form()],
+    time: Annotated[str, Form()],
     db: Session = Depends(get_db),
 ):
     current_user = auth_service.get_current_user(
@@ -235,11 +237,13 @@ def update_purchase(
     db_purchase = db.query(Transaction).filter(
         Transaction.id == purchase_id
     ).first()
-
     db_purchase.price = price
     db_purchase.location = location
     db_purchase.items = items
-    db_purchase.purchase_time = f"{date} {db_purchase.purchase_time.strftime('%H:%M:%S')}"
+
+    adjusted_time_str = TimeService.format_incoming_date_and_time_utc(date=date, time=time)
+
+    db_purchase.purchase_time = adjusted_time_str
     db.commit()
     db.refresh(db_purchase)
     response = {
