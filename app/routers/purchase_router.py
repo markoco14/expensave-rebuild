@@ -80,11 +80,11 @@ def get_purchases_page(
     )
 
 
-@router.get("/purchases/{today_date}")
+@router.get("/purchases/details")
 def get_purchase_details_page(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
-    today_date: str
+    date: str,
 ):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
@@ -97,9 +97,10 @@ def get_purchase_details_page(
             name="/website/web-home.html",
             context=context
         )
-    year = int(today_date.split("-")[0])
-    month = int(today_date.split("-")[1])
-    day = int(today_date.split("-")[2])
+    year = int(date.split("-")[0])
+    month = int(date.split("-")[1])
+    day = int(date.split("-")[2])
+
     start_of_day = TimeService.get_utc_start_of_current_day(
         year=year,
         month=month,
@@ -127,13 +128,20 @@ def get_purchase_details_page(
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
     }
-
     context = {
         "user": user_data,
         "request": request,
         "nav_links": links.authenticated_navlinks,
-        "purchases": purchases
+        "purchases": purchases,
+        "today_date": date,
     }
+
+    if request.headers.get("HX-Request"):
+        return block_templates.TemplateResponse(
+            name="/app/home/spending-list.html",
+            context=context,
+        )
+
     return templates.TemplateResponse(
         name="/app/purchases/purchase-detail.html",
         context=context
@@ -333,9 +341,10 @@ def get_updated_purchase_list(
 
     db_purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
-    
+
     for purchase in db_purchases:
-        purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=purchase.purchase_time)
+        purchase.purchase_time = TimeService.format_taiwan_time(
+            purchase_time=purchase.purchase_time)
 
     context = {
         "request": request,
