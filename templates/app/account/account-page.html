@@ -70,7 +70,10 @@ MySaveMoneyLife - User Account
 						   name="deposit_note" />
 				</div>
 				<button
-						class="bg-gray-200 border-gray-700 hover:bg-gray-300 active:bg-gray-400 border border-black rounded-md p-2 w-full text-center">Deposit</button>
+						class="bg-gray-200 border-gray-700 hover:bg-gray-300 active:bg-gray-400 border border-black rounded-md p-2 w-full text-center">
+					<span class="htmx-indicator-content">Deposit</span>
+					<span class="htmx-indicator">Depositing</span>
+				</button>
 			</form>
 			{% endblock deposit_form %}
 			{% block withdraw_form %}
@@ -95,9 +98,40 @@ MySaveMoneyLife - User Account
 						   name="withdraw_note" />
 				</div>
 				<button
-						class="bg-gray-200 border-gray-700 hover:bg-gray-300 active:bg-gray-400 border border-black rounded-md p-2 w-full text-center">Withdraw</button>
+						class="bg-gray-200 border-gray-700 hover:bg-gray-300 active:bg-gray-400 border border-black rounded-md p-2 w-full text-center">
+					<span class="htmx-indicator-content">Withdraw</span>
+					<span class="htmx-indicator">Withdrawing</span>
+				</button>
 			</form>
 			{% endblock withdraw_form %}
+		</div>
+		<div class="bg-white p-4 rounded-md">
+			<p class="text-3xl text-gray-500 mb-4">Transaction History</p>
+			<hr class="mb-4" />
+			{% block history_list %}
+			<ul 
+			hx-get="/account/transactions"
+			hx-swap="outerHTML"
+			hx-trigger="updateAccountData from:body"
+			class="flex flex-col gap-4">
+				{% for transaction in transactions  %}
+				{% if transaction.transaction_type.value != 'purchase' %}
+				<li class="p-2 border gorder-gray-300 rounded-md">
+					<p>
+						<span class="text-xl text-gray-700">
+							{{transaction.purchase_time.strftime("%B %d, %Y")}}
+						</span>
+						<span class="text-sm text-gray-500">
+							@ {{transaction.purchase_time.strftime("%H:%M:%S")}}
+						</span>
+					</p>
+					<p>${{transaction.price}}</p>
+					<p>{{transaction.transaction_type.value}}</p>
+				</li>
+				{% endif %}
+				{% endfor %}
+			</ul>
+			{% endblock history_list %}
 		</div>
 	</div>
 </section>
