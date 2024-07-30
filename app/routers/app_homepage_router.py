@@ -79,6 +79,8 @@ def store_purchase(
             context=context
         )
 
+    db_purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=db_purchase.purchase_time)
+
     currency = "TWD"
     context = {
         "request": request,
@@ -86,7 +88,7 @@ def store_purchase(
         "purchase": db_purchase,
         "message": "Purchase tracked!"
     }
-
+    
     # TODO: can't change to blocks just yet because
     # sending form as response with oob row
     return templates.TemplateResponse(
