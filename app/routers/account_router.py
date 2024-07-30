@@ -71,6 +71,7 @@ def get_user_account(
     context = {
         "request": request,
         "user": current_user,
+        "transactions": user_transactions,
     }
 
     if request.headers.get("HX-Request"):
