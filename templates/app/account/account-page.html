@@ -108,7 +108,12 @@ MySaveMoneyLife - User Account
 		<div class="bg-white p-4 rounded-md">
 			<p class="text-3xl text-gray-500 mb-4">Transaction History</p>
 			<hr class="mb-4" />
-			<ul class="flex flex-col gap-4">
+			{% block history_list %}
+			<ul 
+			hx-get="/account/transactions"
+			hx-swap="outerHTML"
+			hx-trigger="updateAccountData from:body"
+			class="flex flex-col gap-4">
 				{% for transaction in transactions  %}
 				{% if transaction.transaction_type.value != 'purchase' %}
 				<li class="p-2 border gorder-gray-300 rounded-md">
@@ -126,6 +131,7 @@ MySaveMoneyLife - User Account
 				{% endif %}
 				{% endfor %}
 			</ul>
+			{% endblock history_list %}
 		</div>
 	</div>
 </section>

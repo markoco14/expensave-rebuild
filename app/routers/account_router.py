@@ -164,3 +164,36 @@ def withdraw_to_cash(
         block_name="withdraw_form",
         headers={"HX-Trigger": "updateAccountData"}
     )
+
+
+@router.get("/account/transactions", response_class=HTMLResponse)
+def list_account_transactions(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    user_transactions = transaction_service.get_user_purchases(
+        db=db,
+        current_user_id=current_user.id
+    )
+    context = {
+        "request": request,
+        "transactions": user_transactions
+    }
+    return block_templates.TemplateResponse(
+        name="app/account/account-page.html",
+        context=context,
+        block_name="history_list"
+    )
