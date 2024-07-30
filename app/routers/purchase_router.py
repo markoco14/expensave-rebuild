@@ -119,6 +119,10 @@ def get_purchase_details_page(
         Transaction.purchase_time <= end_of_day
     ).order_by(Transaction.purchase_time.desc()).all()
 
+    for purchase in purchases:
+        purchase.purchase_time = TimeService.format_taiwan_time(
+            purchase_time=purchase.purchase_time)
+
     user_data = {
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
@@ -307,7 +311,7 @@ def delete_purchase(
         response = Response(
             status_code=200,
             headers={
-                "HX-Trigger": "calculateTotalSpent, getEmptyPurchaseList"
+                "HX-Trigger": "calculateTotalSpent, getPurchaseList"
             },)
         return response
 
@@ -329,6 +333,9 @@ def get_updated_purchase_list(
 
     db_purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
+    
+    for purchase in db_purchases:
+        purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=purchase.purchase_time)
 
     context = {
         "request": request,
