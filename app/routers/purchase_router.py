@@ -307,7 +307,7 @@ def delete_purchase(
         response = Response(
             status_code=200,
             headers={
-                "HX-Trigger": "calculateTotalSpent, getEmptyPurchaseList"
+                "HX-Trigger": "calculateTotalSpent, getPurchaseList"
             },)
         return response
 

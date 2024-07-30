@@ -16,10 +16,12 @@ from app.core import links
 from app.purchases import purchase_schemas
 from app.purchases.transaction_model import Transaction, TransactionType
 from app.services import transaction_service
+from app.core import time_service as TimeService
 
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")\
+
 
 
 @router.post("/track-purchase")
@@ -70,9 +72,9 @@ def store_purchase(
             "purchases": purchases,
             "message": "Purchase tracked!"
         }
-        
+
         return templates.TemplateResponse(
-            headers={"HX-Trigger": "calculateTotalSpent, getEmptyPurchaseList"},
+            headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
             name="app/home/track-spending-form.html",
             context=context
         )
