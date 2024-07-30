@@ -84,6 +84,9 @@ def format_date_for_date_input(purchase_time: datetime) -> str:
 
 def format_incoming_date_and_time_utc(date: str, time: str) -> datetime:
     # Convert string to datetime object
+    if len(time.split(":")) < 3:
+        time = f"{time}:00"
+        
     purchase_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
 
     # Subtract 8 hours from the datetime object
