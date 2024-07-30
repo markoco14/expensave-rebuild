@@ -329,6 +329,9 @@ def get_updated_purchase_list(
 
     db_purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
+    
+    for purchase in db_purchases:
+        purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=purchase.purchase_time)
 
     context = {
         "request": request,
