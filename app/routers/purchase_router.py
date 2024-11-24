@@ -18,7 +18,8 @@ from app.core import links
 from app.purchases.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
 from app.services import transaction_service
-from datetime import datetime, timedelta
+from datetime import timedelta
+from app import no_purchases_fake_data
 
 
 router = APIRouter()
@@ -49,10 +50,7 @@ def get_purchases_page(
     ).order_by(Transaction.purchase_time.desc()).all()
 
     for purchase in purchases:
-        purchase.date = (purchase.purchase_time +
-                         timedelta(hours=8)).strftime("%b %d")
-        purchase.time = (purchase.purchase_time +
-                         timedelta(hours=8)).strftime("%H:%M")
+        purchase.purchase_time = (purchase.purchase_time + timedelta(hours=8))
 
     headings = [
         "items",
@@ -63,17 +61,21 @@ def get_purchases_page(
         "currency",
         "actions"
     ]
+
     user_data = {
         "display_name": current_user.display_name,
         "is_admin": current_user.is_admin,
     }
+
     context = {
         "user": user_data,
         "request": request,
         "nav_links": links.authenticated_navlinks,
         "headings": headings,
-        "purchases": purchases
+        "purchases": purchases,
+        "fake_purchases": no_purchases_fake_data.example_purchases_data
     }
+    
     return templates.TemplateResponse(
         name="/app/purchases/purchases.html",
         context=context
