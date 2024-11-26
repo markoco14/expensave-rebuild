@@ -29,6 +29,13 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 block_templates = Jinja2Blocks(directory="templates")
 
+@router.get("/camera")
+def get_camera_page(request: Request, db: Annotated[Session, Depends(get_db)]):
+    return templates.TemplateResponse(
+        name="/app/camera/index.html",
+        context={"request": request}
+    )
+
 
 @router.get("/purchases")
 def get_purchases_page(
