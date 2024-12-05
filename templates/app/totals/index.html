@@ -1,0 +1,15 @@
+{% from '/macros/table.html' import heading_row%}
+{% extends "base.html" %}
+{% block title %}
+MySaveMoneyLife - Total Spending Page
+{% endblock title %}
+{% block content %}
+<section class="px-2 py-4 md:px-0 md:py-16">
+	<div class="grid gap-8 max-w-[1000px] mx-auto">
+        <h1 class="text-center text-3xl">Daily Spending Totals</h1>
+		<div class="p-8 bg-white rounded-md shadow">
+            {% include "app/totals/totals-table.html" %}
+		</div>
+	</div>
+</section>
+{% endblock content %}
