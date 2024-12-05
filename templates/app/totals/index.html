@@ -6,14 +6,8 @@ MySaveMoneyLife - Total Spending Page
 {% block content %}
 <section class="px-2 py-4 md:px-0 md:py-16">
 	<div class="grid gap-8 max-w-[1000px] mx-auto">
-		<div class="flex flex-col md:flex-row">
-			{# <div class="grid bg-white p-8 rounded-md">
-				<h1 class="text-xl text-gray-500 mb-2">Total Spent to Date:</h1>
-				<span class="text-right text-4xl p-4 border rounded-md">${{grand_total}}</span>
-			</div> #}
-		</div>
+        <h1 class="text-center text-3xl">Daily Spending Totals</h1>
 		<div class="p-8 bg-white rounded-md shadow">
-            <h1 class="mb-8 text-center text-3xl">Daily Spending Totals</h1>
             {% include "app/totals/totals-table.html" %}
 		</div>
 	</div>
