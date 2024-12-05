@@ -29,15 +29,16 @@
 </tr>
 {% endfor %}
 {% if purchases|length == 10 %}                   
-<tr>
-    <td colspan="7" class="text-center py-2">
-        <span 
-            hx-get="/purchases?page={{ page + 1 }}"
-            hx-target="closest tr"
-            hx-trigger="revealed"
-            hx-swap="outerHTML"
-            hx-select="tbody > tr"
-            >Loading more...</span>
+<tr 
+    hx-get="/purchases?page={{ page + 1 }}"
+    hx-target="closest tr"
+    hx-trigger="revealed"
+    hx-swap="outerHTML"
+    hx-select="tbody > tr"
+    class="h-8 animate-pulse">
+    <td 
+        colspan="7"
+        class="bg-green-200 text-center py-2 animate-pulse">
     </td>
 </tr>
 {% endif %}
