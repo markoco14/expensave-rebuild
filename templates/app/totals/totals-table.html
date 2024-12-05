@@ -1,0 +1,43 @@
+<table class="w-full border-spacing-2 border border-gray-500">
+	<thead>
+		<tr>
+			<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases
+			</th>
+			<th class="px-2 py-1 border border-gray-300">Total Spent</th>
+			<th class="px-2 py-1 border border-gray-300">Purchase Date</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for total in totals %}
+		<tr class="table-row">
+			<td class="hidden md:table-cell px-2 py-1 border border-gray-300 text-right">
+				{{total.number_of_purchases}}
+			</td>
+			{% if total.total_spent > 500 %}
+			<td class="text-red-600 px-2 py-1 text-right border border-gray-300">
+				{% elif total.total_spent > 500/2 %}
+			<td class="text-orange-600 px-2 py-1 text-right border border-gray-300">
+				{% else %}
+			<td class="text-green-600 px-2 py-1 text-right border border-gray-300">
+				{% endif %}
+				${{total.total_spent}}
+			</td>
+			<td class="text-right px-2 py-1 border border-gray-300">{{total.local_date.strftime("%B %d")}}</td>
+		</tr>
+		{% endfor %}
+		{% if totals|length == limit %}                   
+			<tr 
+				hx-get="/totals?page={{ page + 1 }}"
+				hx-target="closest tr"
+				hx-trigger="revealed"
+				hx-swap="outerHTML"
+				hx-select="tbody > tr"
+				class="h-8 animate-pulse border border-gray-300">
+				<td 
+					colspan="7"
+					class="bg-green-200 text-center py-2 animate-pulse">
+				</td>
+			</tr>
+			{% endif %}
+	</tbody>
+</table>
