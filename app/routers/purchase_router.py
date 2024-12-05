@@ -1,5 +1,6 @@
 """User authentication routes"""
 import json
+from time import sleep
 from typing import Annotated
 from datetime import timedelta
 
@@ -30,8 +31,10 @@ block_templates = Jinja2Blocks(directory="templates")
 @router.get("/purchases")
 def get_purchases_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)]
+    db: Annotated[Session, Depends(get_db)],
+    page: int = 1
 ):
+    
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
     if not current_user:
@@ -47,7 +50,7 @@ def get_purchases_page(
     purchases = db.query(Transaction).filter(
         Transaction.user_id == current_user.id,
         Transaction.transaction_type == TransactionType.PURCHASE
-    ).order_by(Transaction.purchase_time.desc()).all()
+    ).order_by(Transaction.purchase_time.desc()).offset(10 * (page - 1)).limit(10).all()
 
     for purchase in purchases:
         purchase.purchase_time = (purchase.purchase_time + timedelta(hours=8))
@@ -73,11 +76,12 @@ def get_purchases_page(
         "nav_links": links.authenticated_navlinks,
         "headings": headings,
         "purchases": purchases,
-        "fake_purchases": no_purchases_fake_data.example_purchases_data
+        "fake_purchases": no_purchases_fake_data.example_purchases_data,
+        "page": page
     }
     
     return templates.TemplateResponse(
-        name="/app/purchases/purchases.html",
+        name="/app/purchases/index.html",
         context=context
     )
 
