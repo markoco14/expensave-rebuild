@@ -1,0 +1,43 @@
+{% for purchase in purchases %}
+<tr>
+	<td class="grid px-2 py-2 max-w-[100px] overflow-hidden text-nowrap">
+        {{purchase["items"]}}
+	</td>
+	<td class="px-2 py-2 text-right">
+        ${{purchase["price"]}}
+    </td>
+	<td class="px-2 py-2 hidden md:table-cell">
+        {{purchase["purchase_time"].strftime("%B %d")}}
+    </td>
+	<td class="px-2 py-2 hidden md:table-cell">
+        {{purchase["purchase_time"].strftime("%H:%M")}}
+    </td>
+	<td class="px-2 py-2 hidden sm:table-cell">
+        {{purchase["location"]|truncate(14,true,'..',0)}}
+    </td>
+	<td class="px-2 py-2 hidden md:table-cell">
+        {{purchase["currency"]}}
+        </td>
+	<td class="px-2 py-2 text-red-700 text-right cursor-pointer"
+		hx-delete="/delete-purchase/{{purchase.id}}"
+		hx-confirm="Are you sure?"
+					   hx-target="closest tr"
+					   hx-swap="outerHTML swap:1s">
+		<span class="htmx-indicator-content">Delete</span>
+		<span class="htmx-indicator">Deleting...</span>
+	</td>
+</tr>
+{% endfor %}
+{% if purchases|length == 10 %}                   
+<tr>
+    <td colspan="7" class="text-center py-2">
+        <span 
+            hx-get="/purchases?page={{ page + 1 }}"
+            hx-target="closest tr"
+            hx-trigger="revealed"
+            hx-swap="outerHTML"
+            hx-select="tbody > tr"
+            >Loading more...</span>
+    </td>
+</tr>
+{% endif %}

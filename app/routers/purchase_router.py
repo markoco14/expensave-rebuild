@@ -34,7 +34,6 @@ def get_purchases_page(
     db: Annotated[Session, Depends(get_db)],
     page: int = 1
 ):
-    
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
     if not current_user:
@@ -79,6 +78,12 @@ def get_purchases_page(
         "fake_purchases": no_purchases_fake_data.example_purchases_data,
         "page": page
     }
+
+    if request.headers.get("HX-Request"):
+        return block_templates.TemplateResponse(
+            name="/app/purchases/purchase-table-rows.html",
+            context=context,
+        )
     
     return templates.TemplateResponse(
         name="/app/purchases/index.html",

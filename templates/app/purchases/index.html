@@ -12,7 +12,7 @@ MySaveMoneyLife - Purchase History
 			<p>You have no purchase history.</p>
 			<p>If you decide to track your purchases, you will see a table like the one below.</p>
 			<table class="min-w-full divide-y divide-gray-400">
-				<thead class="">
+				<thead>
 					{% include 'app/purchases/purchase-table-header.html'%}
 				</thead>
 				<tbody>
@@ -23,27 +23,11 @@ MySaveMoneyLife - Purchase History
 			</table>
 		{% else %}
 			<table class="min-w-full divide-y divide-gray-400">
-				<thead class="">
-					{# {{ heading_row(headings)}} #}
-					{% include 'app/purchases/purchase-table-header.html'%}
-				</thead>
+				<thead>
+                    {% include 'app/purchases/purchase-table-header.html'%}
+                </thead>
 				<tbody class="divide-y divide-gray-200 bg-white">
-					{% for purchase in purchases %}
-                    {% include 'app/purchases/purchase-table-row.html' %}
-					{% endfor %}
-                    {% if purchases|length == 10 %}                   
-                    <tr>
-                        <td colspan="7" class="text-center py-2">
-                            <span 
-                                hx-get="/purchases?page={{ page + 1 }}"
-                                hx-target="closest tr"
-                                hx-trigger="revealed"
-                                hx-swap="outerHTML"
-                                hx-select="tbody > tr"
-                                >Loading more...</span>
-                        </td>
-                    </tr>
-                    {% endif %}
+                    {% include 'app/purchases/purchase-table-rows.html' %}
 				</tbody>
 			</table>
 		{% endif %}
