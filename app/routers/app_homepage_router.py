@@ -25,39 +25,6 @@ templates = Jinja2Templates(directory="templates")\
 
 
 
-
-@router.get("/calculate-total-spent")
-def calculate_total_sepnt(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/web-home.html",
-            context=context
-        )
-
-    purchases = transaction_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
-
-    totalSpent = transaction_service.calculate_day_total_spent(
-        purchases=purchases)
-
-    return templates.TemplateResponse(
-        name="app/home/total-spent-span.html",
-        context={
-            "totalSpent": totalSpent,
-            "request": request
-        }
-    )
-
-
 @router.post("/validate-items")
 def validate_items(request: Request, items: Annotated[str, Form()] = None):
     if not items:
