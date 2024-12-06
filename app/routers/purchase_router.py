@@ -474,3 +474,19 @@ def calculate_total_sepnt(
             "request": request
         }
     )
+
+
+@router.post("/purchases/validate-items")
+def validate_items(request: Request, items: Annotated[str, Form()] = None):
+    if not items:
+        items = []
+        return templates.TemplateResponse(
+            name="app/home/item-tags.html",
+            context={"items": items}
+        )
+    items.rstrip(" ")
+    items = items.split(", ")
+    return templates.TemplateResponse(
+        name="app/home/item-tags.html",
+        context={"items": items}
+    )
