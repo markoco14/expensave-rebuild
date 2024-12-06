@@ -1,4 +1,5 @@
 """User authentication routes"""
+from decimal import Decimal
 import json
 from time import sleep
 from typing import Annotated
@@ -16,6 +17,7 @@ from sqlalchemy.exc import IntegrityError
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
+from app.purchases import purchase_schemas
 from app.purchases.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
 from app.services import transaction_service
@@ -90,6 +92,80 @@ def get_purchases_page(
         context=context
     )
 
+
+
+@router.post("/purchases")
+def store_purchase(
+    request: Request,
+    items: Annotated[str, Form()],
+    price: Annotated[Decimal, Form()],
+    currency: Annotated[str, Form()],
+    location: Annotated[str, Form()],
+    payment_method: Annotated[str, Form()],
+    db: Session = Depends(get_db),
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/web-home.html",
+            context=context
+        )
+
+    purchases = transaction_service.get_user_today_purchases(
+        current_user_id=current_user.id, db=db)
+
+    new_purchase = purchase_schemas.PurchaseCreate(
+        user_id=current_user.id,
+        items=items,
+        price=price,
+        currency=currency,
+        location=location,
+        transaction_type=TransactionType.PURCHASE,
+        payment_method=payment_method)
+
+    db_purchase = Transaction(**new_purchase.model_dump())
+    db.add(db_purchase)
+    db.commit()
+    db.refresh(db_purchase)
+
+    if len(purchases) == 0:
+        purchases.append(db_purchase)
+        currency = "TWD"
+        context = {
+            "request": request,
+            "currency": currency,
+            "purchases": purchases,
+            "message": "Purchase tracked!"
+        }
+
+        return templates.TemplateResponse(
+            headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
+            name="app/home/track-spending-form.html",
+            context=context
+        )
+
+    db_purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=db_purchase.purchase_time)
+
+    currency = "TWD"
+    context = {
+        "request": request,
+        "currency": currency,
+        "purchase": db_purchase,
+        "message": "Purchase tracked!"
+    }
+    
+    # TODO: can't change to blocks just yet because
+    # sending form as response with oob row
+    return templates.TemplateResponse(
+        headers={"HX-Trigger": "calculateTotalSpent"},
+        name="app/home/spending-form-oob-response.html",
+        context=context
+    )
 
 @router.get("/purchases/details")
 def get_purchase_details_page(
