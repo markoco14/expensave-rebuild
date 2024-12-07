@@ -44,7 +44,7 @@ def get_purchases_page(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -112,7 +112,7 @@ def store_purchase(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -181,7 +181,7 @@ def get_purchase_details_page(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
     year = int(date.split("-")[0])
@@ -249,7 +249,7 @@ def get_purchase_detail_row(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -291,7 +291,7 @@ def get_edit_purchase_form(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -338,7 +338,7 @@ def update_purchase(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
     db_purchase = db.query(Transaction).filter(
@@ -385,7 +385,7 @@ def delete_purchase(
         }
         return templates.TemplateResponse(
             status_code=401,
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -457,7 +457,7 @@ def calculate_total_sepnt(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
