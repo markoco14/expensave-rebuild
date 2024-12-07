@@ -17,8 +17,8 @@ from sqlalchemy.exc import IntegrityError
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
-from app.purchases import purchase_schemas
-from app.purchases.transaction_model import Transaction, TransactionType
+from app.transaction import transaction_schemas
+from app.transaction.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
 from app.services import transaction_service
 from datetime import timedelta
@@ -119,7 +119,7 @@ def store_purchase(
     purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
 
-    new_purchase = purchase_schemas.PurchaseCreate(
+    new_purchase = transaction_schemas.PurchaseCreate(
         user_id=current_user.id,
         items=items,
         price=price,

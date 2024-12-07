@@ -11,7 +11,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.services import transaction_service
-from app.purchases.transaction_model import PaymentMethod, TransactionType
+from app.transaction.transaction_model import PaymentMethod, TransactionType
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")

@@ -3,7 +3,7 @@ from typing import List
 from zoneinfo import ZoneInfo
 from datetime import datetime, time, timedelta
 
-from app.purchases.transaction_model import Transaction
+from app.transaction.transaction_model import Transaction
 
 # Time/Date related functions
 
