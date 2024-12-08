@@ -25,7 +25,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         context = {"request": request,
                    "nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 

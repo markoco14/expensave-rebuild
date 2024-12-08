@@ -1,4 +1,4 @@
-<form hx-post="/track-purchase"
+<form hx-post="/purchases"
 	  hx-target="this"
 	  hx-swap="outerHTML"
 	  hx-indicator="#expense-form-indicator"
@@ -8,7 +8,7 @@
 		 hx-target="this"
 		 hx-swap="outerHTML">
 		<label for="items">What did you buy</label>
-		<input {# hx-post="/validate-items" #}
+		<input {# hx-post="/purchases/validate-items" #}
 			   required
 			   id="items"
 			   name="items"

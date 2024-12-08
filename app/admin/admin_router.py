@@ -31,7 +31,7 @@ def get_admin_page(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -79,7 +79,7 @@ def read_admin_users_page(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -131,7 +131,7 @@ def delete_user(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 

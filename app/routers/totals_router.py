@@ -27,7 +27,7 @@ def get_totals_page(
         context = {"request": request,
                    "nav_links": links.unauthenticated_navlinks}
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
     limit = 10

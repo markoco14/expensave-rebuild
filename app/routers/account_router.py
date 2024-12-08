@@ -11,7 +11,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.services import transaction_service
-from app.purchases.transaction_model import PaymentMethod, TransactionType
+from app.transaction.transaction_model import PaymentMethod, TransactionType
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -32,7 +32,7 @@ def get_user_account(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -104,7 +104,7 @@ def deposit_to_card(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
     db_topup_transaction = transaction_service.create_topup_transaction(
@@ -143,7 +143,7 @@ def withdraw_to_cash(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 
@@ -180,7 +180,7 @@ def list_account_transactions(
             "nav_links": links.unauthenticated_navlinks
         }
         return templates.TemplateResponse(
-            name="/website/web-home.html",
+            name="/website/index.html",
             context=context
         )
 

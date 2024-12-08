@@ -4,9 +4,9 @@ from decimal import Decimal
 
 from sqlalchemy.sql import text
 from sqlalchemy.orm import Session
-from app.purchases.transaction_model import Transaction
+from app.transaction.transaction_model import Transaction
 from app.core import time_service
-from app.purchases.transaction_model import TransactionType
+from app.transaction.transaction_model import TransactionType
 
 
 def calculate_day_total_spent(purchases: List[Transaction]) -> Decimal:

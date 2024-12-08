@@ -4,7 +4,7 @@ import json
 from sqlalchemy.orm import Session
 import faker
 
-from app.purchases.transaction_model import Transaction
+from app.transaction.transaction_model import Transaction
 
 
 fake = faker.Faker()

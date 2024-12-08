@@ -2,7 +2,7 @@
   <label for="items">What did you buy</label>
   <input
 	value="{{items|join(', ')}}"
-    hx-post="/validate-items"
+    hx-post="/purchases/validate-items"
 	hx-trigger="keyup changed delay:200ms"
     required
     id="items"
