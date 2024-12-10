@@ -78,14 +78,11 @@
 		<title>{% block title %}{%endblock title%}</title>
 	</head>
 
-	<body class="min-h-screen bg-gray-300">
-		<header>
-			{% block header %}
-
+	<body class="min-h-screen">
+		{% block header %}
 			{% include "ui/header.html" %}
-			{% endblock header %}
-		</header>
-		<main class="">
+		{% endblock header %}
+		<main>
 			{% block content %}
 			{% endblock content %}
 		</main>

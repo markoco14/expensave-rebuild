@@ -4,12 +4,14 @@
 MySaveMoneyLife - Total Spending Page
 {% endblock title %}
 {% block content %}
-<section class="px-2 py-4 md:px-0 md:py-16">
-	<div class="grid gap-8 max-w-[1000px] mx-auto">
-        <h1 class="text-center text-3xl">Daily Spending Totals</h1>
-		<div class="p-8 bg-white rounded-md shadow">
+<section class="px-2 py-[96px]">
+	<div class="max-w-[1000px] mx-auto">
+        <h1 class="text-center text-3xl mb-8">Your Total Spending</h1>
+		{% if not totals %}
+		<p class="text-center border p-2 rounded-md shadow">You haven't saved any purchases in the app. Save some purchases to see your daily total spending.</p>		
+		{% else %}
             {% include "app/totals/totals-table.html" %}
-		</div>
+		{% endif %}
 	</div>
 </section>
 {% endblock content %}
