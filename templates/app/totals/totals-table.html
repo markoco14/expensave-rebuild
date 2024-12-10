@@ -1,28 +1,28 @@
 <table class="min-w-full divide-y divide-gray-400">
 	<thead>
-		<tr>
-			<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases</th>
-			<th class="px-2 py-1 border border-gray-300">Total Spent</th>
-			<th class="px-2 py-1 border border-gray-300">Purchase Date</th>
+		<tr class="text-left">
+			<th class="px-2 py-3 hidden md:table-cell text-right">Number of Purchases</th>
+			<th class="px-2 py-3 text-right">Total Spent</th>
+			<th class="px-2 py-3 text-right">Purchase Date</th>
 		</tr>
 	</thead>
 	<tbody class="divide-y divide-gray-200 bg-white">
 		{% for total in totals %}
 		<tr class="table-row">
-			<td class="hidden md:table-cell px-2 py-1 border border-gray-300 text-right">
+			<td class="hidden md:table-cell px-2 py-2 text-right">
 				{{total.number_of_purchases}}
 			</td>
 			{% if total.total_spent > 500 %}
-			<td class="text-red-600 px-2 py-1 text-right border border-gray-300">
+			<td class="text-red-600 px-2 py-2 text-right">
 			{% elif total.total_spent > 500/2 %}
-			<td class="text-orange-600 px-2 py-1 text-right border border-gray-300">
+			<td class="text-orange-600 px-2 py-2 text-right">
 			{% else %}
-			<td class="text-green-600 px-2 py-1 text-right border border-gray-300">
+			<td class="text-green-600 px-2 py-2 text-right">
 			{% endif %}
 				<span>${{total.total_spent}}</span>
 				<span class="md:hidden text-gray-700">({{total.number_of_purchases}})</span>
 			</td>
-			<td class="text-right px-2 py-1 border border-gray-300">{{total.local_date.strftime("%B %d")}}</td>
+			<td class="text-right px-2 py-2">{{total.local_date.strftime("%B %d")}}</td>
 		</tr>
 		{% endfor %}
 		{% if totals|length == limit %}                   
@@ -32,7 +32,7 @@
 				hx-trigger="revealed"
 				hx-swap="outerHTML"
 				hx-select="tbody > tr"
-				class="h-8 animate-pulse border border-gray-300">
+				class="h-8 animate-pulse">
 				<td 
 					colspan="7"
 					class="bg-green-200 text-center py-2 animate-pulse">
