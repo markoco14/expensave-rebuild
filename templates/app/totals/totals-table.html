@@ -1,13 +1,12 @@
-<table class="w-full border-spacing-2 border border-gray-500">
+<table class="min-w-full divide-y divide-gray-400">
 	<thead>
 		<tr>
-			<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases
-			</th>
+			<th class="hidden md:table-cell px-2 py-1 border border-gray-300">Number of Purchases</th>
 			<th class="px-2 py-1 border border-gray-300">Total Spent</th>
 			<th class="px-2 py-1 border border-gray-300">Purchase Date</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody class="divide-y divide-gray-200 bg-white">
 		{% for total in totals %}
 		<tr class="table-row">
 			<td class="hidden md:table-cell px-2 py-1 border border-gray-300 text-right">
