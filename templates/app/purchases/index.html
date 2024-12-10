@@ -16,9 +16,7 @@ MySaveMoneyLife - Purchase History
 					{% include 'app/purchases/purchase-table-header.html'%}
 				</thead>
 				<tbody>
-					{% for purchase in fake_purchases %}
-						{% include 'app/purchases/purchase-table-row.html' %}
-					{% endfor %}
+					{% include 'app/purchases/fake-table-rows.html' %}
 				</tbody>
 			</table>
 		{% else %}
