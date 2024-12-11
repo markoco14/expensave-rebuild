@@ -7,7 +7,8 @@
         <h1 class="text-center text-4xl mb-4">Camera Page</h1>
         <p class="mb-8">Welcome to the camera page. Play around here until you get something working.</p>
         <button id="cameraButton" class="bg-gray-200 px-4 py-2 border rounded-md">Camera</button>
-        <input id="cameraInput" type="file" accept="image/*" capture class="hidden"/>
+        <input id="cameraInput" type="file" accept="image/*" capture class="hidden mb-16"/>
+        <img id="cameraImage" class="hidden w-full aspect-square bg-black object-cover" src="" alt=""/>
     </section>
     
 {% endblock content %}
