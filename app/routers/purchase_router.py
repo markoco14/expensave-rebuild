@@ -31,9 +31,22 @@ block_templates = Jinja2Blocks(directory="templates")
 
 @router.get("/camera")
 def get_camera_page(request: Request, db: Annotated[Session, Depends(get_db)]):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
     return templates.TemplateResponse(
         name="/app/camera/index.html",
-        context={"request": request}
+        context={
+            "request": request,
+            "user": current_user}
     )
 
 
