@@ -6,9 +6,27 @@
     <section class="max-w-[1000px] mx-auto pt-[96px] flex flex-col items-center">
         <h1 class="text-center text-4xl mb-4">Camera Page</h1>
         <p class="mb-8">Welcome to the camera page. Play around here until you get something working.</p>
-        <button id="cameraButton" class="bg-gray-200 px-4 py-2 border rounded-md">Camera</button>
-        <button id="deleteImgButton" class="bg-gray-200 px-4 py-2 border rounded-md hidden">Delete</button>
-        <input id="cameraInput" type="file" accept="image/*" capture class="hidden mb-16"/>
+        <button
+            id="cameraButton"
+            class="bg-gray-200 px-4 py-2 border rounded-md"
+            type="button">
+            Camera
+        </button>
+        <form hx-post="/camera" enctype="multipart/form-data" hx-target="body">
+            <input id="cameraInput" name="photo" type="file" accept="image/*" capture class="hidden mb-16"/>
+            <button
+                id="submitButton"
+                type="submit"
+                class="bg-gray-200 px-4 py-2 border rounded-md hidden">
+                Save
+            </button>
+            <button
+                id="deleteImgButton"
+                class="bg-gray-200 px-4 py-2 border rounded-md hidden"
+                type="button">
+                Delete
+            </button>
+        </form>
         <div class="w-full aspect-square flex overflow-x-auto">
             <div id="noPhotoDisplay" class="w-full aspect-square flex justify-center items-center border border-gray-300">
                 <p>Take a photo and see preview here.</p>

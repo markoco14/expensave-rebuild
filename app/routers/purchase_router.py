@@ -4,12 +4,15 @@ import json
 from time import sleep
 from typing import Annotated
 from datetime import timedelta
+import os
+from io import BytesIO
 
 
-from fastapi import APIRouter, Depends, Request, Response, Form
+from fastapi import APIRouter, Depends, File, Request, Response, Form, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from jinja2_fragments.fastapi import Jinja2Blocks
+from PIL import Image
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -49,6 +52,37 @@ def get_camera_page(request: Request, db: Annotated[Session, Depends(get_db)]):
             "user": current_user}
     )
 
+@router.post("/camera")
+def upload_photo(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    photo: UploadFile = File(...)
+    ):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+    
+    upload_dir = "./temp/uploads"
+    os.makedirs(upload_dir, exist_ok=True)
+    image = Image.open(BytesIO(photo.file.read()))
+    image.save(f"{upload_dir}/{photo.filename}")
+
+    return templates.TemplateResponse(
+        name="/app/camera/index.html",
+        context={
+            "request": request,
+            "user": current_user,
+            "message": "Photo uploaded successfully!"
+        }
+    )
 
 @router.get("/purchases")
 def get_purchases_page(
