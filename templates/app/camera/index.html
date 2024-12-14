@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 {% block title %}
-    Camera Page
+    Receipt Camera
 {% endblock title %}
 {% block content %}
     <section class="max-w-[1000px] mx-auto pt-[96px] flex flex-col items-center">
-        <h1 class="text-center text-4xl mb-4">Camera Page</h1>
-        <p class="mb-8">Welcome to the camera page. Play around here until you get something working.</p>
+        <h1 class="sr-only">Receipt Camera</h1>
         <form hx-post="/camera" action="/camera" method="POST" enctype="multipart/form-data" hx-swap="none">
             <input id="cameraInput" name="photo" type="file" accept="image/*" capture="environment" class="hidden mb-16"/>
             <button
@@ -28,11 +27,11 @@
                 Delete
             </button>
         </form>
-        <div class="w-full aspect-square flex overflow-x-auto">
-            <div id="noPhotoDisplay" class="w-full aspect-square flex justify-center items-center border border-gray-300">
+        <div class="w-full max-w-[500px] aspect-[3/4] flex overflow-x-auto">
+            <div id="noPhotoDisplay" class="w-full max-w-[500px] aspect-[3/4] flex justify-center items-center border border-gray-300">
                 <p>Take a photo and see preview here.</p>
             </div>
-            <img id="cameraImage" class="hidden w-full aspect-square bg-black object-cover" src="" alt=""/>
+            <img id="cameraImage" class="hidden w-full max-w-[500px] aspect-[3/4] bg-black object-cover" src="" alt=""/>
         </div>
     </section>
 {% endblock content %}
