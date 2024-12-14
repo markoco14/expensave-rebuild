@@ -20,7 +20,7 @@ cameraInput.addEventListener('change', () => {
   submitButton.classList.toggle('hidden');
 });
 
-deleteImgButton.addEventListener('click', () => {
+function cameraUploadSuccess() {
   URL.revokeObjectURL(cameraImage.src);
   cameraInput.value = '';
   cameraInput.files = null;
@@ -29,4 +29,26 @@ deleteImgButton.addEventListener('click', () => {
   deleteImgButton.classList.toggle('hidden');
   cameraButton.classList.toggle('hidden');
   submitButton.classList.toggle('hidden');
-});
+  alert("Image saved!")
+}
+
+function resetCameraForm() {
+  URL.revokeObjectURL(cameraImage.src);
+  cameraInput.value = '';
+  cameraInput.files = null;
+  cameraImage.classList.toggle('hidden');
+  noPhotoDisplay.classList.toggle('hidden');
+  deleteImgButton.classList.toggle('hidden');
+  cameraButton.classList.toggle('hidden');
+  submitButton.classList.toggle('hidden');
+}
+
+function cameraUploadFailed() {
+  alert("Image upload failed. Please try again.")
+}
+
+deleteImgButton.addEventListener('click', resetCameraForm);
+
+document.body.addEventListener('cameraUploadSuccess', cameraUploadSuccess);
+
+document.body.addEventListener('cameraUploadFailed', cameraUploadFailed);

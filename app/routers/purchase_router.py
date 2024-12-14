@@ -73,7 +73,26 @@ def upload_photo(
     upload_dir = "./temp/uploads"
     os.makedirs(upload_dir, exist_ok=True)
     image = Image.open(BytesIO(photo.file.read()))
-    image.save(f"{upload_dir}/{photo.filename}")
+
+    try:
+        image.save(f"{upload_dir}/{photo.filename}")
+    except:
+        response = JSONResponse(
+                status_code=303,
+                content={"message": "Camera upload failed!"}
+            )
+
+        response.headers["hx-trigger"] = "cameraUploadFailed"
+        return response
+    
+    if request.headers.get("HX-Request"):
+            response = JSONResponse(
+                status_code=303,
+                content={"message": "Photo uploaded successfully!"}
+            )
+
+            response.headers["hx-trigger"] = "cameraUploadSuccess"
+            return response
 
     return templates.TemplateResponse(
         name="/app/camera/index.html",
@@ -81,8 +100,7 @@ def upload_photo(
             "request": request,
             "user": current_user,
             "message": "Photo uploaded successfully!"
-        }
-    )
+        })
 
 @router.get("/purchases")
 def get_purchases_page(
