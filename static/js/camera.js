@@ -1,13 +1,17 @@
 const cameraButton = document.getElementById('cameraButton');
+
 const cancelCaptureButton = document.getElementById('cancelCaptureButton');
 const captureButton = document.getElementById('captureButton');
-const deleteImgButton = document.getElementById('deleteImgButton');
-const cameraInput = document.getElementById('cameraInput');
-const cameraImage = document.getElementById('cameraImage');
-const noPhotoDisplay = document.getElementById('noPhotoDisplay');
+
 const submitButton = document.getElementById('submitButton');
+const retryButton = document.getElementById('retryButton');
+const finalCancelButton = document.getElementById('finalCancelButton');
+
 const cameraStatus = document.getElementById('cameraStatus');
+const noPhotoDisplay = document.getElementById('noPhotoDisplay');
+const cameraImage = document.getElementById('cameraImage');
 const videoElement = document.getElementById('cameraVideo');
+const cameraInput = document.getElementById('cameraInput');
 
 
 // STEP 1: Start the video stream
@@ -53,6 +57,71 @@ function handleStartVideoStream(){
 
 cameraButton.addEventListener('click', handleStartVideoStream);
 cancelCaptureButton.addEventListener('click', toggleBaseViewCaptureView);
+
+// STEP 2 Take a photo
+// have the option to approve
+// try again (back to video view)
+// or cancel completely (back to base view)
+
+function captureStillImageAsFile() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          throw new Error("Unable to capture still image as a blob");
+        }
+        const fileName =  `img-${Date.now()}.png`;
+        const file = new File([blob], fileName, { type: "img/png" });
+        resolve(file);
+      }, "img/png");
+    });
+  } catch (error) {
+    console.error("Error capturing still image:", error);
+    alert("Unable to capture still image: " + error.message);
+  }
+}
+
+async function handleCaptureImage() {
+  try { 
+
+    const imageFile = await captureStillImageAsFile();
+  
+    // create URL for imageFile
+    const imageURL = URL.createObjectURL(imageFile);
+    cameraImage.src = imageURL
+    
+    // Assign the File to the file input element
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(imageFile);
+    cameraInput.files = dataTransfer.files;
+    
+    toggleCaptureViewSubmitView()
+  } catch (error) { 
+    console.error("Error capturing still image:", error);
+    alert("Unable to capture still image: " + error.message);
+  }
+}
+
+function toggleCaptureViewSubmitView() {
+  alert('changing view')
+  videoElement.classList.toggle('hidden');
+  cameraImage.classList.toggle('hidden');
+  captureButton.classList.toggle('hidden');
+  cancelCaptureButton.classList.toggle('hidden');
+  submitButton.classList.toggle('hidden');
+  retryButton.classList.toggle('hidden');
+  finalCancelButton.classList.toggle('hidden');
+}
+captureButton.addEventListener('click', handleCaptureImage);
+
+
 
 // function cancelTakePhoto() {
 

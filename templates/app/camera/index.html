@@ -14,37 +14,48 @@
             <img id="cameraImage" class="hidden w-full max-w-[500px] aspect-[3/4] bg-black object-cover" src="" alt=""/>
         </div>
         <form hx-post="/camera" action="/camera" method="POST" enctype="multipart/form-data" hx-swap="none">
-            <input id="cameraInput" name="photo" type="file" accept="image/*" capture="environment" class="hidden mb-16"/>
+            <input id="cameraInput" name="photo" type="file" accept="image/*" capture="environment" class="mb-16"/>
             <button
                 id="cameraButton"
                 class="bg-gray-200 px-4 py-2 border rounded-md"
                 type="button">
                 Camera
             </button>
-            <button
-                id="captureButton"
-                class="bg-gray-200 px-4 py-2 border rounded-md hidden">
-                Capture
-            </button>
-            <button 
-                id="cancelCaptureButton" 
-                type="button" 
-                class="bg-gray-200 px-4 py-2 border rounded-md hidden">
-                Cancel
-            </button>
-            <button
-                id="submitButton"
-                type="submit"
-                class="bg-gray-200 px-4 py-2 border rounded-md hidden">
-                <span class="htmx-indicator-content">Save</span>
-                <span class="htmx-indicator">Saving</span>
-            </button>
-            <button
-                id="deleteImgButton"
-                class="bg-gray-200 px-4 py-2 border rounded-md hidden"
-                type="button">
-                Delete
-            </button>
+            <div>
+                <button
+                    id="captureButton"
+                    type="button"
+                    class="bg-gray-200 px-4 py-2 border rounded-md hidden">
+                    Capture
+                </button>
+                <button 
+                    id="cancelCaptureButton" 
+                    type="button" 
+                    class="bg-gray-200 px-4 py-2 border rounded-md hidden">
+                    Cancel
+                </button>
+            </div>
+            <div>
+                <button
+                    id="submitButton"
+                    type="submit"
+                    class="bg-gray-200 px-4 py-2 border rounded-md hidden">
+                    <span class="htmx-indicator-content">Save</span>
+                    <span class="htmx-indicator">Saving</span>
+                </button>
+                <button
+                    id="retryButton"
+                    type="button"
+                    class="bg-gray-200 px-4 py-2 border rounded-md hidden"
+                    >
+                    Try again</button>
+                <button
+                    id="finalCancelButton"
+                    class="bg-gray-200 px-4 py-2 border rounded-md hidden"
+                    type="button">
+                    Cancel
+                </button>
+            </div>
         </form>
     </section>
 {% endblock content %}
