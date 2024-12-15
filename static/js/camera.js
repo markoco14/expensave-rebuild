@@ -36,6 +36,18 @@ async function startVideoStream() {
   } 
 }
 
+async function stopVideoStream() {
+  if (videoElement.srcObject && videoElement.srcObject.getTracks) {
+    videoElement.srcObject.getTracks().forEach(track => track.stop());
+  }
+  videoElement.srcObject = null;
+}
+
+function handleCancelCapture() {
+  toggleBaseViewCaptureView();
+  stopVideoStream();
+}
+
 function toggleBaseViewCaptureView() {
   videoElement.classList.toggle('hidden');
   noPhotoDisplay.classList.toggle('hidden');
@@ -56,7 +68,7 @@ function handleStartVideoStream(){
 }
 
 cameraButton.addEventListener('click', handleStartVideoStream);
-cancelCaptureButton.addEventListener('click', toggleBaseViewCaptureView);
+cancelCaptureButton.addEventListener('click', handleCancelCapture);
 
 // STEP 2 Take a photo
 // have the option to approve
@@ -90,7 +102,6 @@ function captureStillImageAsFile() {
 
 async function handleCaptureImage() {
   try { 
-
     const imageFile = await captureStillImageAsFile();
   
     // create URL for imageFile
@@ -103,6 +114,7 @@ async function handleCaptureImage() {
     cameraInput.files = dataTransfer.files;
     
     toggleCaptureViewSubmitView()
+    stopVideoStream();
   } catch (error) { 
     console.error("Error capturing still image:", error);
     alert("Unable to capture still image: " + error.message);
@@ -110,7 +122,6 @@ async function handleCaptureImage() {
 }
 
 function toggleCaptureViewSubmitView() {
-  alert('changing view')
   videoElement.classList.toggle('hidden');
   cameraImage.classList.toggle('hidden');
   captureButton.classList.toggle('hidden');
@@ -118,7 +129,9 @@ function toggleCaptureViewSubmitView() {
   submitButton.classList.toggle('hidden');
   retryButton.classList.toggle('hidden');
   finalCancelButton.classList.toggle('hidden');
+  cameraStatus.textContent = ""
 }
+
 captureButton.addEventListener('click', handleCaptureImage);
 
 

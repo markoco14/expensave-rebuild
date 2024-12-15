@@ -14,7 +14,7 @@
             <img id="cameraImage" class="hidden w-full max-w-[500px] aspect-[3/4] bg-black object-cover" src="" alt=""/>
         </div>
         <form hx-post="/camera" action="/camera" method="POST" enctype="multipart/form-data" hx-swap="none">
-            <input id="cameraInput" name="photo" type="file" accept="image/*" capture="environment" class="mb-16"/>
+            <input id="cameraInput" name="photo" type="file" accept="image/*" capture="environment" class="hidden mb-16"/>
             <button
                 id="cameraButton"
                 class="bg-gray-200 px-4 py-2 border rounded-md"
