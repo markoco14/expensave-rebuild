@@ -13,14 +13,84 @@ const cameraImage = document.getElementById('cameraImage');
 const videoElement = document.getElementById('cameraVideo');
 const cameraInput = document.getElementById('cameraInput');
 
+const capturePhotoButtons = document.getElementById('capturePhotoButtons');
+const confirmPhotoButtons = document.getElementById('confirmPhotoButtons');
 
-// STEP 1: Start the video stream
-// we want to reveal the video element
-// hide the no photo display element
-// we want to hide the camera button
-// and show the capture/cancel buttons
+// Camera status functions
+function updateCameraStatus(status) {
+  cameraStatus.textContent = status;
+}
 
+// Base display functions
+function hideBaseDisplay() {
+  if (!noPhotoDisplay.classList.contains('hidden')) {
+    noPhotoDisplay.classList.add('hidden');
+  }
+}
 
+function showBaseDisplay() {
+  if (!noPhotoDisplay.classList.contains('hidden')) return;
+  noPhotoDisplay.classList.remove('hidden');
+}
+
+function hideBaseDisplayButtons() {
+  if (!cameraButton.classList.contains('hidden')) {
+    cameraButton.classList.add('hidden');
+  }
+}
+
+function showBaseDisplayButtons() {
+  if (!cameraButton.classList.contains('hidden')) return;
+  cameraButton.classList.remove('hidden');
+}
+
+// Video display functions
+function hideVideoFeed() {
+  if (!videoElement.classList.contains('hidden')) {
+    videoElement.classList.add('hidden');
+  }
+}
+
+function showVideoFeed() {
+  if (!videoElement.classList.contains('hidden')) return;
+  videoElement.classList.remove('hidden');
+}
+
+function hideVideoFeedButtons() {
+  if (!capturePhotoButtons.classList.contains('hidden')) {
+    capturePhotoButtons.classList.add('hidden');
+  }
+}
+
+function showVideoFeedButtons() {
+  if (!capturePhotoButtons.classList.contains('hidden')) return;
+  capturePhotoButtons.classList.remove('hidden');
+}
+
+// preview image display functions
+function showPreviewImage() {
+  if (!cameraImage.classList.contains('hidden')) return;
+  cameraImage.classList.remove('hidden');
+}
+
+function hidePreviewImage() {
+  if (!cameraImage.classList.contains('hidden')) {
+    cameraImage.classList.add('hidden');
+  }
+}
+
+function showPreviewImageButtons() {
+  if (!confirmPhotoButtons.classList.contains('hidden')) return;
+  confirmPhotoButtons.classList.remove('hidden');
+}
+
+function hidePreviewImageButtons() {
+  if (!confirmPhotoButtons.classList.contains('hidden')) {
+    confirmPhotoButtons.classList.add('hidden');
+  }
+}
+
+// Activating the camera
 async function startVideoStream() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -43,38 +113,25 @@ async function stopVideoStream() {
   videoElement.srcObject = null;
 }
 
-function handleCancelCapture() {
-  toggleBaseViewCaptureView();
-  stopVideoStream();
-}
-
-function toggleBaseViewCaptureView() {
-  videoElement.classList.toggle('hidden');
-  noPhotoDisplay.classList.toggle('hidden');
-  captureButton.classList.toggle('hidden');
-  if (cameraStatus.textContent === "") {
-    cameraStatus.textContent = "Camera active"
-  } else {
-    cameraStatus.textContent = ""
-  }
-
-  cancelCaptureButton.classList.toggle('hidden');
-  cameraButton.classList.toggle('hidden');
-}
-
-function handleStartVideoStream(){
+function handleStartCapture(){
   startVideoStream()
-  toggleBaseViewCaptureView()
+  showVideoFeed()
+  showVideoFeedButtons()
+  hideBaseDisplay()
+  hideBaseDisplayButtons()
+  updateCameraStatus("Camera active")
 }
 
-cameraButton.addEventListener('click', handleStartVideoStream);
-cancelCaptureButton.addEventListener('click', handleCancelCapture);
+function handleCancelCapture() {
+  stopVideoStream();
+  showBaseDisplay();
+  showBaseDisplayButtons();
+  hideVideoFeed();
+  hideVideoFeedButtons();
+  updateCameraStatus("Camera inactive")
+}
 
-// STEP 2 Take a photo
-// have the option to approve
-// try again (back to video view)
-// or cancel completely (back to base view)
-
+// Taking a photo
 function captureStillImageAsFile() {
   try {
     const canvas = document.createElement('canvas');
@@ -113,146 +170,78 @@ async function handleCaptureImage() {
     dataTransfer.items.add(imageFile);
     cameraInput.files = dataTransfer.files;
     
-    toggleCaptureViewSubmitView()
     stopVideoStream();
+    showPreviewImage();
+    showPreviewImageButtons();
+    hideVideoFeed();
+    hideVideoFeedButtons();
+    updateCameraStatus("Camera inactive")
   } catch (error) { 
     console.error("Error capturing still image:", error);
     alert("Unable to capture still image: " + error.message);
   }
 }
 
-function toggleCaptureViewSubmitView() {
-  videoElement.classList.toggle('hidden');
-  cameraImage.classList.toggle('hidden');
-  captureButton.classList.toggle('hidden');
-  cancelCaptureButton.classList.toggle('hidden');
-  submitButton.classList.toggle('hidden');
-  retryButton.classList.toggle('hidden');
-  finalCancelButton.classList.toggle('hidden');
-  cameraStatus.textContent = ""
+function handleTryAgain() {
+  URL.revokeObjectURL(cameraImage.src);
+  // clear the input
+  cameraInput.files = null;
+  cameraInput.value = "";
+  
+  // clear the image
+  cameraImage.src = "";
+  startVideoStream();
+  showVideoFeed();
+  showVideoFeedButtons();
+  hidePreviewImage();
+  hidePreviewImageButtons();
+  updateCameraStatus("Camera active")
 }
 
+function handleFinalStageCancelButton() {
+  // clear the input
+  URL.revokeObjectURL(cameraImage.src);
+  cameraInput.files = null;
+  cameraInput.value = "";
+  
+  // clear the image
+  cameraImage.src = "";
+  
+  hidePreviewImage();
+  hidePreviewImageButtons();
+  showBaseDisplay();
+  showBaseDisplayButtons();
+  updateCameraStatus("Camera inactive")
+}
+
+function cameraUploadSuccess() {
+  URL.revokeObjectURL(cameraImage.src);
+  cameraInput.value = '';
+  cameraInput.files = null;
+  // clear the image
+  cameraImage.src = "";
+  
+  hidePreviewImage();
+  hidePreviewImageButtons();
+  showBaseDisplay();
+  showBaseDisplayButtons();
+  updateCameraStatus("Camera inactive")
+  alert("Image saved!")
+}
+
+function cameraUploadFailed() {
+  alert("Image upload failed. Please try again.")
+}
+
+// base stage buttons
+cameraButton.addEventListener('click', handleStartCapture);
+// capture stage buttons
+cancelCaptureButton.addEventListener('click', handleCancelCapture);
 captureButton.addEventListener('click', handleCaptureImage);
+// submit stage buttons
+retryButton.addEventListener('click', handleTryAgain);
+finalCancelButton.addEventListener('click', handleFinalStageCancelButton);
 
+document.body.addEventListener('cameraUploadSuccess', cameraUploadSuccess);
 
-
-// function cancelTakePhoto() {
-
-// }
-
-
-// function stopVideoStream() {
-//   try {
-//       // Access the video element by its ID
-//       const videoElement = document.getElementById('cameraVideo');
-//       if (!videoElement) {
-//           throw new Error(`Element with ID "${videoElementId}" not found`);
-//       }
-      
-//       // Get the video stream from the video element's srcObject
-//       const stream = videoElement.srcObject;
-//       if (stream && stream.getTracks) {
-//         // Stop all tracks in the stream
-//         stream.getTracks().forEach(track => track.stop());
-//       }
-      
-//       // Clear the video element's srcObject
-//       videoElement.srcObject = null;
-//       videoElement.classList.toggle('hidden');
-//       noPhotoDisplay.classList.toggle('hidden');
-//       captureButton.classList.toggle('hidden');
-//       cameraStatus.textContent = ""
-//   } catch (error) {
-//       console.error("Error stopping video stream:", error);
-//       alert("Unable to stop the video stream: " + error.message);
-//   }
-// }
-
-// function captureStillImage() {
-//   try {
-//     const videoElement = document.getElementById('cameraVideo');
-//     const imgElement = document.getElementById('cameraImage');
-//     if (!videoElement || !imgElement) {
-//       throw new Error(`Unable to find video or image elements.`);
-//     }
-
-//     const canvas = document.createElement('canvas');
-//     canvas.width = videoElement.videoWidth;
-//     canvas.height = videoElement.videoHeight;
-
-//     const ctx = canvas.getContext('2d');
-//     ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-//     const dataUrl = canvas.toDataURL('image/png');
-
-//     imgElement.src = dataUrl;
-//     imgElement.classList.toggle('hidden');
-//     videoElement.classList.toggle('hidden');
-//     cameraStatus.textContent = "Camera inactive"
-//     return
-//   } catch (error) {
-//     console.error("Error capturing still image:", error);
-//     alert("Unable to capture still image: " + error.message);
-//   }
-// }
-
-// cameraButton.addEventListener('click', () => {
-//   if (videoElement.srcObject !== null) {
-//     stopVideoStream();
-//     return;
-//   } else {
-//     startVideoStream();
-//     return;
-//   }
-// });
-
-// captureButton.addEventListener('click', captureStillImage);
-// cancelButton.addEventListener('click', stopVideoStream);
-
-// cameraButton.addEventListener('click', () => {
-//   cameraInput.click();
-// });
-
-// cameraInput.addEventListener('change', () => {
-//   const file = cameraInput.files[0];
-//   const url = URL.createObjectURL(file);
-//   cameraImage.src = url;
-//   cameraImage.classList.toggle('hidden');
-//   noPhotoDisplay.classList.toggle('hidden');
-//   deleteImgButton.classList.toggle('hidden');
-//   cameraButton.classList.toggle('hidden');
-//   submitButton.classList.toggle('hidden');
-// });
-
-// function cameraUploadSuccess() {
-//   URL.revokeObjectURL(cameraImage.src);
-//   cameraInput.value = '';
-//   cameraInput.files = null;
-//   cameraImage.classList.toggle('hidden');
-//   noPhotoDisplay.classList.toggle('hidden');
-//   deleteImgButton.classList.toggle('hidden');
-//   cameraButton.classList.toggle('hidden');
-//   submitButton.classList.toggle('hidden');
-//   alert("Image saved!")
-// }
-
-// function resetCameraForm() {
-//   URL.revokeObjectURL(cameraImage.src);
-//   cameraInput.value = '';
-//   cameraInput.files = null;
-//   cameraImage.classList.toggle('hidden');
-//   noPhotoDisplay.classList.toggle('hidden');
-//   deleteImgButton.classList.toggle('hidden');
-//   cameraButton.classList.toggle('hidden');
-//   submitButton.classList.toggle('hidden');
-// }
-
-// function cameraUploadFailed() {
-//   alert("Image upload failed. Please try again.")
-// }
-
-// deleteImgButton.addEventListener('click', resetCameraForm);
-
-// document.body.addEventListener('cameraUploadSuccess', cameraUploadSuccess);
-
-// document.body.addEventListener('cameraUploadFailed', cameraUploadFailed);
+document.body.addEventListener('cameraUploadFailed', cameraUploadFailed);
