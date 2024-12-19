@@ -10,6 +10,8 @@ const finalCancelButton = document.getElementById('finalCancelButton');
 const cameraStatus = document.getElementById('cameraStatus');
 const noPhotoDisplay = document.getElementById('noPhotoDisplay');
 const cameraImage = document.getElementById('cameraImage');
+const captureContainer = document.getElementById('captureContainer');
+const guidingRect = document.getElementById('guidingRect');
 const videoElement = document.getElementById('cameraVideo');
 const cameraInput = document.getElementById('cameraInput');
 
@@ -48,6 +50,27 @@ function showBaseDisplayButtons() {
 function hideVideoFeed() {
   if (!videoElement.classList.contains('hidden')) {
     videoElement.classList.add('hidden');
+  }
+}
+
+function showCaptureContainer() {
+  captureContainer.classList.remove('hidden');
+  captureContainer.classList.add('stacked');
+}
+
+function hideCaptureContainer() {
+  if (captureContainer.classList.contains('hidden')) return
+  captureContainer.classList.remove('stacked');
+  captureContainer.classList.add('hidden');
+}
+
+function showGuidingRect() {
+  if (guidingRect.classList.contains('hidden')) guidingRect.classList.remove('hidden');
+}
+
+function hideGuidingRect() {
+  if (!guidingRect.classList.contains('hidden')) {
+    guidingRect.classList.add('hidden');
   }
 }
 
@@ -115,6 +138,8 @@ async function stopVideoStream() {
 
 function handleStartCapture(){
   startVideoStream()
+  showCaptureContainer();
+  showGuidingRect();
   showVideoFeed()
   showVideoFeedButtons()
   hideBaseDisplay()
@@ -124,6 +149,8 @@ function handleStartCapture(){
 
 function handleCancelCapture() {
   stopVideoStream();
+  hideCaptureContainer();
+  hideGuidingRect();
   showBaseDisplay();
   showBaseDisplayButtons();
   hideVideoFeed();
@@ -206,7 +233,8 @@ function handleFinalStageCancelButton() {
   
   // clear the image
   cameraImage.src = "";
-  
+  hideCaptureContainer();
+  hideGuidingRect();
   hidePreviewImage();
   hidePreviewImageButtons();
   showBaseDisplay();
@@ -220,13 +248,15 @@ function cameraUploadSuccess() {
   cameraInput.files = null;
   // clear the image
   cameraImage.src = "";
-  
+  // hide image preview UI
   hidePreviewImage();
   hidePreviewImageButtons();
-  showBaseDisplay();
-  showBaseDisplayButtons();
-  updateCameraStatus("Camera inactive")
-  alert("Image saved!")
+
+  // show video feed UI
+  showVideoFeed();
+  showVideoFeedButtons();
+  startVideoStream();
+  updateCameraStatus("Camera active")
 }
 
 function cameraUploadFailed() {

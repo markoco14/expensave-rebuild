@@ -12,8 +12,11 @@
             <div id="noPhotoDisplay" class="w-full max-w-[500px] aspect-[3/4] flex justify-center items-center border border-gray-300">
                 <p>Take a photo and see preview here.</p>
             </div>
-            <video id="cameraVideo" class="hidden w-full max-w-[500px] aspect-[3/4] bg-black object-cover"></video>
-            <img id="cameraImage" class="hidden w-full max-w-[500px] aspect-[3/4] bg-black object-cover" src="" alt=""/>
+            <div id="captureContainer" class="w-full aspect-[3/4] hidden">
+                <div id="guidingRect" class="w-[300px] aspect-[3/4] border-4 border-green-500 rounded"></div>
+                <video id="cameraVideo" class="media hidden w-full max-w-[500px] aspect-[3/4] bg-black object-cover hidden"></video>
+                <img id="cameraImage" class="media hidden w-full max-w-[500px] aspect-[3/4] bg-black object-cover hidden" src="" alt=""/>
+            </div>
         </div>
         <form hx-post="/camera" action="/camera" method="POST" enctype="multipart/form-data" hx-swap="none">
             <input id="cameraInput" name="photo" type="file" accept="image/*" capture="environment" class="hidden mb-16"/>

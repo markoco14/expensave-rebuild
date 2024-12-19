@@ -23,6 +23,20 @@
 					display: none;
 				}
 
+				.stacked {
+					display: grid;
+					place-items: center;
+				}
+
+				.stacked > * {
+					grid-column: 1 / -1;
+					grid-row: 1 / -1;
+				}
+
+				.stacked > .media {
+					z-index: -1;
+				}
+
 				.table-row.htmx-added {
 				opacity: 0;
 				}
