@@ -66,19 +66,4 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/signup")
-def get_sign_up_page(request: Request):
-    context = {"request": request, "nav_links": links.unauthenticated_navlinks}
-    return templates.TemplateResponse(
-        name="website/signup.html",
-        context=context
-    )
 
-
-@router.get("/signin")
-def get_sign_in_page(request: Request):
-    context = {"request": request, "nav_links": links.unauthenticated_navlinks}
-    return templates.TemplateResponse(
-        name="website/signin.html",
-        context=context
-    )
