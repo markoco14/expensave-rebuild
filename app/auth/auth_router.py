@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.auth import auth_service, auth_schemas
+from app.core import links
 from app.core.database import get_db
 from app.user import user_service
 from app.user import user_schemas
@@ -16,6 +17,14 @@ from app.auth import session_service
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
+
+@router.get("/signup")
+def get_sign_up_page(request: Request):
+    context = {"request": request, "nav_links": links.unauthenticated_navlinks}
+    return templates.TemplateResponse(
+        name="website/signup.html",
+        context=context
+    )
 
 
 @router.post("/signup", response_class=Response)
@@ -33,11 +42,7 @@ def signup(
     if existing_user:
         response = Response(status_code=400, content="Invalid email or password")
         return response
-    #     return templates.TemplateResponse(
-    #         request=request,
-    #         name="/auth/form-error.html",
-    #         context={"request": request, "error": "Invalid email or password."}
-    #     )
+
     # Hash password
     hashed_password = auth_service.get_password_hash(password)
     
@@ -67,6 +72,14 @@ def signup(
 
     return response
 
+@router.get("/signin")
+def get_sign_in_page(request: Request):
+    context = {"request": request, "nav_links": links.unauthenticated_navlinks}
+    return templates.TemplateResponse(
+        name="website/signin.html",
+        context=context
+    )
+
 
 @router.post("/signin", response_class=Response)
 def signin(
@@ -83,12 +96,7 @@ def signin(
     if not db_user:
         response = Response(status_code=400, content="Invalid email or password")
         return response
-        # return templates.TemplateResponse(
-        #     request=request,
-        #     name="/auth/form-error.html",
-        #     context={"request": request, "error": "Invalid email or password."}
-            
-        # )
+
     # verify the password
     if not auth_service.verify_password(
         plain_password=password,
@@ -96,12 +104,6 @@ def signin(
         ):
         response = Response(status_code=400, content="Invalid email or password")
         return response
-        # return templates.TemplateResponse(
-        #     request=request,
-        #     name="/auth/form-error.html",
-        #     context={"request": request, "error": "Invalid email or password"}
-            
-        # )
 
     # return response with session cookie and redirect to index
     session_cookie = auth_service.generate_session_token()
