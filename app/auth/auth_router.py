@@ -22,11 +22,12 @@ templates = Jinja2Templates(directory="templates")
 def signup(
     request: Request,
     response: Response,
-    email: Annotated[str, Form()],
+    username: Annotated[str, Form()],
     password: Annotated[str, Form()],
     db: Annotated[Session, Depends(get_db)],
     ):
     """Sign up a user"""
+    email = username
     # check if user exists
     existing_user = user_service.get_user_by_email(db=db, email=email)
     if existing_user:
@@ -71,12 +72,13 @@ def signup(
 def signin(
     request: Request,
     response: Response,
-    email: Annotated[str, Form()],
+    username: Annotated[str, Form()],
     password: Annotated[str, Form()],
     db: Annotated[Session, Depends(get_db)],
     ):
     """Sign in a user"""
     # check if user exists
+    email = username
     db_user = user_service.get_user_by_email(db=db, email=email)
     if not db_user:
         response = Response(status_code=400, content="Invalid email or password")
