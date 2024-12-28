@@ -10,6 +10,7 @@ from app.admin import admin_router
 from app.auth import auth_router
 from app.core.config import get_settings
 from app.routers import purchase_router, web_homepage_router, totals_router, faker_router
+from app.camera import camera_router
 
 settings = get_settings()
 
@@ -20,6 +21,7 @@ app.include_router(admin_router.router)
 app.include_router(web_homepage_router.router)
 app.include_router(totals_router.router)
 app.include_router(faker_router.router)
+app.include_router(camera_router.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
