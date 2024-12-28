@@ -5,6 +5,34 @@
 <section class="px-2 py-[96px]">
 	<div class="max-w-[1000px] mx-auto">
 		<h1 class="text-center text-3xl mb-8">Camera 1</h1>
+        <div class="w-full aspect-[3/4] flex overflow-x-auto">
+            <div id="noPhotoDisplay" class="w-full aspect-[3/4] flex justify-center items-center border border-gray-300">
+                <p>Take a photo and see preview here.</p>
+            </div>
+            <img id="cameraImage" class="hidden w-full aspect-[3/4] bg-black object-cover" src="" alt=""/>
+        </div>
+        <input id="cameraInput" form="cameraForm" name="photo" type="file" accept="image/*" capture="environment" class="hidden mb-16" />
+        <form hx-post="/cam1" action="/cam1" method="POST" enctype="multipart/form-data" hx-swap="none" id="cameraForm">
+            <button
+                id="cameraButton"
+                class="bg-gray-200 px-4 py-2 border rounded-md"
+                type="button">
+                Camera
+            </button>
+            <button
+                id="submitButton"
+                type="submit"
+                class="bg-gray-200 px-4 py-2 border rounded-md hidden">
+                <span class="htmx-indicator-content">Save</span>
+                <span class="htmx-indicator">Saving</span>
+            </button>
+            <button
+                id="deleteImgButton"
+                class="bg-gray-200 px-4 py-2 border rounded-md hidden"
+                type="button">
+                Delete
+            </button>
+        </form>
 	</div>
 </section>
 {% endblock content %}
