@@ -126,6 +126,56 @@ def get_purchases_page(
         context=context
     )
 
+@router.post("/cam2")
+def upload_photo(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    photo: UploadFile = File(...)
+    ):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+    
+    upload_dir = "./temp/images/raw/v2"
+    os.makedirs(upload_dir, exist_ok=True)
+    image = Image.open(BytesIO(photo.file.read()))
+
+    try:
+        image.save(f"{upload_dir}/{photo.filename}")
+    except:
+        response = JSONResponse(
+                status_code=303,
+                content={"message": "Camera upload failed!"}
+            )
+
+        response.headers["hx-trigger"] = "cameraUploadFailed"
+        return response
+    
+    if request.headers.get("HX-Request"):
+            response = JSONResponse(
+                status_code=303,
+                content={"message": "Photo uploaded successfully!"}
+            )
+
+            response.headers["hx-trigger"] = "cameraUploadSuccess"
+            return response
+
+    return templates.TemplateResponse(
+        name="/app/camera/index.html",
+        context={
+            "request": request,
+            "user": current_user,
+            "message": "Photo uploaded successfully!"
+        })
+
 
 @router.get("/cam3")
 def get_purchases_page(
