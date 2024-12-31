@@ -4,7 +4,7 @@ import os
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Request, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from jinja2_fragments.fastapi import Jinja2Blocks
 from sqlalchemy.orm import Session
@@ -36,6 +36,10 @@ def get_purchases_page(
             name="/website/index.html",
             context=context
         )
+    
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
 
     context = {
         "user": current_user,
@@ -65,6 +69,10 @@ def upload_photo(
             name="/website/index.html",
             context=context
         )
+    
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
     
     upload_dir = "./temp/images/raw/v1"
     os.makedirs(upload_dir, exist_ok=True)
@@ -115,6 +123,10 @@ def get_purchases_page(
             name="/website/index.html",
             context=context
         )
+    
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
 
     context = {
         "user": current_user,
@@ -143,6 +155,10 @@ def upload_photo(
             name="/website/index.html",
             context=context
         )
+    
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
     
     upload_dir = "./temp/images/raw/v2"
     os.makedirs(upload_dir, exist_ok=True)
@@ -193,6 +209,10 @@ def get_purchases_page(
             name="/website/index.html",
             context=context
         )
+    
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
 
     context = {
         "user": current_user,
@@ -222,6 +242,10 @@ def upload_photo(
             name="/website/index.html",
             context=context
         )
+    
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
     
     upload_dir = "./temp/images/raw/v3"
     os.makedirs(upload_dir, exist_ok=True)

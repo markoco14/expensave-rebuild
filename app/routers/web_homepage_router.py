@@ -52,7 +52,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
     today_date = datetime.now()
 
     context = {
-        "user": user_data,
+        "user": current_user,
         "request": request,
         "today_date": today_date,
         "currency": currency,

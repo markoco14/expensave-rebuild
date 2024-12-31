@@ -58,7 +58,7 @@ def get_totals_page(
         "is_admin": current_user.is_admin,
     }
     context = {
-        "user": user_data,
+        "user": current_user,
         "request": request,
         "nav_links": links.authenticated_navlinks,
         "totals": results_dict,

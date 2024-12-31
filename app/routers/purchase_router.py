@@ -66,13 +66,9 @@ def get_purchases_page(
         "actions"
     ]
 
-    user_data = {
-        "display_name": current_user.display_name,
-        "is_admin": current_user.is_admin,
-    }
 
     context = {
-        "user": user_data,
+        "user": current_user,
         "request": request,
         "nav_links": links.authenticated_navlinks,
         "headings": headings,
@@ -211,12 +207,8 @@ def get_purchase_details_page(
         purchase.purchase_time = TimeService.format_taiwan_time(
             purchase_time=purchase.purchase_time)
 
-    user_data = {
-        "display_name": current_user.display_name,
-        "is_admin": current_user.is_admin,
-    }
     context = {
-        "user": user_data,
+        "user": current_user,
         "request": request,
         "nav_links": links.authenticated_navlinks,
         "purchases": purchases,

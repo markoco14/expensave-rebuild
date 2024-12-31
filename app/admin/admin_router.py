@@ -36,12 +36,8 @@ def get_admin_page(
         )
 
     if not current_user.is_admin:
-        user_data = {
-            "display_name": current_user.display_name,
-            "is_admin": current_user.is_admin,
-        }
         context = {
-            "user": user_data,
+            "user": current_user,
             "request": request,
         }
 
@@ -51,12 +47,8 @@ def get_admin_page(
             context=context,
         )
 
-    user_data = {
-        "display_name": current_user.display_name,
-        "is_admin": current_user.is_admin,
-    }
     context = {
-        "user": user_data,
+        "user": current_user,
         "request": request,
     }
     return templates.TemplateResponse(
@@ -84,12 +76,8 @@ def read_admin_users_page(
         )
 
     if not current_user.is_admin:
-        user_data = {
-            "display_name": current_user.display_name,
-            "is_admin": current_user.is_admin,
-        }
         context = {
-            "user": user_data,
+            "user": current_user,
             "request": request,
         }
 
@@ -99,14 +87,10 @@ def read_admin_users_page(
             context=context,
         )
 
-    user_data = {
-        "display_name": current_user.display_name,
-        "is_admin": current_user.is_admin,
-    }
 
     db_users = db.query(DBUser).all()
     context = {
-        "user": user_data,
+        "user": current_user,
         "request": request,
         "users": db_users
     }
@@ -136,12 +120,8 @@ def delete_user(
         )
 
     if not current_user.is_admin:
-        user_data = {
-            "display_name": current_user.display_name,
-            "is_admin": current_user.is_admin,
-        }
         context = {
-            "user": user_data,
+            "user": current_user,
             "request": request,
         }
 
