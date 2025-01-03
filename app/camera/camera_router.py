@@ -13,6 +13,7 @@ from PIL import Image
 from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
+import time
 
 
 router = APIRouter()
@@ -78,15 +79,14 @@ def upload_photo(
     os.makedirs(upload_dir, exist_ok=True)
     image = Image.open(BytesIO(photo.file.read()))
     image = image.rotate(270)
-
+    upload_time = round(time.time() * 1000)
     try:
-        image.save(f"{upload_dir}/{photo.filename}")
+        image.save(f"{upload_dir}/{current_user.id}-{upload_time}.png")
     except:
         response = JSONResponse(
                 status_code=303,
                 content={"message": "Camera upload failed!"}
             )
-
         response.headers["hx-trigger"] = "cameraUploadFailed"
         return response
     
