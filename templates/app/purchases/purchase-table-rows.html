@@ -4,7 +4,7 @@
         {{purchase["items"]}}
 	</td>
 	<td class="px-2 py-2 text-right">
-        ${{purchase["price"]}}
+        {{purchase["price"]}}
     </td>
 	<td class="px-2 py-2 hidden md:table-cell">
         {{purchase["purchase_time"].strftime("%B %d")}}
@@ -12,8 +12,8 @@
 	<td class="px-2 py-2 hidden md:table-cell">
         {{purchase["purchase_time"].strftime("%H:%M")}}
     </td>
-	<td class="px-2 py-2 hidden sm:table-cell">
-        {{purchase["location"]|truncate(14,true,'..',0)}}
+	<td class="px-2 py-2 hidden sm:table-cell max-w-[200px] text-wrap">
+        {{purchase["location"]}}
     </td>
 	<td class="px-2 py-2 hidden md:table-cell">
         {{purchase["currency"]}}

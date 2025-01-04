@@ -55,6 +55,16 @@ def get_purchases_page(
 
     for purchase in purchases:
         purchase.purchase_time = (purchase.purchase_time + timedelta(hours=8))
+        if not purchase.items:
+            purchase.items = "Items not recorded."
+        if not purchase.location:
+            purchase.location = "Location not recorded."
+        if not purchase.currency:
+            purchase.currency = "Currency not recorded."
+        if not purchase.price:
+            purchase.price = "Price not recorded."
+        else: 
+            purchase.price = f"${purchase.price:.2f}"
 
     headings = [
         "items",
