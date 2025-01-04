@@ -34,6 +34,11 @@ class Settings(BaseSettings):
         DB_NAME: str = os.environ.get('DB_NAME')
         DATABASE_URL: str = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
+    AWS_ACCESS_KEY_ID: str = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY: str = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_DEFAULT_REGION: str = os.environ.get('AWS_DEFAULT_REGION')
+    AWS_PROJECT_BUCKET: str = os.environ.get('AWS_PROJECT_BUCKET')
+
 
 
 # or from config import get_settings -> var = get_settings()
