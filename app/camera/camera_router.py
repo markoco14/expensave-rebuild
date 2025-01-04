@@ -134,6 +134,93 @@ def upload_photo(
             "message": "Photo uploaded successfully!"
         })
 
+@router.get("/receipts")
+def get_purchase_with_image_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)]
+    ):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
+    
+    dbTransactions = db.query(Transaction).filter(Transaction.s3_key != None).all()
+
+    response = templates.TemplateResponse(
+        name="/camera/receipts.html",
+        context={
+            "request": request,
+            "user": current_user,
+            "transactions": dbTransactions
+            },
+        status_code=200)
+    return response
+
+@router.get("/receipts/{transaction_id}")
+def get_receipt_image(
+    request: Request,
+    transaction_id: int,
+    db: Annotated[Session, Depends(get_db)]
+    ):
+    time.sleep(1)
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+    if not current_user.feature_camera:
+        response = RedirectResponse(url="/", status_code=303)
+        return response
+    
+    dbTransaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+        region_name=os.environ.get("AWS_DEFAULT_REGION")
+    )
+    try:
+        presigned_url = s3.generate_presigned_url(
+            "get_object",
+            Params={
+                "Bucket": os.environ.get("AWS_PROJECT_BUCKET"),
+                "Key": dbTransaction.s3_key
+            },
+            ExpiresIn=3600
+        )
+        print(f"Presigned URL generated: {presigned_url}")
+    except Exception as e:
+        print(f"Error generating presigned URL: {e}")
+    context = {
+        "request": request,
+        "user": current_user,
+        "presigned_url": presigned_url,
+        "transaction": dbTransaction
+    }
+    response = templates.TemplateResponse(
+        name="/camera/image-receipt.html",
+        context=context,
+        status_code=200
+    )
+
+    return response
+
 @router.get("/cam2")
 def get_purchases_page(
     request: Request,
