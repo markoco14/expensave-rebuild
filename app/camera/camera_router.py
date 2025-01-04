@@ -86,6 +86,7 @@ def upload_photo(
     )
     upload_time = round(time.time() * 1000)
     image_key = f"images/original/{current_user.id}-{upload_time}.png"
+
     try:
         s3.put_object(
             Bucket=os.environ.get("AWS_PROJECT_BUCKET"),
@@ -125,14 +126,17 @@ def upload_photo(
 
             response.headers["hx-trigger"] = "cameraUploadSuccess"
             return response
+    
+    context={
+        "request": request,
+        "user": current_user,
+        "message": "Photo uploaded successfully!"
+        }
 
     return templates.TemplateResponse(
         name="/app/camera/index.html",
-        context={
-            "request": request,
-            "user": current_user,
-            "message": "Photo uploaded successfully!"
-        })
+        context=context
+        )
 
 @router.get("/receipts")
 def get_purchase_with_image_page(
