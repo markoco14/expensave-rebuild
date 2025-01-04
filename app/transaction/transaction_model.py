@@ -71,5 +71,6 @@ class Transaction(Base):
     transaction_type = Column(Enum(TransactionType), nullable=False, default=TransactionType.PURCHASE)
     note = Column(Text, nullable=True)
     s3_key = Column(Text, nullable=True)
+    thumbnail_s3_key = Column(Text, nullable=True)
 
     
