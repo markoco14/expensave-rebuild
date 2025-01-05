@@ -16,7 +16,7 @@ from app.auth import auth_service
 from app.core.database import get_db
 from app.core import links
 from app.transaction.transaction_model import Transaction
-
+from app.background import camera_tasks
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -245,11 +245,7 @@ def get_receipt_image(
 
     # resize_start_time = time.time()
     image_data = s3_response['Body'].read()
-    in_memory_image = Image.open(BytesIO(image_data))
-    thumbnail_size = (256, 256)
-    thumbnail_photo = in_memory_image.copy()
-    thumbnail_photo.thumbnail(thumbnail_size)
-    thumbnail_photo = thumbnail_photo.rotate(270)
+    thumbnail_photo = camera_tasks.create_thumbnail(image_data)
     # resize_end_time = time.time()
     # print(f"Resize time: {resize_end_time - resize_start_time}")
     
