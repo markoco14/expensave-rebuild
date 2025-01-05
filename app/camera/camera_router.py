@@ -23,7 +23,7 @@ templates = Jinja2Templates(directory="templates")
 block_templates = Jinja2Blocks(directory="templates")
 
 
-@router.get("/cam1")
+@router.get("/camera")
 def get_purchases_page(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
@@ -51,11 +51,11 @@ def get_purchases_page(
 
     
     return templates.TemplateResponse(
-        name="/camera/cam1.html",
+        name="/camera/index.html",
         context=context
     )
 
-@router.post("/cam1")
+@router.post("/camera")
 def upload_photo(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
@@ -133,10 +133,9 @@ def upload_photo(
         "message": "Photo uploaded successfully!"
         }
 
-    return templates.TemplateResponse(
-        name="/app/camera/index.html",
-        context=context
-        )
+    response = RedirectResponse(url="/camera", status_code=303)
+    return response
+
 
 @router.get("/receipts")
 def get_purchase_with_image_page(
@@ -169,6 +168,7 @@ def get_purchase_with_image_page(
             },
         status_code=200)
     return response
+
 
 @router.get("/receipts/{transaction_id}")
 def get_receipt_image(
