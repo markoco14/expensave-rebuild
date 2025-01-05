@@ -18,6 +18,7 @@ cameraInput.addEventListener('change', () => {
   deleteImgButton.classList.toggle('hidden');
   cameraButton.classList.toggle('hidden');
   submitButton.classList.toggle('hidden');
+  submitButton.click();
 });
 
 function cameraUploadSuccess() {
