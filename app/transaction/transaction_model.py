@@ -65,14 +65,12 @@ class Transaction(Base):
     price = Column(DECIMAL(precision=10, scale=2))
     currency = Column(String(256))
     location = Column(String(256))
-
     purchase_time = Column(DateTime(timezone=True),
                            nullable=False, default=datetime.utcnow)
-
     payment_method = Column(Enum(PaymentMethod), nullable=True)
-    
     transaction_type = Column(Enum(TransactionType), nullable=False, default=TransactionType.PURCHASE)
-    
     note = Column(Text, nullable=True)
+    s3_key = Column(Text, nullable=True)
+    thumbnail_s3_key = Column(Text, nullable=True)
 
     

@@ -50,6 +50,20 @@
 				<li>
 					<a href="/">Home</a>
 				</li>
+				{% if user and user.feature_camera %}
+				<li>
+					<a href="/camera">Camera</a>
+				</li>
+				<li>
+					<a href="/receipts">Receipts</a>
+				</li>
+				{# <li>
+					<a href="/cam2">Camera 2</a>
+				</li>
+				<li>
+					<a href="/cam3">Camera 3</a>
+				</li> #}
+				{% endif %}
 				{% if user %}
 				<li>
 					<a href="/purchases">Purchases</a>

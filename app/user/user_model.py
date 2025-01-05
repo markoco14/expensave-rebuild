@@ -32,3 +32,4 @@ class DBUser(Base):
     
     digital_balance = Column(DECIMAL(precision=10, scale=2))
     cash_balance = Column(DECIMAL(precision=10, scale=2))
+    feature_camera = Column(Boolean, default=False, nullable=False)

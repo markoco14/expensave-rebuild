@@ -23,6 +23,20 @@
 					display: none;
 				}
 
+				.stacked {
+					display: grid;
+					place-items: center;
+				}
+
+				.stacked > * {
+					grid-column: 1 / -1;
+					grid-row: 1 / -1;
+				}
+
+				.stacked > .media {
+					z-index: -1;
+				}
+
 				.table-row.htmx-added {
 				opacity: 0;
 				}
@@ -88,7 +102,7 @@
 		</main>
 		<span id="toast"
 			  class="opacity-0 fixed top-2 left-2 p-2 rounded-md shadow bg-green-500 text-white w-[300px] transition-opacity duration-100">
-		</span>
+		</span>		
 		<script>
 			document.addEventListener('notifyUser', (event) => {
 				const toast = document.getElementById('toast');
@@ -103,6 +117,9 @@
 				}, 4000);
 			});
 		</script>
+		{% block script %}
+		
+		{% endblock script %}
 	</body>
 
 </html>

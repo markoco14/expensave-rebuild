@@ -10,7 +10,7 @@ from app.transaction.transaction_model import TransactionType
 
 
 def calculate_day_total_spent(purchases: List[Transaction]) -> Decimal:
-    return sum([purchase.price for purchase in purchases])
+    return sum([purchase.price for purchase in purchases if purchase.price])
 
 
 def get_user_today_purchases(current_user_id: int, db: Session):

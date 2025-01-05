@@ -12,14 +12,18 @@
 			<td class="hidden md:table-cell px-2 py-2 text-right">
 				{{total.number_of_purchases}}
 			</td>
-			{% if total.total_spent > 500 %}
+			{% if total.total_spent and total.total_spent > 500 %}
 			<td class="text-red-600 px-2 py-2 text-right">
-			{% elif total.total_spent > 500/2 %}
+			{% elif total.total_spent and total.total_spent > 500/2 %}
 			<td class="text-orange-600 px-2 py-2 text-right">
 			{% else %}
 			<td class="text-green-600 px-2 py-2 text-right">
 			{% endif %}
+				{% if not total.total_spent %}
+				<span>$0.00</span>
+				{% else %}
 				<span>${{total.total_spent}}</span>
+				{% endif %}
 				<span class="md:hidden text-gray-700">({{total.number_of_purchases}})</span>
 			</td>
 			<td class="text-right px-2 py-2">{{total.local_date.strftime("%B %d")}}</td>

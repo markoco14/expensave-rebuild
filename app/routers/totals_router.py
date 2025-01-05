@@ -52,13 +52,11 @@ def get_totals_page(
     grand_total = 0
     for result in query_results:
         results_dict.append(result._asdict())
-        grand_total += result.total_spent
-    user_data = {
-        "display_name": current_user.display_name,
-        "is_admin": current_user.is_admin,
-    }
+        if not result.total_spent == None:
+            grand_total += result.total_spent
+    
     context = {
-        "user": user_data,
+        "user": current_user,
         "request": request,
         "nav_links": links.authenticated_navlinks,
         "totals": results_dict,
