@@ -1,12 +1,10 @@
 from typing import List
 from decimal import Decimal
 
-
 from sqlalchemy.sql import text
 from sqlalchemy.orm import Session
-from app.transaction.transaction_model import Transaction
 from app.core import time_service
-from app.transaction.transaction_model import TransactionType
+from app.transaction.transaction_model import Transaction, TransactionType
 
 
 def calculate_day_total_spent(purchases: List[Transaction]) -> Decimal:

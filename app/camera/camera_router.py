@@ -17,6 +17,7 @@ from app.core.database import get_db
 from app.core import links
 from app.transaction.transaction_model import Transaction
 from app.background import camera_tasks
+from app import utils
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -84,8 +85,14 @@ def upload_photo(
         aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
         region_name=os.environ.get("AWS_DEFAULT_REGION")
     )
+    
     upload_time = round(time.time() * 1000)
-    image_key = f"images/original/{current_user.id}-{upload_time}.png"
+    environment = os.environ.get("ENVIRONMENT")    
+    image_key = utils.get_original_storage_string(
+        user_id=current_user.id,
+        environment=environment,
+        upload_time=upload_time
+    )
 
     try:
         s3.put_object(
@@ -240,7 +247,7 @@ def get_receipt_image(
     # print(f"S3 fetch time: {s3_get_original_end - s3_get_original_start}")
     
     # image name in /thumbnail should match /original
-    thumbnail_key = dbTransaction.s3_key.replace("original", "thumbnail").replace("png", "jpg")
+    thumbnail_key = utils.get_thumbnail_storage_string(original_storage_string=dbTransaction.s3_key)
     quality = 90
 
     # resize_start_time = time.time()
