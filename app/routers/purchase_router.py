@@ -111,6 +111,7 @@ def store_purchase(
     location: Annotated[str, Form()],
     payment_method: Annotated[str, Form()],
     db: Session = Depends(get_db),
+    lottery: Annotated[str, Form()] = None
 ):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
@@ -133,6 +134,7 @@ def store_purchase(
         price=price,
         currency=currency,
         location=location,
+        receipt_lottery_number=lottery,
         transaction_type=TransactionType.PURCHASE,
         payment_method=payment_method)
 
