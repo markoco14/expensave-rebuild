@@ -4,7 +4,7 @@ import json
 import os
 from time import sleep
 from typing import Annotated
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 import boto3
@@ -111,7 +111,8 @@ def store_purchase(
     location: Annotated[str, Form()],
     payment_method: Annotated[str, Form()],
     db: Session = Depends(get_db),
-    lottery: Annotated[str, Form()] = None
+    purchase_time: Annotated[str, Form()] = None,
+    lottery: Annotated[str, Form()] = None,
 ):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
@@ -124,9 +125,12 @@ def store_purchase(
             name="/website/index.html",
             context=context
         )
-
-    purchases = transaction_service.get_user_today_purchases(
+    
+    db_today_purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
+    
+    purchase_time_object = datetime.fromisoformat(purchase_time)
+    utc_corrected_time = purchase_time_object - timedelta(hours=8)
 
     new_purchase = transaction_schemas.PurchaseCreate(
         user_id=current_user.id,
@@ -135,6 +139,7 @@ def store_purchase(
         currency=currency,
         location=location,
         receipt_lottery_number=lottery,
+        purchase_time=utc_corrected_time,
         transaction_type=TransactionType.PURCHASE,
         payment_method=payment_method)
 
@@ -143,13 +148,13 @@ def store_purchase(
     db.commit()
     db.refresh(db_purchase)
 
-    if len(purchases) == 0:
-        purchases.append(db_purchase)
+    if len(db_today_purchases) == 0:
+        db_today_purchases.append(db_purchase)
         currency = "TWD"
         context = {
             "request": request,
             "currency": currency,
-            "purchases": purchases,
+            "purchases": db_today_purchases,
             "message": "Purchase tracked!"
         }
 

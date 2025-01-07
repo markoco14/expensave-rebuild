@@ -7,7 +7,7 @@
 	<div class="flex flex-col gap-1"
 		 hx-target="this"
 		 hx-swap="outerHTML">
-		<label for="items">What did you buy</label>
+		<label for="items">What did you buy?</label>
 		<input {# hx-post="/purchases/validate-items" #}
 			   required
 			   id="items"
@@ -15,9 +15,18 @@
 			   class="border rounded p-2 bg-gray-100"
 			   type="text" />
 	</div>
+	<div class="flex flex-col gap-1">
+		<label for="purchase_time">What time did you buy?</label>
+		<input required
+			   id="purchase_time"
+			   name="purchase_time"
+			   class="border rounded p-2 bg-gray-100"
+			   type="datetime-local"
+			   step="1" />
+	</div>
 	<div class="grid grid-cols-2 gap-4">
 		<div class="flex flex-col justify-between gap-1">
-			<label for="price">How much did you spend</label>
+			<label for="price">How much did you spend?</label>
 			<input required
 				   id="price"
 				   name="price"
@@ -38,7 +47,7 @@
 		</div>
 	</div>
 	<div class="flex flex-col gap-1">
-		<label for="location">Where did you buy it</label>
+		<label for="location">Where did you buy it?</label>
 		<input required
 			   id="location"
 			   name="location"
@@ -46,7 +55,7 @@
 			   type="text" />
 	</div>
 	<div class="flex flex-col gap-1">
-		<label for="lottery">Lottery ID Number</label>
+		<label for="lottery">Lottery ID Number?</label>
 		<input id="lottery"
 			   name="lottery"
 			   class="border rounded p-2 bg-gray-100"
