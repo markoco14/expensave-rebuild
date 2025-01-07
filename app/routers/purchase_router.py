@@ -1,11 +1,13 @@
 """User authentication routes"""
 from decimal import Decimal
 import json
+import os
 from time import sleep
 from typing import Annotated
 from datetime import timedelta
 
 
+import boto3
 from fastapi import APIRouter, Depends, Request, Response, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -390,33 +392,102 @@ def delete_purchase(
             name="/website/index.html",
             context=context
         )
+    # get the db purchase 
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
+    ).first()
 
-    try:
-        db.query(Transaction).filter(
-            Transaction.id == purchase_id
-        ).delete()
-        db.commit()
-    except IntegrityError:
+    # TODO: response not returning properly
+    if not db_purchase:
         response = Response(
-            status_code=400, content="Unable to delete purchase. Please try again.")
+            status_code=404, content="Purchase not found.")
         return response
 
-    db_purchases = transaction_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
+    # if no photos, delete purchase
+    if not db_purchase.s3_key and not db_purchase.thumbnail_s3_key:
+        try:
+            db.delete(db_purchase)
+            db.commit()
+        except Exception as e:
+            response = Response(
+                status_code=501, content="Unable to delete purchase. Please try again.")
+            return response
+    else:
+        # initialize s3 client
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+            region_name=os.environ.get("AWS_DEFAULT_REGION")
+        )
 
-    if len(db_purchases) == 0:
+        # if photo, delete photo
+        # try delete original
+        keys_to_delete = []
+        if db_purchase.s3_key:
+            keys_to_delete.append({"Key": db_purchase.s3_key})
+            
+        # try delete thumbnail
+        if db_purchase.thumbnail_s3_key:
+            keys_to_delete.append({"Key": db_purchase.thumbnail_s3_key})
+
+        try:
+            response = s3.delete_objects(
+                Bucket=os.environ.get("AWS_PROJECT_BUCKET"),
+                Delete={
+                    "Objects": keys_to_delete
+                }
+            )
+
+            # Check for errors in the S3 response
+            if 'Errors' in response:
+                raise Exception("Unable to delete purchase photos. Please try again.")
+
+            db_purchase.s3_key = None
+            db_purchase.thumbnail_s3_key = None
+            db.commit()
+        except Exception as e:
+            response = Response(
+                status_code=501, content="Unable to delete purchase photos. Please try again.")
+            return response
+            
+        # if photo deleted, delete purchase
+        try:
+            db.delete(db_purchase)
+            db.commit()
+        except IntegrityError:
+            response = Response(
+                status_code=501,
+                content="Unable to delete purchase. Please try again."
+            )
+
+    # we don't need to calculate current day's total spending if request comes from "/purchases"
+    # but we do if comes from "/"
+    referer = request.headers.get("referer")
+    if referer and "purchases" not in referer:
+        db_purchases = transaction_service.get_user_today_purchases(
+            current_user_id=current_user.id, db=db)
+
+        # If the spending list is empty we need to refresh the content to empty list state
+        if len(db_purchases) == 0:
+            response = Response(
+                status_code=200,
+                headers={
+                    "HX-Trigger": "calculateTotalSpent, getPurchaseList"
+                },)
+            return response
+
         response = Response(
             status_code=200,
             headers={
-                "HX-Trigger": "calculateTotalSpent, getPurchaseList"
+                "HX-Trigger": "calculateTotalSpent"
             },)
+        
         return response
-
-    response = Response(
-        status_code=200,
-        headers={
-            "HX-Trigger": "calculateTotalSpent"
-        },)
+    
+    # if request comes from "/purchases" we only need to send a response
+    response = Response(status_code=200)
+    
     return response
 
 
