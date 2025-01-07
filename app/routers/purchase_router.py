@@ -372,7 +372,7 @@ def update_purchase(
     )
 
 
-@router.delete("/delete-purchase/{purchase_id}", response_class=HTMLResponse)
+@router.delete("/purchases/{purchase_id}", response_class=HTMLResponse)
 def delete_purchase(
     request: Request,
     response: Response,

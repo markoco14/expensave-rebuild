@@ -19,7 +19,7 @@
         {{purchase["currency"]}}
         </td>
 	<td class="px-2 py-2 text-red-700 text-right cursor-pointer"
-		hx-delete="/delete-purchase/{{purchase.id}}"
+		hx-delete="/purchases/{{purchase.id}}"
 		hx-confirm="Are you sure?"
 					   hx-target="closest tr"
 					   hx-swap="outerHTML swap:1s">
