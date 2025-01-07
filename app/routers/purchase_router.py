@@ -314,9 +314,8 @@ def get_edit_purchase_form(
     db_purchase.purchase_time = TimeService.format_taiwan_time(
         purchase_time=db_purchase.purchase_time)
 
-    db_purchase.date = TimeService.format_date_for_date_input(
-        purchase_time=db_purchase.purchase_time)
-    db_purchase.time = db_purchase.purchase_time.strftime("%H:%M:%S")
+    formatted_purchase_time = db_purchase.purchase_time.strftime("%Y-%m-%dT%H:%M:%S")
+    db_purchase.formatted_purchase_time = formatted_purchase_time
 
     context = {
         "request": request,
@@ -336,8 +335,7 @@ def update_purchase(
     price: Annotated[float, Form()],
     location: Annotated[str, Form()],
     items: Annotated[str, Form()],
-    date: Annotated[str, Form()],
-    time: Annotated[str, Form()],
+    purchase_time: Annotated[str, Form()],
     payment_method: Annotated[str, Form()],
     db: Session = Depends(get_db),
 ):
@@ -352,20 +350,23 @@ def update_purchase(
             name="/website/index.html",
             context=context
         )
+    
     db_purchase = db.query(Transaction).filter(
         Transaction.id == purchase_id
     ).first()
+
     db_purchase.price = price
     db_purchase.location = location
     db_purchase.items = items
 
-    adjusted_time_str = TimeService.format_incoming_date_and_time_utc(
-        date=date, time=time)
+    purchase_time = datetime.fromisoformat(purchase_time)
+    utc_purchase_time = purchase_time - timedelta(hours=8)
 
-    db_purchase.purchase_time = adjusted_time_str
+    db_purchase.purchase_time = utc_purchase_time
     db_purchase.payment_method = payment_method
     db.commit()
     db.refresh(db_purchase)
+    
     response = {
         'message': 'Purchase updated successfully!'
     }

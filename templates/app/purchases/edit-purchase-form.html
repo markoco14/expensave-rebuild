@@ -25,21 +25,15 @@
 			   value="{{purchase.items}}"
 			   class="p-2 border rounded-md" />
 	</div>
-	<div class="flex flex-col gap-2 mb-4">
-		<label for="date">Date</label>
-		<input type="date"
-			   name="date"
-			   id="date"
-			   value="{{purchase.date}}"
-			   class="p-2 border rounded-md" />
-	</div>
-	<div class="flex flex-col gap-2 mb-4">
-		<label for="time">Time</label>
-		<input type="time"
-			   name="time"
-			   id="time"
-			   value="{{purchase.time}}"
-			   class="p-2 border rounded-md" />
+	<div class="flex flex-col gap-1">
+		<label for="purchase_time">What time did you buy?</label>
+		<input required
+			   id="purchase_time"
+			   name="purchase_time"
+			   class="border rounded p-2 bg-gray-100"
+			   type="datetime-local"
+			   step="1"
+			   value="{{purchase.formatted_purchase_time}}" />
 	</div>
 	<fieldset>
 		<legend class="mb-2">Choose Payment Method</legend>
