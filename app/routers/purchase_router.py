@@ -3,7 +3,7 @@ from decimal import Decimal
 import json
 import os
 from time import sleep
-from typing import Annotated
+from typing import Annotated, Optional
 from datetime import datetime, timedelta
 
 
@@ -310,12 +310,21 @@ def get_edit_purchase_form(
         Transaction.id == purchase_id
     ).first()
 
+    if not db_purchase.location:
+        db_purchase.location = ""
+
+    if not db_purchase.items:
+        db_purchase.items = ""
+
     # correct date time
     db_purchase.purchase_time = TimeService.format_taiwan_time(
         purchase_time=db_purchase.purchase_time)
 
     formatted_purchase_time = db_purchase.purchase_time.strftime("%Y-%m-%dT%H:%M:%S")
     db_purchase.formatted_purchase_time = formatted_purchase_time
+
+    if not db_purchase.receipt_lottery_number:
+        db_purchase.receipt_lottery_number = ""
 
     context = {
         "request": request,
@@ -332,13 +341,16 @@ def get_edit_purchase_form(
 def update_purchase(
     request: Request,
     purchase_id: int,
-    price: Annotated[float, Form()],
-    location: Annotated[str, Form()],
-    items: Annotated[str, Form()],
+    db: Annotated[Session, Depends(get_db)],
     purchase_time: Annotated[str, Form()],
-    payment_method: Annotated[str, Form()],
-    db: Session = Depends(get_db),
-):
+    price: Annotated[Optional[str], Form()] = None,
+    location: Annotated[Optional[str], Form()] = None,
+    items: Annotated[Optional[str], Form()] = None,
+    lottery: Annotated[Optional[str], Form()] = None,
+    payment_method: Annotated[Optional[str], Form()] = None
+):  
+    
+
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
     if not current_user:
@@ -354,16 +366,28 @@ def update_purchase(
     db_purchase = db.query(Transaction).filter(
         Transaction.id == purchase_id
     ).first()
+    price = Decimal(price) if price else None
+    if price:
+        db_purchase.price = price
 
-    db_purchase.price = price
-    db_purchase.location = location
-    db_purchase.items = items
+    if location:
+        db_purchase.location = location
+
+    if items:
+        db_purchase.items = items
 
     purchase_time = datetime.fromisoformat(purchase_time)
     utc_purchase_time = purchase_time - timedelta(hours=8)
 
-    db_purchase.purchase_time = utc_purchase_time
-    db_purchase.payment_method = payment_method
+    if utc_purchase_time:
+        db_purchase.purchase_time = utc_purchase_time
+
+    if payment_method:
+        db_purchase.payment_method = payment_method
+
+    if lottery:
+        db_purchase.receipt_lottery_number = lottery
+
     db.commit()
     db.refresh(db_purchase)
     

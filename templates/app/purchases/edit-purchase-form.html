@@ -1,6 +1,16 @@
 <form hx-put="/purchases/details/edit/{{purchase.id}}"
 	  hx-swap="none"
 	  hx-target="this">
+	<div class="flex flex-col gap-1">
+		<label for="purchase_time">What time did you buy?</label>
+		<input required
+			   id="purchase_time"
+			   name="purchase_time"
+			   class="border rounded p-2 bg-gray-100"
+			   type="datetime-local"
+			   step="1"
+			   value="{{purchase.formatted_purchase_time}}" />
+	</div>
 	<div class="flex flex-col gap-2 mb-4">
 		<label for="price">Price</label>
 		<input type="number"
@@ -26,14 +36,12 @@
 			   class="p-2 border rounded-md" />
 	</div>
 	<div class="flex flex-col gap-1">
-		<label for="purchase_time">What time did you buy?</label>
-		<input required
-			   id="purchase_time"
-			   name="purchase_time"
+		<label for="lottery">What is the lottery number?</label>
+		<input id="lottery"
+			   name="lottery"
 			   class="border rounded p-2 bg-gray-100"
-			   type="datetime-local"
-			   step="1"
-			   value="{{purchase.formatted_purchase_time}}" />
+			   type="text"
+			   value="{{purchase.receipt_lottery_number}}" />
 	</div>
 	<fieldset>
 		<legend class="mb-2">Choose Payment Method</legend>
