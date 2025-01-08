@@ -17,7 +17,14 @@
     </td>
 	<td class="px-2 py-2 hidden md:table-cell">
         {{purchase["currency"]}}
-        </td>
+    </td>
+	<td class="px-2 py-2 flex justify-center">
+        {% if purchase["s3_key"] %}
+            {% include "/svg/check-yes.html" %}
+        {% else %}
+            {% include "/svg/x-no.html" %}
+        {% endif %}
+    </td>
 	<td class="px-2 py-2 text-red-700 text-right cursor-pointer"
 		hx-delete="/purchases/{{purchase.id}}"
 		hx-confirm="Are you sure?"

@@ -147,7 +147,8 @@ def upload_photo(
 @router.get("/receipts")
 def get_purchase_with_image_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)]
+    db: Annotated[Session, Depends(get_db)],
+    page: int = 1
     ):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
@@ -164,14 +165,34 @@ def get_purchase_with_image_page(
         response = RedirectResponse(url="/", status_code=303)
         return response
     
-    dbTransactions = db.query(Transaction).filter(Transaction.s3_key != None).all()
-
+    limit = 2
+    offset = limit * (page - 1)
+    
+    dbTransactions = db.query(Transaction
+                                ).filter(Transaction.s3_key != None
+                                ).order_by(Transaction.purchase_time.desc()
+                                ).limit(limit).offset(offset
+                                ).all()
+    
+    if request.headers.get("HX-Request"):
+        response = templates.TemplateResponse(
+            name="/camera/partials/receipt-list.html",
+            context={
+                "request": request,
+                "user": current_user,
+                "transactions": dbTransactions,
+                "page": page
+            },
+            status_code=200)
+        return response
+    
     response = templates.TemplateResponse(
         name="/camera/receipts.html",
         context={
             "request": request,
             "user": current_user,
-            "transactions": dbTransactions
+            "transactions": dbTransactions,
+            "page": page
             },
         status_code=200)
     return response

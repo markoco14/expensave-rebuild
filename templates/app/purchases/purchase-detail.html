@@ -28,6 +28,18 @@ MySaveMoneyLife - Purchase History
 			   hx-include="this"
 			   hx-push-url="true"
 			    />
+		<div class="flex justify-center gap-4">
+			<a 
+				href="/purchases/details/{{yesterday_date}}" 
+				class="border border-green-700 drop-shadow rounded-md px-4 py-1 hover:bg-green-600 hover:border-green-600 hover:text-white active:bg-green-700 active:border-green-700 active:scale-95 active:drop-shadow-lg">
+				Yesterday
+			</a>
+			<a 
+				href="/purchases/details/{{tomorrow_date}}" 
+				class="border border-green-700 drop-shadow rounded-md px-4 py-1 hover:bg-green-600 hover:border-green-600 hover:text-white active:bg-green-700 active:border-green-700 active:scale-95 active:drop-shadow-lg">
+				Tomorrow
+			</a>
+			</div>
 		{% include "/app/home/spending-list.html" %}
 	</div>
 </section>

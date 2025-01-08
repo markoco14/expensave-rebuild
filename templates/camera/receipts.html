@@ -4,24 +4,7 @@
 <section class="px-2 py-[96px]">
 	<div class="max-w-[1000px] mx-auto">
         <h1>See your Receipts</h1>
-        {% for transaction in transactions %}
-            <div class="border flex justify-between py-2">
-                <div class="border">
-                    <p>{{ transaction.id }}</p>
-                    <p>{{ transaction.amount }}</p>
-                    <p>{{ transaction.created_at }}</p>
-                </div>
-                <div 
-                    class="border w-[100px] aspect-square"
-                    hx-get="/receipts/{{ transaction.id }}"
-                    hx-trigger="revealed"
-                    hx-swap="innerHTML"
-                    >   
-                    <p>Loading receipt image...</p>
-                </div>
-            </div>
-            <hr />
-        {% endfor %}
+        {% include "/camera/partials/receipt-list.html" %}
     </div>
 </section>
 {% endblock content %}

@@ -1,0 +1,42 @@
+<div id="tabs" class="flex gap-2" hx-swap-oob="true">
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=info"
+        hx-target="next div"
+        hx-swap="innerHTML">
+            Info
+    </button>
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=time"
+        hx-target="next div"
+        hx-swap="innerHTML"
+        class="underline underline-offset-2 text-decoration-green-700">
+            Time
+    </button>
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=lottery"
+        hx-target="next div"
+        hx-swap="innerHTML">
+            Lottery
+    </button>
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=method"
+        hx-target="next div"
+        hx-swap="innerHTML">
+            Method
+    </button>
+</div>
+
+<div class="flex flex-col gap-1">
+    <label for="purchase_time">What time did you buy?</label>
+    <input required
+            id="purchase_time"
+            name="purchase_time"
+            class="border rounded p-2 bg-gray-100"
+            type="datetime-local"
+            step="1"
+            value="{{purchase.purchase_time}}" />
+</div>

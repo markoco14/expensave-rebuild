@@ -1,4 +1,5 @@
 
+from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel
 
@@ -13,3 +14,5 @@ class PurchaseCreate(BaseModel):
 	currency: str
 	location: str
 	payment_method: str
+	receipt_lottery_number: str
+	purchase_time: datetime
