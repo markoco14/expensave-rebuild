@@ -1,3 +1,35 @@
+<div id="tabs" class="flex gap-2" hx-swap-oob="true">
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=info"
+        hx-target="next div"
+        hx-swap="innerHTML">
+            Info
+    </button>
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=time"
+        hx-target="next div"
+        hx-swap="innerHTML">
+            Time
+    </button>
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=lottery"
+        hx-target="next div"
+        hx-swap="innerHTML">
+            Lottery
+    </button>
+    <button 
+        type="button"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=method"
+        hx-target="next div"
+        hx-swap="innerHTML"
+        class="underline underline-offset-2 text-decoration-green-700">
+            Method
+    </button>
+</div>
+
 <fieldset>
     <legend class="mb-2">Choose Payment Method</legend>
     <div class="flex justify-between gap-4">
