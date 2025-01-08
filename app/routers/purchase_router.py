@@ -182,7 +182,7 @@ def store_purchase(
         context=context
     )
 
-@router.get("/purchases/details")
+@router.get("/purchases/details/{date}")
 def get_purchase_details_page(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
@@ -225,6 +225,10 @@ def get_purchase_details_page(
     for purchase in purchases:
         purchase.purchase_time = TimeService.format_taiwan_time(
             purchase_time=purchase.purchase_time)
+        
+    date_from_iso = datetime.fromisoformat(date)
+    yesterday_from_iso = (date_from_iso - timedelta(days=1)).strftime("%Y-%m-%d")
+    tomorrow_from_iso = (date_from_iso + timedelta(days=1)).strftime("%Y-%m-%d")
 
     context = {
         "user": current_user,
@@ -232,6 +236,8 @@ def get_purchase_details_page(
         "nav_links": links.authenticated_navlinks,
         "purchases": purchases,
         "today_date": date,
+        "yesterday_date": yesterday_from_iso,
+        "tomorrow_date": tomorrow_from_iso,
     }
 
     if request.headers.get("HX-Request"):
