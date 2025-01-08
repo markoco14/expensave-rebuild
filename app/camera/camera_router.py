@@ -198,8 +198,8 @@ def get_purchase_with_image_page(
     return response
 
 
-@router.get("/receipts/{transaction_id}")
-def get_receipt_image(
+@router.get("/receipts/images/thumbnail/{transaction_id}")
+def get_receipt_thumbnail_image(
     request: Request,
     transaction_id: int,
     db: Annotated[Session, Depends(get_db)]
