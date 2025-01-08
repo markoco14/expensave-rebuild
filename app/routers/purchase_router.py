@@ -182,75 +182,6 @@ def store_purchase(
         context=context
     )
 
-@router.get("/purchases/details/{date}")
-def get_purchase_details_page(
-    request: Request,
-    db: Annotated[Session, Depends(get_db)],
-    date: str,
-):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/index.html",
-            context=context
-        )
-    year = int(date.split("-")[0])
-    month = int(date.split("-")[1])
-    day = int(date.split("-")[2])
-
-    start_of_day = TimeService.get_utc_start_of_current_day(
-        year=year,
-        month=month,
-        day=day,
-        utc_offset=8
-    )
-    end_of_day = TimeService.get_utc_end_of_current_day(
-        year=year,
-        month=month,
-        day=day,
-        utc_offset=8
-    )
-
-    purchases = db.query(Transaction).filter(
-        Transaction.user_id == current_user.id,
-        Transaction.purchase_time >= start_of_day,
-        Transaction.purchase_time <= end_of_day
-    ).order_by(Transaction.purchase_time.desc()).all()
-
-    for purchase in purchases:
-        purchase.purchase_time = TimeService.format_taiwan_time(
-            purchase_time=purchase.purchase_time)
-        
-    date_from_iso = datetime.fromisoformat(date)
-    yesterday_from_iso = (date_from_iso - timedelta(days=1)).strftime("%Y-%m-%d")
-    tomorrow_from_iso = (date_from_iso + timedelta(days=1)).strftime("%Y-%m-%d")
-
-    context = {
-        "user": current_user,
-        "request": request,
-        "nav_links": links.authenticated_navlinks,
-        "purchases": purchases,
-        "today_date": date,
-        "yesterday_date": yesterday_from_iso,
-        "tomorrow_date": tomorrow_from_iso,
-    }
-
-    if request.headers.get("HX-Request"):
-        return block_templates.TemplateResponse(
-            name="/app/home/spending-list.html",
-            context=context,
-        )
-
-    return templates.TemplateResponse(
-        name="purchases/purchase-detail.html",
-        context=context
-    )
-
 
 @router.get("/purchases/{purchase_id}")
 def get_purchase_detail_row(
@@ -294,9 +225,6 @@ def get_purchase_detail_row(
     )
 
 
-
-
-
 @router.put("/purchases/{purchase_id}")
 def update_purchase(
     request: Request,
@@ -309,8 +237,6 @@ def update_purchase(
     lottery: Annotated[Optional[str], Form()] = None,
     payment_method: Annotated[Optional[str], Form()] = None
 ):  
-    
-
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
     if not current_user:
@@ -584,6 +510,77 @@ def delete_purchase(
     response = Response(status_code=200)
     
     return response
+
+
+@router.get("/purchases/details/{date}")
+def get_purchase_details_page(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    date: str,
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+    year = int(date.split("-")[0])
+    month = int(date.split("-")[1])
+    day = int(date.split("-")[2])
+
+    start_of_day = TimeService.get_utc_start_of_current_day(
+        year=year,
+        month=month,
+        day=day,
+        utc_offset=8
+    )
+    end_of_day = TimeService.get_utc_end_of_current_day(
+        year=year,
+        month=month,
+        day=day,
+        utc_offset=8
+    )
+
+    purchases = db.query(Transaction).filter(
+        Transaction.user_id == current_user.id,
+        Transaction.purchase_time >= start_of_day,
+        Transaction.purchase_time <= end_of_day
+    ).order_by(Transaction.purchase_time.desc()).all()
+
+    for purchase in purchases:
+        purchase.purchase_time = TimeService.format_taiwan_time(
+            purchase_time=purchase.purchase_time)
+        
+    date_from_iso = datetime.fromisoformat(date)
+    yesterday_from_iso = (date_from_iso - timedelta(days=1)).strftime("%Y-%m-%d")
+    tomorrow_from_iso = (date_from_iso + timedelta(days=1)).strftime("%Y-%m-%d")
+
+    context = {
+        "user": current_user,
+        "request": request,
+        "nav_links": links.authenticated_navlinks,
+        "purchases": purchases,
+        "today_date": date,
+        "yesterday_date": yesterday_from_iso,
+        "tomorrow_date": tomorrow_from_iso,
+    }
+
+    if request.headers.get("HX-Request"):
+        return block_templates.TemplateResponse(
+            name="/app/home/spending-list.html",
+            context=context,
+        )
+
+    return templates.TemplateResponse(
+        name="purchases/purchase-detail.html",
+        context=context
+    )
+
 
 
 @router.get("/purchase-list")
