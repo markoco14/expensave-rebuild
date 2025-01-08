@@ -428,21 +428,36 @@ def get_form_for_lottery(
         )
 
     db_purchase = db.query(Transaction).filter(Transaction.id == purchase_id).first()
-    tab = get
+
     context = {
         "request": request,
         "purchase": db_purchase,
-        "tab": tab
+        "tab": get
     }
-    if tab == "all":
+
+    if get == "info":
         return templates.TemplateResponse(
-            name="app/purchases/partials/edit-all.html",
+            name="app/purchases/partials/edit-info.html",
             context=context
         )
     
-    if tab == "lottery":
+    if get == "time":
+        # change from UTC to Taiwan time
+        db_purchase.purchase_time += timedelta(hours=8)
+        return templates.TemplateResponse(
+            name="app/purchases/partials/edit-time.html",
+            context=context
+        )
+    
+    if get == "lottery":
         return templates.TemplateResponse(
             name="app/purchases/partials/edit-lottery.html",
+            context=context
+        )
+
+    if get == "method":
+        return templates.TemplateResponse(
+            name="app/purchases/partials/edit-method.html",
             context=context
         )
 
