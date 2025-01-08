@@ -348,7 +348,7 @@ def update_purchase(
     request: Request,
     purchase_id: int,
     db: Annotated[Session, Depends(get_db)],
-    purchase_time: Annotated[str, Form()],
+    purchase_time: Annotated[str, Form()] = None,
     price: Annotated[Optional[str], Form()] = None,
     location: Annotated[Optional[str], Form()] = None,
     items: Annotated[Optional[str], Form()] = None,
@@ -382,10 +382,9 @@ def update_purchase(
     if items:
         db_purchase.items = items
 
-    purchase_time = datetime.fromisoformat(purchase_time)
-    utc_purchase_time = purchase_time - timedelta(hours=8)
-
-    if utc_purchase_time:
+    if purchase_time:
+        purchase_time = datetime.fromisoformat(purchase_time)
+        utc_purchase_time = purchase_time - timedelta(hours=8)
         db_purchase.purchase_time = utc_purchase_time
 
     if payment_method:
@@ -408,6 +407,44 @@ def update_purchase(
         content=response,
         headers={"HX-Trigger": update_success_event}
     )
+
+@router.get("/purchases/edit/form/{purchase_id}")
+def get_form_for_lottery(
+    request: Request,
+    purchase_id: int,
+    get: str = None,
+    db: Session = Depends(get_db)
+):  
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+
+    db_purchase = db.query(Transaction).filter(Transaction.id == purchase_id).first()
+    tab = get
+    context = {
+        "request": request,
+        "purchase": db_purchase,
+        "tab": tab
+    }
+    if tab == "all":
+        return templates.TemplateResponse(
+            name="app/purchases/partials/edit-all.html",
+            context=context
+        )
+    
+    if tab == "lottery":
+        return templates.TemplateResponse(
+            name="app/purchases/partials/edit-lottery.html",
+            context=context
+        )
 
 
 @router.delete("/purchases/{purchase_id}", response_class=HTMLResponse)
