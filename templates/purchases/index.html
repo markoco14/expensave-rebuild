@@ -12,19 +12,19 @@ MySaveMoneyLife - Purchase History
 			<p>If you decide to track your purchases, you will see a table like the one below.</p>
 			<table class="min-w-full divide-y divide-gray-400">
 				<thead>
-					{% include 'app/purchases/purchase-table-header.html'%}
+					{% include 'purchases/purchase-table-header.html'%}
 				</thead>
 				<tbody>
-					{% include 'app/purchases/fake-table-rows.html' %}
+					{% include 'purchases/fake-table-rows.html' %}
 				</tbody>
 			</table>
 		{% else %}
 			<table class="min-w-full divide-y divide-gray-400">
 				<thead>
-                    {% include 'app/purchases/purchase-table-header.html'%}
+                    {% include 'purchases/purchase-table-header.html'%}
                 </thead>
 				<tbody class="divide-y divide-gray-200 bg-white">
-                    {% include 'app/purchases/purchase-table-rows.html' %}
+                    {% include 'purchases/purchase-table-rows.html' %}
 				</tbody>
 			</table>
 		{% endif %}

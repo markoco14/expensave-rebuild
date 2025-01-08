@@ -91,12 +91,12 @@ def get_purchases_page(
 
     if request.headers.get("HX-Request"):
         return block_templates.TemplateResponse(
-            name="/app/purchases/purchase-table-rows.html",
+            name="purchases/purchase-table-rows.html",
             context=context,
         )
     
     return templates.TemplateResponse(
-        name="/app/purchases/index.html",
+        name="purchases/index.html",
         context=context
     )
 
@@ -160,7 +160,7 @@ def store_purchase(
 
         return templates.TemplateResponse(
             headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
-            name="app/purchases/new-purchase-form.html",
+            name="purchases/new-purchase-form.html",
             context=context
         )
 
@@ -247,7 +247,7 @@ def get_purchase_details_page(
         )
 
     return templates.TemplateResponse(
-        name="/app/purchases/purchase-detail.html",
+        name="purchases/purchase-detail.html",
         context=context
     )
 
@@ -409,7 +409,7 @@ def get_edit_purchase_form(
     }
 
     return templates.TemplateResponse(
-        name="/app/purchases/edit-purchase-form.html",
+        name="purchases/edit-purchase-form.html",
         context=context
     )
 
@@ -442,7 +442,7 @@ def get_form_for_lottery(
 
     if tab == "info":
         return templates.TemplateResponse(
-            name="app/purchases/partials/edit-info.html",
+            name="purchases/partials/edit-info.html",
             context=context
         )
     
@@ -450,19 +450,19 @@ def get_form_for_lottery(
         # change from UTC to Taiwan time
         db_purchase.purchase_time += timedelta(hours=8)
         return templates.TemplateResponse(
-            name="app/purchases/partials/edit-time.html",
+            name="purchases/partials/edit-time.html",
             context=context
         )
     
     if tab == "lottery":
         return templates.TemplateResponse(
-            name="app/purchases/partials/edit-lottery.html",
+            name="purchases/partials/edit-lottery.html",
             context=context
         )
 
     if tab == "method":
         return templates.TemplateResponse(
-            name="app/purchases/partials/edit-method.html",
+            name="purchases/partials/edit-method.html",
             context=context
         )
 
