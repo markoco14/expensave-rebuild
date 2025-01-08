@@ -15,7 +15,7 @@
 				{% endif %}
 			</div>
 			<div>
-				<button hx-get="/purchases/details/edit/{{purchase.id}}"
+				<button hx-get="/purchases/edit/{{purchase.id}}"
 						hx-target="closest .detail-card"
 						hx-swap="innerHTML settle:1s">Edit</button>
 				<button hx-delete="/purchases/{{purchase.id}}"

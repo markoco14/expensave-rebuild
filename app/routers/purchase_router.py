@@ -252,7 +252,7 @@ def get_purchase_details_page(
     )
 
 
-@router.get("/purchases/details/{purchase_id}")
+@router.get("/purchases/{purchase_id}")
 def get_purchase_detail_row(
     request: Request,
     purchase_id: int,
@@ -294,7 +294,7 @@ def get_purchase_detail_row(
     )
 
 
-@router.get("/purchases/details/edit/{purchase_id}")
+@router.get("/purchases/edit/{purchase_id}")
 def get_edit_purchase_form(
     request: Request,
     purchase_id: int,
@@ -343,7 +343,7 @@ def get_edit_purchase_form(
     )
 
 
-@router.put("/purchases/details/edit/{purchase_id}")
+@router.put("/purchases/{purchase_id}")
 def update_purchase(
     request: Request,
     purchase_id: int,
