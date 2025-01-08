@@ -294,53 +294,7 @@ def get_purchase_detail_row(
     )
 
 
-@router.get("/purchases/edit/{purchase_id}")
-def get_edit_purchase_form(
-    request: Request,
-    purchase_id: int,
-    db: Session = Depends(get_db),
-):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/index.html",
-            context=context
-        )
 
-    db_purchase = db.query(Transaction).filter(
-        Transaction.id == purchase_id
-    ).first()
-
-    if not db_purchase.location:
-        db_purchase.location = ""
-
-    if not db_purchase.items:
-        db_purchase.items = ""
-
-    # correct date time
-    db_purchase.purchase_time = TimeService.format_taiwan_time(
-        purchase_time=db_purchase.purchase_time)
-
-    formatted_purchase_time = db_purchase.purchase_time.strftime("%Y-%m-%dT%H:%M:%S")
-    db_purchase.formatted_purchase_time = formatted_purchase_time
-
-    if not db_purchase.receipt_lottery_number:
-        db_purchase.receipt_lottery_number = ""
-
-    context = {
-        "request": request,
-        "purchase": db_purchase,
-    }
-
-    return templates.TemplateResponse(
-        name="/app/purchases/edit-purchase-form.html",
-        context=context
-    )
 
 
 @router.put("/purchases/{purchase_id}")
@@ -408,11 +362,63 @@ def update_purchase(
         headers={"HX-Trigger": update_success_event}
     )
 
+
+@router.get("/purchases/edit/{purchase_id}")
+def get_edit_purchase_form(
+    request: Request,
+    purchase_id: int,
+    tab: str = "info",
+    db: Session = Depends(get_db),
+):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
+    ).first()
+
+    if not db_purchase.location:
+        db_purchase.location = ""
+
+    if not db_purchase.items:
+        db_purchase.items = ""
+
+    # correct date time
+    db_purchase.purchase_time = TimeService.format_taiwan_time(
+        purchase_time=db_purchase.purchase_time)
+
+    formatted_purchase_time = db_purchase.purchase_time.strftime("%Y-%m-%dT%H:%M:%S")
+    db_purchase.formatted_purchase_time = formatted_purchase_time
+
+    if not db_purchase.receipt_lottery_number:
+        db_purchase.receipt_lottery_number = ""
+
+    context = {
+        "request": request,
+        "purchase": db_purchase,
+        "tab": tab
+    }
+
+    return templates.TemplateResponse(
+        name="/app/purchases/edit-purchase-form.html",
+        context=context
+    )
+
+
 @router.get("/purchases/edit/form/{purchase_id}")
 def get_form_for_lottery(
     request: Request,
     purchase_id: int,
-    get: str = None,
+    tab: str = "info",
     db: Session = Depends(get_db)
 ):  
     current_user = auth_service.get_current_user(
@@ -428,20 +434,19 @@ def get_form_for_lottery(
         )
 
     db_purchase = db.query(Transaction).filter(Transaction.id == purchase_id).first()
-
     context = {
         "request": request,
         "purchase": db_purchase,
-        "tab": get
+        "tab": tab
     }
 
-    if get == "info":
+    if tab == "info":
         return templates.TemplateResponse(
             name="app/purchases/partials/edit-info.html",
             context=context
         )
     
-    if get == "time":
+    if tab == "time":
         # change from UTC to Taiwan time
         db_purchase.purchase_time += timedelta(hours=8)
         return templates.TemplateResponse(
@@ -449,13 +454,13 @@ def get_form_for_lottery(
             context=context
         )
     
-    if get == "lottery":
+    if tab == "lottery":
         return templates.TemplateResponse(
             name="app/purchases/partials/edit-lottery.html",
             context=context
         )
 
-    if get == "method":
+    if tab == "method":
         return templates.TemplateResponse(
             name="app/purchases/partials/edit-method.html",
             context=context

@@ -1,10 +1,9 @@
 <form hx-put="/purchases/{{purchase.id}}"
 	  hx-swap="none"
 	  hx-target="this">
-	<button type="button" hx-get="/purchases/edit/form/{{purchase.id}}?get=info" hx-target="next div" hx-swap="innerHTML">Info</button>
-	<button type="button" hx-get="/purchases/edit/form/{{purchase.id}}?get=time" hx-target="next div" hx-swap="innerHTML">Time</button>
-	<button type="button" hx-get="/purchases/edit/form/{{purchase.id}}?get=lottery" hx-target="next div" hx-swap="innerHTML">Lottery</button>
-	<button type="button" hx-get="/purchases/edit/form/{{purchase.id}}?get=method" hx-target="next div" hx-swap="innerHTML">Method</button>
+	  <div id="tabs" class="flex gap-2">
+		{% include "/app/purchases/partials/edit-tabs.html" %}
+	  </div>
 	  <div>
 		{% include "/app/purchases/partials/edit-info.html" %}
 	  </div>
