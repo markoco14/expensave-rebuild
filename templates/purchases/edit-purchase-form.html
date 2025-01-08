@@ -1,6 +1,15 @@
 <form hx-put="/purchases/{{purchase.id}}"
 	  hx-swap="none"
 	  hx-target="this">
+	  {% if purchase.s3_key %}
+	  <div hx-get="/receipts/images/edit/{{purchase.id}}"
+		hx-trigger="revealed"
+		hx-target="this"
+		hx-swap="outerHTML"
+		class="w-[300px] aspect-[3/4] bg-black" ></div>
+	  {% else %}
+	  <p class="border rounded-md px-4 py-1 text-center mb-4">No image available</p>
+	  {% endif %}
 	  <div id="tabs" class="flex gap-2">
 		{% include "/purchases/partials/edit-tabs.html" %}
 	  </div>
