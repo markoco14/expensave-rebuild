@@ -72,8 +72,11 @@
 					<a href="/totals">Totals</a>
 				</li>
 				<li class="block md:hidden">
-					<button hx-get="/signout"
-							class="text-right">Sign Out</button>
+					<a 	hx-get="/signout"
+						href="/signout"
+						class="text-right">
+						Sign Out
+					</a>
 				</li>
 				<li x-data="{ dropdownOpen: false}"
 					class="relative hidden md:block">
@@ -99,8 +102,11 @@
 							</li>
 							{% endif %}
 							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
-								<button hx-get="/signout"
-										class="text-right">Sign Out</button>
+								<a 	hx-get="/signout"
+									href="/signout"
+									class="text-right">
+									Sign Out
+								</a>
 							</li>
 						</ul>
 					</div>

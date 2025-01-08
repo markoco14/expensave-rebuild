@@ -2,10 +2,10 @@
 	  hx-swap="none"
 	  hx-target="this">
 	  <div id="tabs" class="flex gap-2">
-		{% include "/app/purchases/partials/edit-tabs.html" %}
+		{% include "/purchases/partials/edit-tabs.html" %}
 	  </div>
 	  <div>
-		{% include "/app/purchases/partials/edit-info.html" %}
+		{% include "/purchases/partials/edit-info.html" %}
 	  </div>
 	<button type="button"
 			hx-get="/purchases/{{purchase.id}}"
