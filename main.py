@@ -5,7 +5,7 @@ import time
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Form, Request, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -58,7 +58,7 @@ app.add_middleware(SleepMiddleware)
 
 
 
-@app.get("/")
+@app.get("/", response_class=templates.TemplateResponse)
 def get_index_page(request: Request, db: Session = Depends(get_db)):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
@@ -105,7 +105,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@app.get("/signup")
+@app.get("/signup", response_class=templates.TemplateResponse)
 def get_sign_up_page(request: Request):
     context = {"request": request}
     return templates.TemplateResponse(
@@ -159,7 +159,7 @@ def signup(
 
     return response
 
-@app.get("/signin")
+@app.get("/signin", response_class=templates.TemplateResponse)
 def get_sign_in_page(request: Request):
     context = {"request": request}
     return templates.TemplateResponse(
@@ -215,18 +215,24 @@ def signin(
     return response
 
 
-@app.get("/signout", response_class=HTMLResponse)
+@app.get("/signout", response_class=Response or RedirectResponse)
 def signout(
     request: Request,
-    response: Response,
     db: Annotated[Session, Depends(get_db)]
     ):
     """Sign out a user"""
     session_id = request.cookies.get("session-id")
+    
     if session_id:
         session_service.destroy_session(db=db, session_id=session_id)
 
-    response = Response(status_code=200)
+    if request.headers.get("HX-Request"):
+        response = Response(status_code=303)
+        response.delete_cookie(key="session-id")
+        response.headers["HX-Redirect"] = "/"
+        return response
+
+    response = RedirectResponse(status_code=303, url="/")
     response.delete_cookie(key="session-id")
-    response.headers["HX-Redirect"] = "/"
+
     return response
