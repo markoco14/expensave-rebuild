@@ -52,7 +52,7 @@ def get_admin_page(
         "request": request,
     }
     return templates.TemplateResponse(
-        name="/app/admin/admin-home.html",
+        name="/admin/admin-home.html",
         context=context
     )
 
@@ -95,7 +95,7 @@ def read_admin_users_page(
         "users": db_users
     }
     return templates.TemplateResponse(
-        name="/app/admin/users.html",
+        name="/admin/users.html",
         context=context
     )
 
