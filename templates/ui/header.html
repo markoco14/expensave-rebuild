@@ -1,4 +1,5 @@
-<header x-data="{mobilenavOpen: false}"
+<header hx-boost="true"
+		x-data="{mobilenavOpen: false}"
 		class="fixed top-0 left-0 w-full bg-green-300/50">
 	<div class="h-[48px] flex justify-between items-center max-w-[1200px] mx-auto px-2 xl:px-0">
 		<span>MoneyLife</span>
@@ -48,14 +49,26 @@
 			<ul
 				class="flex flex-col items-center justify-center h-full w-full bg-green-700/90 md:bg-transparent md:flex-row gap-2 text-white md:text-black text-5xl md:text-base">
 				<li>
+					{% if request.url.path == "/" %}
+					<a href="/" class="underline underline-offset-2">Home</a>
+					{% else %}
 					<a href="/">Home</a>
+					{% endif %}
 				</li>
 				{% if user and user.feature_camera %}
 				<li>
+					{% if request.url.path == "/camera" %}
+					<a href="/camera" class="underline underline-offset-2">Camera</a>
+					{% else %}
 					<a href="/camera">Camera</a>
+					{% endif %}
 				</li>
 				<li>
+					{% if request.url.path == "/receipts" %}
+					<a href="/receipts" class="underline underline-offset-2">Receipts</a>
+					{% else %}
 					<a href="/receipts">Receipts</a>
+					{% endif %}
 				</li>
 				{# <li>
 					<a href="/cam2">Camera 2</a>
@@ -66,10 +79,19 @@
 				{% endif %}
 				{% if user %}
 				<li>
+					{% if request.url.path == "/purchases" %}
+					<a href="/purchases" class="underline underline-offset-2">Purchases</a>
+					{% else %}
 					<a href="/purchases">Purchases</a>
+					{% endif %}
 				</li>
 				<li>
+					{% if request.url.path == "/totals" %}
+					<a href="/totals" class="underline underline-offset-2">Totals</a>
+					{% else %}
 					<a href="/totals">Totals</a>
+					{% endif %}
+					
 				</li>
 				<li class="block md:hidden">
 					<a 	hx-get="/signout"
@@ -97,8 +119,12 @@
 						<ul>
 							{% if user.is_admin %}
 							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
-								<a href="/admin"
-								   class="text-right">Admin</a>
+								{% if request.url.path == "/admin" %}
+								
+								<a href="/admin" class="text-right underline underline-offset-2">Admin</a>
+								{% else %}
+								<a href="/admin" class="text-right">Admin</a>
+								{% endif %}
 							</li>
 							{% endif %}
 							<li class="grid rounded px-2 py-1 hover:bg-gray-200 cursor-pointer">
