@@ -1,4 +1,5 @@
 .env
 venv
+requirements_*
 __pycache__
 temp
