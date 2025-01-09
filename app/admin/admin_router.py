@@ -43,7 +43,7 @@ def get_admin_page(
 
         # return RedirectResponse(url="/", status_code=401)
         return templates.TemplateResponse(
-            name="/app/home/app-home.html",
+            name="/app/app-home.html",
             context=context,
         )
 
@@ -83,7 +83,7 @@ def read_admin_users_page(
 
         # return RedirectResponse(url="/", status_code=401)
         return templates.TemplateResponse(
-            name="/app/home/app-home.html",
+            name="/app/app-home.html",
             context=context,
         )
 
@@ -127,7 +127,7 @@ def delete_user(
 
         # return RedirectResponse(url="/", status_code=401)
         return templates.TemplateResponse(
-            name="/app/home/app-home.html",
+            name="/app/app-home.html",
             context=context,
         )
     db_user = db.query(DBUser).filter(DBUser.id == user_id).first()

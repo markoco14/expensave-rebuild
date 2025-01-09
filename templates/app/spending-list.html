@@ -11,7 +11,7 @@
 	hx-trigger="getPurchaseList from:body"
 	hx-swap="outerHTML">
 	{% for purchase in purchases %}
-	{% include "/app/home/spending-list-item.html" %}
+	{% include "/app/spending-list-item.html" %}
 	{% endfor %}
 </ul>
 {% endif %}
