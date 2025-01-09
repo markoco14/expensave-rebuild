@@ -609,8 +609,8 @@ def get_updated_purchase_list(
 
 
 
-@router.get("/purchases/daily-total")
-def calculate_total_sepnt(
+@router.get("/purchases/totals/daily")
+def calculate_total_spent(
     request: Request,
     db: Session = Depends(get_db)
 ):
