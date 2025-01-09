@@ -65,6 +65,6 @@ def get_totals_page(
         "limit": limit
     }
     return templates.TemplateResponse(
-        name="/app/totals/index.html",
+        name="/totals/index.html",
         context=context
     )

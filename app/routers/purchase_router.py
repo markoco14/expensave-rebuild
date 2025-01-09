@@ -178,7 +178,7 @@ def store_purchase(
     # sending form as response with oob row
     return templates.TemplateResponse(
         headers={"HX-Trigger": "calculateTotalSpent"},
-        name="app/home/spending-form-oob-response.html",
+        name="app/spending-form-oob-response.html",
         context=context
     )
 
@@ -219,7 +219,7 @@ def get_purchase_detail_row(
     }
 
     return block_templates.TemplateResponse(
-        name="/app/home/spending-list-item.html",
+        name="/app/spending-list-item.html",
         context=context,
         block_name="content"
     )
@@ -572,7 +572,7 @@ def get_purchase_details_page(
 
     if request.headers.get("HX-Request"):
         return block_templates.TemplateResponse(
-            name="/app/home/spending-list.html",
+            name="/app/spending-list.html",
             context=context,
         )
 
@@ -603,14 +603,14 @@ def get_updated_purchase_list(
         "purchases": db_purchases
     }
     return templates.TemplateResponse(
-        name="/app/home/spending-list.html",
+        name="/app/spending-list.html",
         context=context
     )
 
 
 
-@router.get("/purchases/daily-total")
-def calculate_total_sepnt(
+@router.get("/purchases/totals/daily")
+def calculate_total_spent(
     request: Request,
     db: Session = Depends(get_db)
 ):
@@ -633,7 +633,7 @@ def calculate_total_sepnt(
         purchases=purchases)
 
     return templates.TemplateResponse(
-        name="app/home/total-spent-span.html",
+        name="app/total-spent-span.html",
         context={
             "totalSpent": totalSpent,
             "request": request
@@ -646,12 +646,12 @@ def validate_items(request: Request, items: Annotated[str, Form()] = None):
     if not items:
         items = []
         return templates.TemplateResponse(
-            name="app/home/item-tags.html",
+            name="app/item-tags.html",
             context={"items": items}
         )
     items.rstrip(" ")
     items = items.split(", ")
     return templates.TemplateResponse(
-        name="app/home/item-tags.html",
+        name="app/item-tags.html",
         context={"items": items}
     )

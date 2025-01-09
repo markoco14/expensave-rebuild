@@ -1,4 +1,3 @@
-{% from '/macros/table.html' import heading_row%}
 {% extends "base.html" %}
 {% block title %}
 MySaveMoneyLife - Total Spending Page
@@ -10,7 +9,7 @@ MySaveMoneyLife - Total Spending Page
 		{% if not totals %}
 		<p class="text-center border p-2 rounded-md shadow">You haven't saved any purchases in the app. Save some purchases to see your daily total spending.</p>		
 		{% else %}
-            {% include "app/totals/totals-table.html" %}
+            {% include "totals/totals-table.html" %}
 		{% endif %}
 	</div>
 </section>

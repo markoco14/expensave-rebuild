@@ -100,7 +100,7 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         "totalSpent": totalSpent,
     }
     return templates.TemplateResponse(
-        name="app/home/app-home.html",
+        name="app/app-home.html",
         context=context
     )
 

@@ -76,13 +76,13 @@ def get_user_account(
 
     if request.headers.get("HX-Request"):
         return block_templates.TemplateResponse(
-            name="app/account/account-page.html",
+            name="account/account-page.html",
             context=context,
             block_name="account_data"
         )
 
     return templates.TemplateResponse(
-        name="/app/account/account-page.html",
+        name="/account/account-page.html",
         context=context
     )
 
@@ -119,7 +119,7 @@ def deposit_to_card(
     }
 
     return block_templates.TemplateResponse(
-        name="app/account/account-page.html",
+        name="account/account-page.html",
         context=context,
         block_name="deposit_form",
         headers={"HX-Trigger": "updateAccountData"}
@@ -159,7 +159,7 @@ def withdraw_to_cash(
     }
 
     return block_templates.TemplateResponse(
-        name="app/account/account-page.html",
+        name="account/account-page.html",
         context=context,
         block_name="withdraw_form",
         headers={"HX-Trigger": "updateAccountData"}
@@ -193,7 +193,7 @@ def list_account_transactions(
         "transactions": user_transactions
     }
     return block_templates.TemplateResponse(
-        name="app/account/account-page.html",
+        name="account/account-page.html",
         context=context,
         block_name="history_list"
     )
