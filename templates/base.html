@@ -108,12 +108,16 @@
 					}
 				}
 
+				.scroll-bar-thin {
+					scrollbar-width: thin;
+					scrollbar-color: #888 transparent;
+				}
 			}
 		</style>
 		<title>{% block title %}{%endblock title%}</title>
 	</head>
 
-	<body class="min-h-screen">
+	<body class="overflow-y-scroll scroll-bar-thin">
 		{% block header %}
 			{% include "ui/header.html" %}
 		{% endblock header %}
