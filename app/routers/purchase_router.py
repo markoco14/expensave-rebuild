@@ -88,8 +88,14 @@ def get_purchases_page(
         "fake_purchases": no_purchases_fake_data.example_purchases_data,
         "page": page
     }
-
+    
     if request.headers.get("HX-Request"):
+        if not request.query_params.get("page"):
+            return templates.TemplateResponse(
+                name="purchases/index.html",
+                context=context
+            )
+
         return block_templates.TemplateResponse(
             name="purchases/purchase-table-rows.html",
             context=context,

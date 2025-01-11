@@ -95,6 +95,19 @@
 				transition: opacity 1s ease-out;
 				}
 
+				.animate-move {
+					animation: move 1.5s linear infinite;
+				}
+
+				@keyframes move {
+					0% {
+						transform: translateX(-100%);
+					}
+					100% {
+						transform: translateX(500%);
+					}
+				}
+
 			}
 		</style>
 		<title>{% block title %}{%endblock title%}</title>

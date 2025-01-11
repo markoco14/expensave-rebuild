@@ -175,6 +175,18 @@ def get_receipts_page(
                                 ).all()
     
     if request.headers.get("HX-Request"):
+        if not request.query_params.get("page"):
+            response = templates.TemplateResponse(
+            name="/camera/receipts.html",
+            context={
+                "request": request,
+                "user": current_user,
+                "transactions": dbTransactions,
+                "page": page
+                },
+            status_code=200)
+            return response
+        
         response = templates.TemplateResponse(
             name="/camera/partials/receipt-list.html",
             context={
