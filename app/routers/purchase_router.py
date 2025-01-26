@@ -299,7 +299,7 @@ def update_purchase(
 def get_edit_purchase_form(
     request: Request,
     purchase_id: int,
-    tab: str = "info",
+    tab: str = "lottery",
     db: Session = Depends(get_db),
 ):
     current_user = auth_service.get_current_user(

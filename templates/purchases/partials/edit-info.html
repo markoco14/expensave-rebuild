@@ -1,11 +1,10 @@
 <div id="tabs" class="flex gap-2" hx-swap-oob="true">
     <button 
         type="button"
-        hx-get="/purchases/edit/form/{{purchase.id}}?tab=info"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=lottery"
         hx-target="next div"
-        hx-swap="innerHTML"
-        class="underline underline-offset-2 text-decoration-green-700">
-            Info
+        hx-swap="innerHTML">
+            Lottery
     </button>
     <button 
         type="button"
@@ -16,10 +15,11 @@
     </button>
     <button 
         type="button"
-        hx-get="/purchases/edit/form/{{purchase.id}}?tab=lottery"
+        hx-get="/purchases/edit/form/{{purchase.id}}?tab=info"
         hx-target="next div"
-        hx-swap="innerHTML">
-            Lottery
+        hx-swap="innerHTML"
+        class="underline underline-offset-2 text-decoration-green-700">
+            Info
     </button>
     <button 
         type="button"
