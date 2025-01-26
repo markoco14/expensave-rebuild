@@ -9,3 +9,6 @@ def get_original_storage_string(user_id: int, environment: str, upload_time: int
 
 def get_thumbnail_storage_string(original_storage_string: str):
     return original_storage_string.replace("original", "thumbnail").replace("png", "jpg")
+
+def get_edit_view_storage_string(original_storage_string: str):
+    return original_storage_string.replace("original", "edit").replace("png", "jpg")

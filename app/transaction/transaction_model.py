@@ -73,4 +73,5 @@ class Transaction(Base):
     s3_key = Column(Text, nullable=True)
     thumbnail_s3_key = Column(Text, nullable=True)
     receipt_lottery_number = Column(String(256), nullable=True)
+    edit_view_s3_key = Column(Text, nullable=True)
     
