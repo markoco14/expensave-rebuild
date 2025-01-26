@@ -1,6 +1,4 @@
-<form hx-put="/purchases/{{purchase.id}}"
-	  hx-swap="none"
-	  hx-target="this">
+<div class="grid md:grid-cols-2 md:gap-2">
 	  {% if purchase.s3_key %}
 	  <div hx-get="/receipts/images/edit/{{purchase.id}}"
 		hx-trigger="revealed"
@@ -10,17 +8,21 @@
 	  {% else %}
 	  <p class="border rounded-md px-4 py-1 text-center mb-4">No image available</p>
 	  {% endif %}
-	  <div id="tabs" class="flex gap-2">
-		{% include "/purchases/partials/edit-tabs.html" %}
-	  </div>
 	  <div>
-		{% include "/purchases/partials/edit-lottery.html" %}
+		{% include "/purchases/partials/edit-tabs.html" %}
+		<form hx-put="/purchases/{{purchase.id}}"
+			hx-swap="none"
+			hx-target="this">
+			<div>
+				{% include "/purchases/partials/edit-lottery.html" %}
+			</div>
+			<button type="button"
+					hx-get="/purchases/{{purchase.id}}"
+					hx-target="closest .detail-card"
+					hx-swap="innerHTML"
+					class="px-3 py-1 border rounded-md hover:bg-gray-200 active:bg-gray-300">Close</button>
+			<button type="submit"
+					class="px-3 py-1 border rounded-md bg-green-400 hover:bg-green-500 active:bg-green-600">Save</button>
+		</form>
 	  </div>
-	<button type="button"
-			hx-get="/purchases/{{purchase.id}}"
-			hx-target="closest .detail-card"
-			hx-swap="innerHTML"
-			class="px-3 py-1 border rounded-md hover:bg-gray-200 active:bg-gray-300">Close</button>
-	<button type="submit"
-			class="px-3 py-1 border rounded-md bg-green-400 hover:bg-green-500 active:bg-green-600">Save</button>
-</form>
+</div>

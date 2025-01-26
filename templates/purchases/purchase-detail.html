@@ -4,7 +4,7 @@ MySaveMoneyLife - Purchase History
 {% endblock title %}
 {% block content %}
 <section class="px-2 py-[96px]">
-	<div class="grid gap-4 max-w-[500px] mx-auto">
+	<div class="grid gap-4 max-w-[700px] mx-auto">
 		<header class="flex items-center gap-4">
 			<a href="/"
 			   class="text-blue-500">
@@ -32,12 +32,12 @@ MySaveMoneyLife - Purchase History
 			<a 
 				href="/purchases/details/{{yesterday_date}}" 
 				class="border border-green-700 drop-shadow rounded-md px-4 py-1 hover:bg-green-600 hover:border-green-600 hover:text-white active:bg-green-700 active:border-green-700 active:scale-95 active:drop-shadow-lg">
-				Yesterday
+				Previous
 			</a>
 			<a 
 				href="/purchases/details/{{tomorrow_date}}" 
 				class="border border-green-700 drop-shadow rounded-md px-4 py-1 hover:bg-green-600 hover:border-green-600 hover:text-white active:bg-green-700 active:border-green-700 active:scale-95 active:drop-shadow-lg">
-				Tomorrow
+				Next
 			</a>
 			</div>
 		{% include "/app/spending-list.html" %}
@@ -47,13 +47,11 @@ MySaveMoneyLife - Purchase History
 	document.addEventListener('htmx:beforeRequest', (event) => {
 		const target = event.target;
 		if (target.matches('button')) {
-			const container = target.closest('.detail-card');
-			container.classList.add('animate-pulse');
+			target.classList.add('animate-pulse');
 		}
 
 		if (target.matches('form')) {
-			const container = target.closest('.detail-card');
-			container.classList.add('animate-pulse');
+			target.classList.add('animate-pulse');
 		}
 	});
 
@@ -62,11 +60,8 @@ MySaveMoneyLife - Purchase History
 		if (target.matches('.detail-card')) {
 			target.classList.remove('animate-pulse');
 		}
-		if (target.matches('button')) {
-			target.closest('.detail-card').classList.remove('animate-pulse');
-		}
 		if (target.matches('form')) {
-			target.closest('.detail-card').classList.remove('animate-pulse');
+			target.classList.remove('animate-pulse');
 		}
 	});
 
