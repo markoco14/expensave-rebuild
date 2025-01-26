@@ -25,7 +25,7 @@ block_templates = Jinja2Blocks(directory="templates")
 
 
 @router.get("/camera")
-def get_purchases_page(
+def get_camera_page(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
 ):
