@@ -59,3 +59,12 @@ def create_thumbnail(image_data) -> Image:
     
     return thumbnail_photo
 
+
+def create_edit_view(image_data) -> Image:
+    with Image.open(BytesIO(image_data)) as in_memory_image:
+        edit_view_size = (500, 500)
+        edit_view_photo = in_memory_image.copy()
+        edit_view_photo.thumbnail(edit_view_size)
+        edit_view_photo = edit_view_photo.rotate(270)
+
+    return edit_view_photo
