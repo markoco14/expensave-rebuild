@@ -238,6 +238,7 @@ def get_receipt_edit_image(
     ):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
+    
     if not current_user:
         context = {
             "request": request,
@@ -258,12 +259,12 @@ def get_receipt_edit_image(
         region_name=os.environ.get("AWS_DEFAULT_REGION")
     )
 
-    if dbTransaction.thumbnail_s3_key:
+    if dbTransaction.edit_view_s3_key:
         presigned_url = s3.generate_presigned_url(
             "get_object",
             Params={
                 "Bucket": os.environ.get("AWS_PROJECT_BUCKET"),
-                "Key": dbTransaction.thumbnail_s3_key
+                "Key": dbTransaction.edit_view_s3_key
             },
             ExpiresIn=3600
         )
@@ -281,6 +282,7 @@ def get_receipt_edit_image(
         )
     
     # s3_get_original_start = time.time()
+    # try to fetch the original image from S3
     try:
         s3_response = s3.get_object(
             Bucket=os.environ.get("AWS_PROJECT_BUCKET"),
@@ -292,27 +294,27 @@ def get_receipt_edit_image(
      # s3_get_original_end = time.time()
     # print(f"S3 fetch time: {s3_get_original_end - s3_get_original_start}")
     
-    # image name in /thumbnail should match /original
-    thumbnail_key = utils.get_thumbnail_storage_string(original_storage_string=dbTransaction.s3_key)
+    # image name in /edit should match /original
+    edit_view_key = utils.get_edit_view_storage_string(original_storage_string=dbTransaction.s3_key)
     quality = 90
 
     # resize_start_time = time.time()
     image_data = s3_response['Body'].read()
-    thumbnail_photo = camera_tasks.create_thumbnail(image_data)
+    edit_view_photo = camera_tasks.create_edit_view(image_data)
     # resize_end_time = time.time()
     # print(f"Resize time: {resize_end_time - resize_start_time}")
     
-    # Save the thumbnail to an in-memory byte stream
+    # Save the edit_view to an in-memory byte stream
     # upload_thumbnail_start = time.time()
     img_byte_arr = BytesIO()
-    thumbnail_photo.save(img_byte_arr, format="JPEG", quality=quality)
+    edit_view_photo.save(img_byte_arr, format="JPEG", quality=quality)
     img_byte_arr.seek(0)  # Reset the stream's position to the beginning
 
-    # upload thumbnail to s3
+    # upload edit_view to s3
     try:
         s3.put_object(
                 Bucket=os.environ.get("AWS_PROJECT_BUCKET"),
-                Key=thumbnail_key,
+                Key=edit_view_key,
                 Body=img_byte_arr.getvalue(),
                 ContentType="image/jpeg"
             )
@@ -328,7 +330,7 @@ def get_receipt_edit_image(
             "get_object",
             Params={
                 "Bucket": os.environ.get("AWS_PROJECT_BUCKET"),
-                "Key": thumbnail_key
+                "Key": edit_view_key
             },
             ExpiresIn=3600
         )
@@ -341,7 +343,7 @@ def get_receipt_edit_image(
     
     # store in DB
     try:
-        dbTransaction.thumbnail_s3_key = thumbnail_key
+        dbTransaction.edit_view_s3_key = edit_view_key
         db.commit()
     except Exception as e:
         print(f"Error storing thumbnail key in DB: {e}")
