@@ -1,10 +1,10 @@
 <button 
     type="button"
-    hx-get="/purchases/edit/form/{{purchase.id}}?tab=info"
+    hx-get="/purchases/edit/form/{{purchase.id}}?tab=lottery"
     hx-target="next div"
     hx-swap="innerHTML"
     class="underline underline-offset-2 text-decoration-green-700">
-        Info
+        Lottery
 </button>
 <button 
     type="button"
@@ -15,10 +15,10 @@
 </button>
 <button 
     type="button"
-    hx-get="/purchases/edit/form/{{purchase.id}}?tab=lottery"
+    hx-get="/purchases/edit/form/{{purchase.id}}?tab=info"
     hx-target="next div"
     hx-swap="innerHTML">
-        Lottery
+        Info
 </button>
 <button 
     type="button"
