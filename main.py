@@ -20,6 +20,8 @@ from app.core.database import get_db
 from app.routers import purchase_router, totals_router, faker_router, receipts_router
 from app.camera import camera_router
 from app.services import transaction_service
+from app.transaction import transaction_schemas
+from app.transaction.transaction_model import Transaction
 from app.user import user_schemas, user_service
 
 settings = get_settings()
@@ -155,6 +157,126 @@ def get_app_index_page(
         name="app/app-home.html",
         context=context
     )
+
+
+@app.post("/date/{selected_date}", response_class=templates.TemplateResponse)
+def store_new_purchase(
+    request: Request,
+    selected_date: datetime,
+    lottery: Annotated[str, Form(...)],
+    amount: Annotated[str, Form(...)],
+    db: Session = Depends(get_db),
+    ):
+    """Store a new purchase"""
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    if not current_user:
+        context = {
+            "request": request,
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+    
+    form_values = {
+        "lottery": lottery,
+        "amount": amount
+    }
+
+    form_errors = {}
+
+    # validate lottery number
+    if not lottery:
+        form_errors["lottery"] = "Please enter a lottery number."
+    
+    # first check whether the lottery number has at least 8 digits
+    digit_regex = r"(\d+)"
+    lottery = lottery.upper()
+    digit_match = re.search(digit_regex, lottery)
+
+    try:
+        lottery_digits = digit_match.group()
+    except AttributeError:
+        lottery_digits = None
+
+    # validate lotttery number is at least 8 digits
+    if not lottery_digits:
+        form_errors["lottery"] = "Please enter a valid lottery number."
+    elif len(lottery_digits) != 8:
+        form_errors["lottery"] = "Lottery number must be 8 digits digits."
+    
+    # validate amount
+    if not amount:
+        form_errors["amount"] = "Please enter a purchase amount."
+    else:
+        try:
+            amount_int = int(amount.strip())  # Remove spaces and convert to int
+            
+            if amount_int < 1:
+                form_errors["amount"] = "Amount must be greater than 0."
+        except ValueError:
+            form_errors["amount"] = "Amount must be a valid integer."
+
+    if form_errors:
+        response = templates.TemplateResponse(
+            name="purchases/form/new.html",
+            context={
+                "request": request,
+                "today_date": selected_date,
+                "form_errors": form_errors,
+                "form_values": form_values
+                },
+        )
+
+        return response
+    
+    utc_corrected_time = selected_date - timedelta(hours=8)
+    
+    new_purchase = transaction_schemas.PurchaseCreateMinimal(
+        user_id=current_user.id,
+        price=amount,
+        receipt_lottery_number=lottery,
+        purchase_time=utc_corrected_time
+    )
+
+    db_purchase = Transaction(**new_purchase.model_dump())
+    db.add(db_purchase)
+    db.commit()
+    db.refresh(db_purchase)
+
+    db_today_purchases = transaction_service.get_user_today_purchases(
+        current_user_id=current_user.id, db=db)
+    
+    if len(db_today_purchases) == 0:
+        db_today_purchases.append(db_purchase)
+        context = {
+            "request": request,
+            "today_date": selected_date,
+            "purchases": db_today_purchases,
+            "message": "Purchase tracked!"
+        }
+
+        return templates.TemplateResponse(
+            headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
+            name="purchases/form/new.html",
+            context=context
+        )
+    
+    db_purchase.purchase_time = time_service.format_taiwan_time(purchase_time=db_purchase.purchase_time)
+    
+    response = templates.TemplateResponse(
+        name="purchases/form/new.html",
+        headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
+        context={
+            "request": request,
+            "today_date": selected_date,
+            "form_errors": {},
+            "form_values": {}
+            },
+    )
+
+    return response
 
 
 @app.get("/signup", response_class=templates.TemplateResponse)
