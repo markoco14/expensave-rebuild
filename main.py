@@ -2,12 +2,13 @@
 from datetime import datetime
 import os
 import time
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends, FastAPI, Form, Request, Response
 from fastapi.responses import Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.admin import admin_router
@@ -237,3 +238,41 @@ def signout(
     response.delete_cookie(key="session-id")
 
     return response
+
+@app.get("/development", response_class=templates.TemplateResponse)
+def get_development_page(request: Request):
+    context = {"request": request}
+    return templates.TemplateResponse(
+        name="development/index.html",
+        context=context
+    )
+
+class NewPurchaseFormData(BaseModel):
+    """Form data for new purchase"""
+    lottery: str
+    purchase_time: str
+
+
+@app.post("/development", response_class=Response)
+def store_new_purchase(
+    request: Request,
+    data: Annotated[NewPurchaseFormData, Form()],
+    ):
+    """Store a new purchase"""
+    form_errors = {}
+
+    if not data.lottery:
+        form_errors["lottery"] = "Please enter a lottery number."
+    
+    if not data.purchase_time:
+        form_errors["purchase_time"] = "Please enter a purchase time."
+
+    if form_errors:
+        response = templates.TemplateResponse(
+            name="purchases/form/new.html",
+            context={"request": request, "form_errors": form_errors},
+        )
+
+        return response
+    
+    return Response(status_code=200, content="Purchase stored")
