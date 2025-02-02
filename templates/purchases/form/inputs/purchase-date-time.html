@@ -5,7 +5,7 @@
         class="border rounded p-2 bg-gray-100"
         type="datetime-local"
         step="1" 
-        value="{{form_values.get('purchase_time', '')}}"/>
+        value="{{form_values.get('purchase_time', '') if form_values else ''}}"/>
     <div class="text-red-500 text-sm min-h-[20px] text-[12px] text-right">
         {% if form_errors and form_errors["purchase_time"] %}
             {{ form_errors["purchase_time"] }}
