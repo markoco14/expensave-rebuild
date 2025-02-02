@@ -1,13 +1,15 @@
 """ Main application file """
 from datetime import datetime
 import os
+import re
 import time
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends, FastAPI, Form, Request, Response
 from fastapi.responses import Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.admin import admin_router
@@ -237,3 +239,23 @@ def signout(
     response.delete_cookie(key="session-id")
 
     return response
+
+@app.get("/development", response_class=templates.TemplateResponse)
+def get_development_page(request: Request):
+    context = {
+        "request": request,
+        "form_errors": {},
+        "form_values": {}
+        }
+
+    return templates.TemplateResponse(
+        name="development/index.html",
+        context=context
+    )
+
+class NewPurchaseFormData(BaseModel):
+    """Form data for new purchase"""
+    lottery: str
+    purchase_time: str
+    amount: str
+

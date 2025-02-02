@@ -1,0 +1,11 @@
+<div class="flex flex-col gap-1"
+        hx-target="this"
+        hx-swap="outerHTML">
+    <label for="items">What did you buy?</label>
+    <input {# hx-post="/purchases/validate-items" #}
+            required
+            id="items"
+            name="items"
+            class="border rounded p-2 bg-gray-100"
+            type="text" />
+</div>
