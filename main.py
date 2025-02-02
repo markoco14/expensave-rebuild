@@ -170,6 +170,7 @@ def store_new_purchase(
     """Store a new purchase"""
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
+    
     if not current_user:
         context = {
             "request": request,
@@ -245,15 +246,18 @@ def store_new_purchase(
     db.commit()
     db.refresh(db_purchase)
 
-    db_today_purchases = transaction_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
+    db_purchases = transaction_service.get_user_purchases_by_date(
+                                            current_user_id=current_user.id, 
+                                            selected_date=selected_date, 
+                                            db=db
+                                        )
     
-    if len(db_today_purchases) == 0:
-        db_today_purchases.append(db_purchase)
+    if len(db_purchases) == 0:
+        db_purchases.append(db_purchase)
         context = {
             "request": request,
             "today_date": selected_date,
-            "purchases": db_today_purchases,
+            "purchases": db_purchases,
             "message": "Purchase tracked!"
         }
 
