@@ -662,9 +662,10 @@ def get_updated_purchase_list(
 
 
 
-@router.get("/purchases/totals/daily")
+@router.get("/purchases/totals/{selected_date}")
 def calculate_total_spent(
     request: Request,
+    selected_date: datetime,
     db: Session = Depends(get_db)
 ):
     current_user = auth_service.get_current_user(
@@ -679,16 +680,20 @@ def calculate_total_spent(
             context=context
         )
 
-    purchases = transaction_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
+    db_purchases = transaction_service.get_user_purchases_by_date(
+                                            current_user_id=current_user.id, 
+                                            selected_date=selected_date, 
+                                            db=db
+                                        )
 
     totalSpent = transaction_service.calculate_day_total_spent(
-        purchases=purchases)
+        purchases=db_purchases)
 
     return templates.TemplateResponse(
         name="app/total-spent-span.html",
         context={
             "totalSpent": totalSpent,
+            "today_date": selected_date,
             "request": request
         }
     )
