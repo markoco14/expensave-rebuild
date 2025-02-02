@@ -76,6 +76,8 @@ def get_index_page(
             name="/website/index.html",
             context=context
         )
+    
+    return RedirectResponse(url="/date/{}".format(datetime.now().strftime("%Y-%m-%d")))
 
     purchases = transaction_service.get_user_today_purchases(
         current_user_id=current_user.id, db=db)
@@ -333,7 +335,7 @@ def signup(
         secure=True,
         samesite="Lax"
     )
-    response.headers["HX-Redirect"] = "/"
+    response.headers["HX-Redirect"] = "/date/{}".format(datetime.now().strftime("%Y-%m-%d"))
 
     return response
 
@@ -389,7 +391,7 @@ def signin(
         secure=True,
         samesite="Lax"
     )
-    response.headers["HX-Redirect"] = "/"
+    response.headers["HX-Redirect"] = "/date/{}".format(datetime.now().strftime("%Y-%m-%d"))
     return response
 
 
