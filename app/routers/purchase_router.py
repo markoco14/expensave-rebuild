@@ -18,7 +18,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth import auth_service
 from app.core.database import get_db
-from app.core import links
+from app.core import links, time_service
 from app.transaction import transaction_schemas
 from app.transaction.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
@@ -632,23 +632,27 @@ def get_purchase_details_page(
 
 
 
-@router.get("/purchase-list")
+@router.get("/purchase-list/{selected_date}")
 def get_updated_purchase_list(
     request: Request,
+    selected_date: datetime,
     db: Annotated[Session, Depends(get_db)]
 ):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
 
-    db_purchases = transaction_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
-
+    db_purchases = transaction_service.get_user_purchases_by_date(
+                                            current_user_id=current_user.id, 
+                                            selected_date=selected_date, 
+                                            db=db
+                                        )
+    
     for purchase in db_purchases:
-        purchase.purchase_time = TimeService.format_taiwan_time(
-            purchase_time=purchase.purchase_time)
+        purchase.purchase_time = time_service.format_taiwan_time(purchase_time=purchase.purchase_time)
 
     context = {
         "request": request,
+        "today_date": selected_date,
         "purchases": db_purchases
     }
     return templates.TemplateResponse(
