@@ -1,5 +1,5 @@
 """ Main application file """
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import re
 import time
@@ -137,11 +137,16 @@ def get_app_index_page(
 
     totalSpent = transaction_service.calculate_day_total_spent(
         purchases=db_purchases)
+    
+    yesterday_date = selected_date - timedelta(days=1)
+    tomorrow_date = selected_date + timedelta(days=1)
 
     context = {
         "request": request,
         "user": current_user,
         "today_date": selected_date,
+        "yesterday_date": yesterday_date.strftime("%Y-%m-%d"),
+        "tomorrow_date": tomorrow_date.strftime("%Y-%m-%d"),
         "purchases": db_purchases,
         "totalSpent": totalSpent,
     }
@@ -150,6 +155,7 @@ def get_app_index_page(
         name="app/app-home.html",
         context=context
     )
+
 
 @app.get("/signup", response_class=templates.TemplateResponse)
 def get_sign_up_page(request: Request):
