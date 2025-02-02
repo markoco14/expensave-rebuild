@@ -2,6 +2,7 @@
 from decimal import Decimal
 import json
 import os
+import re
 from typing import Annotated, Optional
 from datetime import datetime, timedelta
 
@@ -106,19 +107,15 @@ def get_purchases_page(
     )
 
 
-
-@router.post("/purchases")
-def store_purchase(
+@router.post("/purchases", response_class=Response)
+def store_new_purchase(
     request: Request,
-    items: Annotated[str, Form()],
-    price: Annotated[Decimal, Form()],
-    currency: Annotated[str, Form()],
-    location: Annotated[str, Form()],
-    payment_method: Annotated[str, Form()],
+    lottery: Annotated[str, Form(...)],
+    purchase_time: Annotated[str, Form(...)],
+    amount: Annotated[str, Form(...)],
     db: Session = Depends(get_db),
-    purchase_time: Annotated[str, Form()] = None,
-    lottery: Annotated[str, Form()] = None,
-):
+    ):
+    """Store a new purchase"""
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
     if not current_user:
@@ -131,61 +128,108 @@ def store_purchase(
             context=context
         )
     
-    db_today_purchases = transaction_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
+    form_values = {
+        "lottery": lottery,
+        "purchase_time": purchase_time,
+        "amount": amount
+    }
+
+    form_errors = {}
+
+    # validate lottery number
+    if not lottery:
+        form_errors["lottery"] = "Please enter a lottery number."
+    
+    # first check whether the lottery number has at least 8 digits
+    digit_regex = r"(\d+)"
+    lottery = lottery.upper()
+    digit_match = re.search(digit_regex, lottery)
+
+    try:
+        lottery_digits = digit_match.group()
+    except AttributeError:
+        lottery_digits = None
+
+    # validate lotttery number is at least 8 digits
+    if not lottery_digits:
+        form_errors["lottery"] = "Please enter a valid lottery number."
+    elif len(lottery_digits) != 8:
+        form_errors["lottery"] = "Lottery number must be 8 digits digits."
+
+    # validate purchase time
+    if not purchase_time:
+        form_errors["purchase_time"] = "Please enter a purchase time."
+    
+    # validate amount
+    if not amount:
+        form_errors["amount"] = "Please enter a purchase amount."
+    else:
+        try:
+            amount_int = int(amount.strip())  # Remove spaces and convert to int
+            
+            if amount_int < 1:
+                form_errors["amount"] = "Amount must be greater than 0."
+        except ValueError:
+            form_errors["amount"] = "Amount must be a valid integer."
+
+    if form_errors:
+        response = templates.TemplateResponse(
+            name="purchases/form/new.html",
+            context={
+                "request": request,
+                "form_errors": form_errors,
+                "form_values": form_values
+                },
+        )
+
+        return response
     
     purchase_time_object = datetime.fromisoformat(purchase_time)
     utc_corrected_time = purchase_time_object - timedelta(hours=8)
-
-    new_purchase = transaction_schemas.PurchaseCreate(
+    
+    new_purchase = transaction_schemas.PurchaseCreateMinimal(
         user_id=current_user.id,
-        items=items,
-        price=price,
-        currency=currency,
-        location=location,
+        price=amount,
         receipt_lottery_number=lottery,
-        purchase_time=utc_corrected_time,
-        transaction_type=TransactionType.PURCHASE,
-        payment_method=payment_method)
+        purchase_time=utc_corrected_time
+    )
 
     db_purchase = Transaction(**new_purchase.model_dump())
     db.add(db_purchase)
     db.commit()
     db.refresh(db_purchase)
 
+    db_today_purchases = transaction_service.get_user_today_purchases(
+        current_user_id=current_user.id, db=db)
+    
     if len(db_today_purchases) == 0:
         db_today_purchases.append(db_purchase)
-        currency = "TWD"
         context = {
             "request": request,
-            "currency": currency,
             "purchases": db_today_purchases,
             "message": "Purchase tracked!"
         }
 
         return templates.TemplateResponse(
             headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
-            name="purchases/new-purchase-form.html",
+            name="purchases/form/new.html",
             context=context
         )
-
-    db_purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=db_purchase.purchase_time)
-
-    currency = "TWD"
-    context = {
-        "request": request,
-        "currency": currency,
-        "purchase": db_purchase,
-        "message": "Purchase tracked!"
-    }
     
-    # TODO: can't change to blocks just yet because
-    # sending form as response with oob row
-    return templates.TemplateResponse(
-        headers={"HX-Trigger": "calculateTotalSpent"},
-        name="app/spending-form-oob-response.html",
-        context=context
+    db_purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=db_purchase.purchase_time)
+    
+    response = templates.TemplateResponse(
+        name="purchases/form/new.html",
+        headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
+        context={
+            "request": request,
+            "form_errors": {},
+            "form_values": {}
+            },
     )
+
+    return response
+
 
 
 @router.get("/purchases/{purchase_id}")
