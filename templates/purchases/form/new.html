@@ -6,10 +6,7 @@
 	<h1 class="text-3xl">Track Spending</h1>
 	{% include "purchases/form/inputs/lottery.html" %}
 	{% include "purchases/form/inputs/purchase-date-time.html" %}
-	<div class="stacked">
-		<hr class="w-full"/>
-		<button type="button" class="bg-white px-2 rounded-md border hover:bg-green-700 hover:text-white duration-200 ease-in-out active:bg-green-600 active:scale-95">Add Amount Spent</button>
-	</div>
+	{% include "purchases/form/inputs/amount.html" %}
 	<button class="flex gap-2  justify-center items-center bg-gray-700 text-white px-3 py-2 rounded">
 		Save
 		<div>

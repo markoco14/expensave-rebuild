@@ -1,9 +1,12 @@
 <div class="flex flex-col gap-1">
-    <label for="lottery">Lottery ID Number?</label>
+    <label for="lottery" class="font-semibold">Lottery Number</label>
+    <p class="text-sm">Please enter the lottery number with or without the letters.</p>
+    <p class="text-sm">Example: <strong>GJ-12345678</strong> or <strong>12345678</strong> (without GJ-).</p>
     <input id="lottery"
             name="lottery"
             class="border rounded p-2 bg-gray-100"
-            type="text" />
+            type="text" 
+            value="{{form_values.get('lottery', '')}}" />
     <div class="text-red-500 text-sm min-h-[20px] text-[12px] text-right">
         {% if form_errors and form_errors["lottery"] %}
             {{ form_errors["lottery"] }}
