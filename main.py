@@ -62,7 +62,10 @@ app.add_middleware(SleepMiddleware)
 
 
 @app.get("/", response_class=templates.TemplateResponse)
-def get_index_page(request: Request, db: Session = Depends(get_db)):
+def get_index_page(
+    request: Request,
+    db: Session = Depends(get_db)
+    ):
     current_user = auth_service.get_current_user(
         db=db, cookies=request.cookies)
     if not current_user:
@@ -107,6 +110,46 @@ def get_index_page(request: Request, db: Session = Depends(get_db)):
         context=context
     )
 
+@app.get("/date/{selected_date}", response_class=templates.TemplateResponse)
+def get_app_index_page(
+    request: Request,
+    selected_date: datetime,
+    db: Session = Depends(get_db)
+    ):
+    current_user = auth_service.get_current_user(
+        db=db, cookies=request.cookies)
+    
+    if not current_user:
+        context = {"request": request}
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+    
+    db_purchases = transaction_service.get_user_purchases_by_date(
+                                            current_user_id=current_user.id, 
+                                            selected_date=selected_date, 
+                                            db=db
+                                        )
+    
+    for purchase in db_purchases:
+        purchase.purchase_time = time_service.format_taiwan_time(purchase_time=purchase.purchase_time)
+
+    totalSpent = transaction_service.calculate_day_total_spent(
+        purchases=db_purchases)
+
+    context = {
+        "request": request,
+        "user": current_user,
+        "today_date": selected_date,
+        "purchases": db_purchases,
+        "totalSpent": totalSpent,
+    }
+
+    return templates.TemplateResponse(
+        name="app/app-home.html",
+        context=context
+    )
 
 @app.get("/signup", response_class=templates.TemplateResponse)
 def get_sign_up_page(request: Request):
@@ -239,23 +282,4 @@ def signout(
     response.delete_cookie(key="session-id")
 
     return response
-
-@app.get("/development", response_class=templates.TemplateResponse)
-def get_development_page(request: Request):
-    context = {
-        "request": request,
-        "form_errors": {},
-        "form_values": {}
-        }
-
-    return templates.TemplateResponse(
-        name="development/index.html",
-        context=context
-    )
-
-class NewPurchaseFormData(BaseModel):
-    """Form data for new purchase"""
-    lottery: str
-    purchase_time: str
-    amount: str
 
