@@ -1,11 +1,9 @@
-<form hx-post="/purchases"
+<form hx-post="/date/{{today_date.strftime('%Y-%m-%d')}}"
 	  hx-target="this"
 	  hx-swap="outerHTML"
 	  hx-indicator="#expense-form-indicator"
-	  class="grid gap-2">
-	<h1 class="text-3xl">Track Spending</h1>
+	  class="px-2 grid gap-2">
 	{% include "purchases/form/inputs/lottery.html" %}
-	{% include "purchases/form/inputs/purchase-date-time.html" %}
 	{% include "purchases/form/inputs/amount.html" %}
 	<button class="flex gap-2  justify-center items-center bg-gray-700 text-white px-3 py-2 rounded">
 		Save
