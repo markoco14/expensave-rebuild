@@ -144,6 +144,12 @@ def get_app_index_page(
     
     yesterday_date = selected_date - timedelta(days=1)
     tomorrow_date = selected_date + timedelta(days=1)
+    
+    current_time = datetime.time(datetime.now())
+
+    form_values = {
+        "time": current_time.strftime("%I:%M:%S")
+    }
 
     context = {
         "request": request,
@@ -153,6 +159,7 @@ def get_app_index_page(
         "tomorrow_date": tomorrow_date.strftime("%Y-%m-%d"),
         "purchases": db_purchases,
         "totalSpent": totalSpent,
+        "form_values": form_values
     }
 
     return templates.TemplateResponse(
@@ -166,6 +173,7 @@ def store_new_purchase(
     request: Request,
     selected_date: datetime,
     lottery: Annotated[str, Form(...)],
+    time: Annotated[str, Form(...)],
     amount: Annotated[str, Form(...)],
     db: Session = Depends(get_db),
     ):
@@ -184,6 +192,7 @@ def store_new_purchase(
     
     form_values = {
         "lottery": lottery,
+        "time": time,
         "amount": amount
     }
 
@@ -208,6 +217,10 @@ def store_new_purchase(
         form_errors["lottery"] = "Please enter a valid lottery number."
     elif len(lottery_digits) != 8:
         form_errors["lottery"] = "Lottery number must be 8 digits digits."
+
+    # in case somehow not a time
+    if not time:
+        form_errors["time"] = "Please enter a purchase time."
     
     # validate amount
     if not amount:
@@ -220,6 +233,12 @@ def store_new_purchase(
                 form_errors["amount"] = "Amount must be greater than 0."
         except ValueError:
             form_errors["amount"] = "Amount must be a valid integer."
+
+    # Convert the time string to a time object
+    try:
+        purchase_time_object = datetime.strptime(time, "%H:%M:%S").time()
+    except ValueError:
+        form_errors["time"] = "Please enter a valid time."
 
     if form_errors:
         response = templates.TemplateResponse(
@@ -234,7 +253,7 @@ def store_new_purchase(
 
         return response
     
-    utc_corrected_time = selected_date - timedelta(hours=8)
+    utc_corrected_time = datetime.combine(selected_date, purchase_time_object) - timedelta(hours=8)
     
     new_purchase = transaction_schemas.PurchaseCreateMinimal(
         user_id=current_user.id,
@@ -254,12 +273,19 @@ def store_new_purchase(
                                             db=db
                                         )
     
+    # corrent the time for UI
+    db_purchase.purchase_time = time_service.format_taiwan_time(purchase_time=db_purchase.purchase_time)
+    
     if len(db_purchases) == 0:
         db_purchases.append(db_purchase)
         context = {
             "request": request,
             "today_date": selected_date,
             "purchases": db_purchases,
+            "form_errors": {},
+            "form_values": {
+                "time": datetime.now().time().strftime("%I:%M:%S")
+            },
             "message": "Purchase tracked!"
         }
 
@@ -269,8 +295,6 @@ def store_new_purchase(
             context=context
         )
     
-    db_purchase.purchase_time = time_service.format_taiwan_time(purchase_time=db_purchase.purchase_time)
-    
     response = templates.TemplateResponse(
         name="purchases/form/new.html",
         headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
@@ -278,7 +302,9 @@ def store_new_purchase(
             "request": request,
             "today_date": selected_date,
             "form_errors": {},
-            "form_values": {}
+            "form_values": {
+                "time": datetime.now().time().strftime("%I:%M:%S")
+            }
             },
     )
 
