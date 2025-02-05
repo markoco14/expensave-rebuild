@@ -6,29 +6,37 @@ Expense Tracker App
 <section class="pt-[24px] pb-[96px]">
 	<div class="grid gap-4 max-w-[500px] mx-auto">
 		<h1 class="px-2 text-3xl">Track Spending</h1>
-		<div class="flex gap-4 bg-gray-100 px-2 py-1">
-			<a 
-				href="/date/{{yesterday_date}}" 
-				class="bg-green-200 text-green-950 rounded-md px-4 py-1 hover:bg-green-600 hover:text-white active:bg-green-700 active:scale-95 active:drop-shadow-lg">
-				{{yesterday_date}}
-			</a>
-			<a 
-				href="/date/{{tomorrow_date}}" 
-				class="bg-green-200 text-green-950 rounded-md px-4 py-1 hover:bg-green-600 hover:text-white active:bg-green-700 active:scale-95 active:drop-shadow-lg">
-				{{tomorrow_date}}
-			</a>
+		<header class="px-2">
+			<div class="w-full items-center mb-2">
+				<h2 class="text-2xl text-gray-700">{{today_date.strftime("%B %d, %Y")}}</h2>
+			</div>
+		</header>
+		<div class="sm:px-2">
+			<div class="flex gap-4 bg-gray-100 px-2 py-1 sm:rounded-md">
+				<a 
+					href="/date/{{yesterday_date}}" 
+					class="bg-green-200 text-green-950 rounded-md px-4 py-1 hover:bg-green-600 hover:text-white active:bg-green-700 active:scale-95 active:drop-shadow-lg">
+					{{yesterday_date}}
+				</a>
+				<a 
+					href="/date/{{tomorrow_date}}" 
+					class="bg-green-200 text-green-950 rounded-md px-4 py-1 hover:bg-green-600 hover:text-white active:bg-green-700 active:scale-95 active:drop-shadow-lg">
+					{{tomorrow_date}}
+				</a>
+			</div>
 		</div>
 		{% include 'purchases/form/new.html' %}
 		<hr class="border border-gray-700" />
-		<div class="px-2 grid rounded-md gap-4">
-			<header class="md:px-8 flex justify-between items-start">
-				<div class="w-full items-center mb-2">
-					<h2 class="text-2xl text-gray-700">{{today_date.strftime("%B %d, %Y")}}</h2>
-					<a href="/purchases/details/{{today_date.strftime('%Y-%m-%d')}}"
-					   class="underline underline-offset-2 text-gray-600">Details</a>
-				</div>
+		{# <a href="/purchases/details/{{today_date.strftime('%Y-%m-%d')}}"
+			class="underline underline-offset-2 text-gray-600">Details</a> #}
+		<div class="px-2 sm:px-0">
+			<div class="flex justify-between items-center rounded-md gap-4 text-2xl bg-white p-2 rounded-md shadow">
+				<span>Total Spent:</span>
 				{% include "/app/total-spent-span.html" %}
-			</header>
+			</div>
+		</div>
+		
+		<div class="px-2 sm:px-0 grid rounded-md gap-4">
 			{% include 'app/spending-list.html'%}
 		</div>
 	</div>
