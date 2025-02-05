@@ -1,13 +1,33 @@
 <div class="flex flex-col gap-1">
-    <label for="lottery" class="font-semibold">Lottery Number <span class="text-[10px] text-red-600">(required)</span></label>
-    <p class="text-sm">Please enter the lottery number without the letters.</p>
-    <p class="text-sm">Example: For <strong>GJ-12345678</strong> just enter <strong>12345678</strong>.</p>
-    <input id="lottery"
-            name="lottery"
-            class="border rounded p-2 bg-gray-100 text-right"
-            type="number" 
-            placeholder="12345678"
-            value="{{form_values.get('lottery', '') if form_values else ''}}" />
+    <div class="flex justify-between">
+        <p class="font-semibold">Lottery Number</p>
+    </div>
+    <div id="lottery-help" class="hidden bg-gray-100 p-2 rounded">
+        <p class="text-sm">Enter your lottery number below.</p>
+        <p class="text-sm">The letters will automatically capitalize.</p>
+        <p class="text-sm">The numbers should be 8 digits long.</p>
+    </div>
+    <div class="grid grid-cols-4 gap-2">
+        <div class="col-span-1">
+            <label for="lottery_letters" class="font-semibold">Letters <span class="text-red-600">*</span></label>
+            <input type="text"
+                name="lottery_letters"
+                placeholder="JL"
+                value="{{form_values.get('lottery_letters', '') if form_values else ''}}"
+                oninput="this.value = this.value.toUpperCase()"
+                maxlength="2"
+                class="shrink border rounded p-2 bg-gray-100 w-full"/>
+        </div>
+        <div class="col-span-3">
+            <label for="lottery_numbers" class="font-semibold">Numbers <span class="text-red-600">*</span></label>
+            <input id="lottery"
+                    name="lottery_numbers"
+                    class="shrink border rounded p-2 bg-gray-100 text-right w-full"
+                    type="number" 
+                    placeholder="12345678"
+                    value="{{form_values.get('lottery_numbers', '') if form_values else ''}}" />
+        </div>
+    </div>
     <div class="text-red-500 text-sm min-h-[20px] text-[12px] text-right">
         {% if form_errors and form_errors["lottery"] %}
             {{ form_errors["lottery"] }}
