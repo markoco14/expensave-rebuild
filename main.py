@@ -79,40 +79,6 @@ def get_index_page(
     
     return RedirectResponse(url="/date/{}".format(datetime.now().strftime("%Y-%m-%d")))
 
-    purchases = transaction_service.get_user_today_purchases(
-        current_user_id=current_user.id, db=db)
-    
-    for purchase in purchases:
-        purchase.purchase_time = time_service.format_taiwan_time(purchase_time=purchase.purchase_time)
-
-
-    # user_timezone = "Asia/Taipei"  # replace with user's timezone one day
-    # purchases = time_service.adjust_purchase_dates_for_local_time(
-    #     purchases=purchases, user_timezone=user_timezone)
-
-    totalSpent = transaction_service.calculate_day_total_spent(
-        purchases=purchases)
-
-    currency = "TWD"
-    user_data = {
-        "display_name": current_user.display_name,
-        "is_admin": current_user.is_admin,
-    }
-
-    today_date = datetime.now()
-
-    context = {
-        "user": current_user,
-        "request": request,
-        "today_date": today_date,
-        "currency": currency,
-        "purchases": purchases,
-        "totalSpent": totalSpent,
-    }
-    return templates.TemplateResponse(
-        name="app/app-home.html",
-        context=context
-    )
 
 @app.get("/date/{selected_date}", response_class=templates.TemplateResponse)
 def get_app_index_page(
@@ -163,7 +129,7 @@ def get_app_index_page(
     }
 
     return templates.TemplateResponse(
-        name="app/app-home.html",
+        name="app/index.html",
         context=context
     )
 
@@ -172,7 +138,8 @@ def get_app_index_page(
 def store_new_purchase(
     request: Request,
     selected_date: datetime,
-    lottery: Annotated[str, Form(...)],
+    lottery_letters: Annotated[str, Form(...)],
+    lottery_numbers: Annotated[str, Form(...)],
     time: Annotated[str, Form(...)],
     amount: Annotated[str, Form(...)],
     db: Session = Depends(get_db),
@@ -191,32 +158,49 @@ def store_new_purchase(
         )
     
     form_values = {
-        "lottery": lottery,
+        "lottery_letters": lottery_letters,
+        "lottery_numbers": lottery_numbers,
         "time": time,
         "amount": amount
     }
 
     form_errors = {}
 
-    # validate lottery number
-    if not lottery:
-        form_errors["lottery"] = "Please enter a lottery number."
+    # validate lottery info
+    if not lottery_letters and not lottery_numbers:
+        form_errors["lottery"] = "Lottery ID letters and numbers are required."
+    elif not lottery_letters:
+        form_errors["lottery"] = "Lottery ID numbers are required."
+    elif not lottery_numbers:
+        form_errors["lottery"] = "Lottery ID letters are required."
+    elif not lottery_letters.isalpha():
+        form_errors["lottery"] = "Lottery ID letters must be A-Z."
+    elif not lottery_letters.isupper():
+        form_errors["lottery"] = "Lottery ID letters must be uppercase."
+    elif len(lottery_letters) != 2:
+        form_errors["lottery"] = "There can only be 2 letters."
+    elif not lottery_numbers.isdigit():
+        form_errors["lottery"] = "Lottery ID numbers must be 0-9."
+    elif len(lottery_numbers) < 8:
+        form_errors["lottery"] = "Lottery number must have at least 8 numbers"
+    elif len(lottery_numbers) > 8:
+        form_errors["lottery"] = "Lottery number must have at most 8 numbers"
     
     # first check whether the lottery number has at least 8 digits
-    digit_regex = r"(\d+)"
-    lottery = lottery.upper()
-    digit_match = re.search(digit_regex, lottery)
+    # digit_regex = r"(\d+)"
+    # lottery_numbers = lottery_numbers.upper()
+    # digit_match = re.search(digit_regex, lottery_numbers)
 
-    try:
-        lottery_digits = digit_match.group()
-    except AttributeError:
-        lottery_digits = None
+    # try:
+    #     lottery_digits = digit_match.group()
+    # except AttributeError:
+    #     lottery_digits = None
 
-    # validate lotttery number is at least 8 digits
-    if not lottery_digits:
-        form_errors["lottery"] = "Please enter a valid lottery number."
-    elif len(lottery_digits) != 8:
-        form_errors["lottery"] = "Lottery number must be 8 digits digits."
+    # # validate lotttery number is at least 8 digits
+    # if not lottery_digits:
+    #     form_errors["lottery"] = "Please enter a valid lottery number."
+    # elif len(lottery_digits) != 8:
+    #     form_errors["lottery"] = "Lottery number must be 8 digits digits."
 
     # in case somehow not a time
     if not time:
@@ -254,11 +238,16 @@ def store_new_purchase(
         return response
     
     utc_corrected_time = datetime.combine(selected_date, purchase_time_object) - timedelta(hours=8)
+
+    if lottery_letters:
+        final_lottery_number = f"{lottery_letters}-{lottery_numbers}"
+    else:
+        final_lottery_number = lottery_numbers
     
     new_purchase = transaction_schemas.PurchaseCreateMinimal(
         user_id=current_user.id,
         price=amount,
-        receipt_lottery_number=lottery,
+        receipt_lottery_number=final_lottery_number,
         purchase_time=utc_corrected_time
     )
 

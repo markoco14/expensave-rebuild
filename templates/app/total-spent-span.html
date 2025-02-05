@@ -1,7 +1,6 @@
 <span
   hx-get="/purchases/totals/{{today_date.strftime('%Y-%m-%d')}}"
   hx-trigger="calculateTotalSpent from:body"
-  class="text-right text-2xl bg-white p-2 rounded-md shadow"
   hx-swap="outerHTML"
   hx-target="this"
 >
