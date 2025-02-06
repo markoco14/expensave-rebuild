@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.data import winnings
 from app.transaction.transaction_model import Transaction, TransactionType
 from app.user.user_model import DBUser
 from app.auth.auth_service import get_current_user
@@ -61,6 +62,7 @@ def get_winnings_page(
     # group by month
     first_month_purchases = []
     second_month_purchases = []
+    winners = []
 
     for db_purchase in db_purchases:
         if db_purchase.purchase_time.month == first_month:
@@ -82,6 +84,7 @@ def get_winnings_page(
     
     context["start_of_period"] = start_of_period
     context["end_of_period"] = end_of_period
+    context["time_periods"] = winnings.time_periods
 
     return templates.TemplateResponse(
         name="/winnings/index.html",

@@ -14,12 +14,9 @@
         </ul>
         <h2>Months</h2>
         <ul class="flex gap-4">
-            <li><a href="/winnings/{{selected_year}}/1-2">1-2</a></li>
-            <li><a href="/winnings/{{selected_year}}/3-4">3-4</a></li>
-            <li><a href="/winnings/{{selected_year}}/5-6">5-6</a></li>
-            <li><a href="/winnings/{{selected_year}}/7-8">7-8</a></li>
-            <li><a href="/winnings/{{selected_year}}/9-10">9-10</a></li>
-            <li><a href="/winnings/{{selected_year}}/11-12">11-12</a></li>
+        {% for time_period in time_periods %}
+            <li><a href="/winnings/{{selected_year}}/{{time_period}}">{{time_period}}</a></li>
+        {% endfor %}
         </ul>
         <div class="grid md:grid-cols-2 gap-4">
             <div>
