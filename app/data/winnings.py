@@ -1,3 +1,5 @@
+import re
+
 time_periods = ["1-2","3-4","5-6","7-8","9-10","11-12"]
 
 winning_numbers = {
@@ -9,6 +11,13 @@ winning_numbers = {
         }
     }
 }
+
+def get_digits_from_receipt_id(receipt_id: str) -> str:
+    "Removes the prefix from the receipt_id and returns the digits"
+    digit_regex = r"\d+"
+    digits = re.search(digit_regex, receipt_id)
+    return digits.group()
+
 
 def check_all_digits_match(receipt_number: str, winning_number: str) -> bool:
     return receipt_number == winning_number

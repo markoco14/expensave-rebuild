@@ -1,6 +1,16 @@
 import pytest
 from app.data import winnings
 
+@pytest.mark.parametrize("receipt_id, expected", [
+    ("12345678", "12345678"),
+    ("87654321", "87654321"),
+    ("GL-12345678", "12345678"),
+    ("KA87654321", "87654321"),
+    ("KA:87654321", "87654321"),
+    ("KA--87654321", "87654321")
+])
+def test_get_digits_from_receipt_id(receipt_id, expected):
+    assert winnings.get_digits_from_receipt_id(receipt_id) == expected
 
 @pytest.mark.parametrize("receipt_number, winning_number, expected", [
     ("12345678", "12345678", True),
