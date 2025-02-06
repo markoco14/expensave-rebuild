@@ -7,11 +7,12 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from jinja2_fragments.fastapi import Jinja2Blocks
 
-from app.auth import auth_service
+from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.core import links
 from app.services import transaction_service
 from app.transaction.transaction_model import PaymentMethod, TransactionType
+from app.user.user_model import DBUser
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -21,11 +22,9 @@ block_templates = Jinja2Blocks(directory="templates")
 @router.get("/account", response_class=HTMLResponse)
 def get_user_account(
     request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-
     if not current_user:
         context = {
             "request": request,
@@ -90,14 +89,12 @@ def get_user_account(
 @router.post("/deposit-to-card", response_class=HTMLResponse)
 def deposit_to_card(
     request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     deposit_amount: int = Form(...),
     deposit_note: Annotated[str, Form(...)] = None,
 ):
     """ Allow user to deposit money to their card. """
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-
     if not current_user:
         context = {
             "request": request,
@@ -129,13 +126,12 @@ def deposit_to_card(
 @router.post("/withdraw-to-cash", response_class=HTMLResponse)
 def withdraw_to_cash(
     request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     withdraw_amount: int = Form(...),
     withdraw_note: Annotated[str, Form(...)] = None,
 ):
     """ Allow user to deposit money to their card. """
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
 
     if not current_user:
         context = {
@@ -169,11 +165,9 @@ def withdraw_to_cash(
 @router.get("/account/transactions", response_class=HTMLResponse)
 def list_account_transactions(
     request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-
     if not current_user:
         context = {
             "request": request,

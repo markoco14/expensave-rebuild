@@ -1,19 +1,18 @@
 """ Main application file """
 from datetime import datetime, timedelta
 import os
-import re
 import time
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import Depends, FastAPI, Form, Request, Response
 from fastapi.responses import Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.admin import admin_router
 from app.auth import auth_schemas, auth_service, session_service
+from app.auth.auth_service import get_current_user
 from app.core import time_service
 from app.core.config import get_settings
 from app.core.database import get_db
@@ -23,6 +22,7 @@ from app.services import transaction_service
 from app.transaction import transaction_schemas
 from app.transaction.transaction_model import Transaction
 from app.user import user_schemas, user_service
+from app.user.user_model import DBUser
 
 settings = get_settings()
 
@@ -66,10 +66,8 @@ app.add_middleware(SleepMiddleware)
 @app.get("/", response_class=templates.TemplateResponse)
 def get_index_page(
     request: Request,
-    db: Session = Depends(get_db)
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {"request": request}
         return templates.TemplateResponse(
@@ -84,11 +82,9 @@ def get_index_page(
 def get_app_index_page(
     request: Request,
     selected_date: datetime,
-    db: Session = Depends(get_db)
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
     ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-    
     if not current_user:
         context = {"request": request}
         return templates.TemplateResponse(
@@ -142,12 +138,10 @@ def store_new_purchase(
     lottery_numbers: Annotated[str, Form(...)],
     time: Annotated[str, Form(...)],
     amount: Annotated[str, Form(...)],
-    db: Session = Depends(get_db),
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
     ):
     """Store a new purchase"""
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
-    
     if not current_user:
         context = {
             "request": request,
@@ -301,12 +295,18 @@ def store_new_purchase(
 
 
 @app.get("/signup", response_class=templates.TemplateResponse)
-def get_sign_up_page(request: Request):
-    context = {"request": request}
-    return templates.TemplateResponse(
-        name="website/signup.html",
-        context=context
-    )
+def get_sign_up_page(
+    request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)]
+    ):
+    if not current_user:
+        context = {"request": request}
+        return templates.TemplateResponse(
+            name="website/signup.html",
+            context=context
+        )
+    
+    return RedirectResponse(url="/date/{}".format(datetime.now().strftime("%Y-%m-%d")))
 
 
 @app.post("/signup", response_class=Response)
@@ -355,12 +355,18 @@ def signup(
     return response
 
 @app.get("/signin", response_class=templates.TemplateResponse)
-def get_sign_in_page(request: Request):
-    context = {"request": request}
-    return templates.TemplateResponse(
-        name="website/signin.html",
-        context=context
-    )
+def get_sign_in_page(
+    request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)]
+    ):
+    if not current_user:
+        context = {"request": request}
+        return templates.TemplateResponse(
+            name="website/signin.html",
+            context=context
+        )
+    
+    return RedirectResponse(url="/date/{}".format(datetime.now().strftime("%Y-%m-%d")))
 
 
 @app.post("/signin", response_class=Response)

@@ -5,19 +5,19 @@ import time
 from typing import Annotated
 
 import boto3
-from fastapi import APIRouter, Depends, File, Request, Response, UploadFile
+from fastapi import APIRouter, Depends, File, Request, UploadFile
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from jinja2_fragments.fastapi import Jinja2Blocks
 from sqlalchemy.orm import Session
 from PIL import Image
 
-from app.auth import auth_service
+from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.core import links
 from app.transaction.transaction_model import Transaction
-from app.background import camera_tasks
 from app import utils
+from app.user.user_model import DBUser
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -27,10 +27,8 @@ block_templates = Jinja2Blocks(directory="templates")
 @router.get("/camera")
 def get_camera_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)],
-):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    ):
     if not current_user:
         context = {
             "request": request,
@@ -59,11 +57,10 @@ def get_camera_page(
 @router.post("/camera")
 def upload_photo(
     request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-    photo: UploadFile = File(...)
+    photo: UploadFile = File(...),
     ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -150,10 +147,8 @@ def upload_photo(
 @router.get("/cam2")
 def get_purchases_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[DBUser, Depends(get_current_user)],
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -181,11 +176,9 @@ def get_purchases_page(
 @router.post("/cam2")
 def upload_photo(
     request: Request,
-    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     photo: UploadFile = File(...)
     ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -236,10 +229,8 @@ def upload_photo(
 @router.get("/cam3")
 def get_purchases_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[DBUser, Depends(get_current_user)],
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -268,11 +259,9 @@ def get_purchases_page(
 @router.post("/cam3")
 def upload_photo(
     request: Request,
-    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     photo: UploadFile = File(...)
     ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,

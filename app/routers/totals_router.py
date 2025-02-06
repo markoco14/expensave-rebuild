@@ -1,12 +1,15 @@
 """ Main application file """
+from typing import Annotated
 from fastapi import Depends, Request, APIRouter
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 
 from app.auth import auth_service
+from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.core import links
+from app.user.user_model import DBUser
 
 
 router = APIRouter()
@@ -16,13 +19,13 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/totals")
 def get_totals_page(
     request: Request,
-    db: Session = Depends(get_db),
+        current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
     page: int = 1
 ):
     """Returns the totals page where the user can view how much they spent on every given day."""
 
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
+
     if not current_user:
         context = {"request": request,
                    "nav_links": links.unauthenticated_navlinks}

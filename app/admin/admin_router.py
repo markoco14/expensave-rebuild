@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from app.auth import auth_service
+from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.user.user_model import DBUser
 
@@ -21,10 +21,8 @@ templates = Jinja2Templates(directory="templates")
 @router.get("")
 def get_admin_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)]
-):
-    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
-    
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    ):
     context = {"request": request}
     
     if not current_user:
@@ -52,11 +50,9 @@ def get_admin_page(
 @router.get("/users")
 def read_admin_users_page(
     request: Request,
-    db: Annotated[Session, Depends(get_db)]
-):
-    """Returns a list of users for admin to review"""
-    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
-    
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    ):
+    """Returns a list of users for admin to review"""    
     context = {"request": request}
 
     if not current_user:
@@ -84,11 +80,10 @@ def read_admin_users_page(
 def delete_user(
     request: Request,
     user_id: int,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-):
-    """Hard deletes a user and their data"""
-    current_user = auth_service.get_current_user(db=db, cookies=request.cookies)
-    
+    ):
+    """Hard deletes a user and their data"""    
     if not current_user:
         if request.headers.get("HX-Request"):
             response = Response(status_code=303)

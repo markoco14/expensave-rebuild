@@ -2,13 +2,16 @@
 
 from datetime import datetime, timedelta
 import secrets
-from typing import Dict
+from typing import Annotated, Dict
 
+from fastapi import Depends, Request
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
 from app.auth import session_service
-from app.user import user_service
+from app.auth.user_session_model import DBUserSession
+from app.core.database import get_db
+from app.user.user_model import DBUser
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -47,21 +50,13 @@ def get_session_data(db: Session, session_token: str):
     session_data = session_service.get_session_by_session_id(db=db, session_id=session_token)
     return session_data
 
-def get_current_user(db: Session, cookies: Dict[str, str]):
-    session_id = cookies.get("session-id") 
-    if not session_id:
-        return None
-    
-    session_data = get_session_data(db=db, session_token=session_id)
-    if not session_data:
-        return None
-    
-    db_user = user_service.get_user_by_id(db=db, user_id=session_data.user_id)
-    if not db_user:
-        return None
-    
+
+def get_current_user(request: Request, db: Annotated[Session, Depends(get_db)]):
+    db_user = db.query(DBUser
+                        ).join(
+                            DBUserSession, DBUserSession.session_id == request.cookies.get("session-id")
+                        ).filter(
+                            DBUser.id == DBUserSession.user_id
+                        ).first()
+
     return db_user
-# def get_current_user(db: Session, user_id: int):
-#     db_user = user_service.get_user_by_id(db=db, user_id=user_id)
-#     return db_user
-    
