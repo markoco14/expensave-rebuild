@@ -16,7 +16,7 @@ from app.auth.auth_service import get_current_user
 from app.core import time_service
 from app.core.config import get_settings
 from app.core.database import get_db
-from app.routers import purchase_router, totals_router, faker_router, receipts_router
+from app.routers import purchase_router, totals_router, faker_router, receipts_router, winnings_router
 from app.camera import camera_router
 from app.services import transaction_service
 from app.transaction import transaction_schemas
@@ -33,6 +33,7 @@ app.include_router(totals_router.router)
 app.include_router(faker_router.router)
 app.include_router(camera_router.router)
 app.include_router(receipts_router.router)
+app.include_router(winnings_router.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Winnings Page{% endblock title %}
+
+{% block content %}
+<section class="pb-[96px]">
+	<div class="grid gap-4 max-w-[1000px] mx-auto">
+        <h1>Winnings Page</h1>
+        <p>Here are your winnings for the Taiwan Receipt Lottery for {{time_period}}.</p>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <h2 class="text-xl font-semibold">{{start_of_period.month}} - {{start_of_period.strftime("%B")}}</h2>
+                {% for purchase in purchases["first_month_purchases"]  %}
+                    <p>{{purchase.id}} - {{purchase.purchase_time}} - {{purchase.price}} - {{purchase.receipt_lottery_number}}</p>
+                {% endfor %}
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold">{{end_of_period.month}} - {{end_of_period.strftime("%B")}}</h2>
+                {% for purchase in purchases["second_month_purchases"]  %}
+                    <p>{{purchase.id}} - {{purchase.purchase_time}} - {{purchase.price}} - {{purchase.receipt_lottery_number}}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
