@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 
-from app.auth import auth_service
+from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.core import links, time_service
 from app.transaction import transaction_schemas
@@ -25,6 +25,7 @@ from app.core import time_service as TimeService
 from app.services import transaction_service
 from datetime import timedelta
 from app import no_purchases_fake_data
+from app.user.user_model import DBUser
 
 
 router = APIRouter()
@@ -35,11 +36,11 @@ block_templates = Jinja2Blocks(directory="templates")
 @router.get("/purchases")
 def get_purchases_page(
     request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     page: int = 1
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
+    
     if not current_user:
         context = {
             "request": request,
@@ -113,11 +114,11 @@ def store_new_purchase(
     lottery: Annotated[str, Form(...)],
     purchase_time: Annotated[str, Form(...)],
     amount: Annotated[str, Form(...)],
-    db: Session = Depends(get_db),
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
     ):
     """Store a new purchase"""
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
+
     if not current_user:
         context = {
             "request": request,
@@ -236,10 +237,9 @@ def store_new_purchase(
 def get_purchase_detail_row(
     request: Request,
     purchase_id: int,
-    db: Session = Depends(get_db),
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -278,6 +278,7 @@ def get_purchase_detail_row(
 def update_purchase(
     request: Request,
     purchase_id: int,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     purchase_time: Annotated[str, Form()] = None,
     price: Annotated[Optional[str], Form()] = None,
@@ -286,8 +287,6 @@ def update_purchase(
     lottery: Annotated[Optional[str], Form()] = None,
     payment_method: Annotated[Optional[str], Form()] = None
 ):  
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -342,11 +341,11 @@ def update_purchase(
 def get_edit_purchase_form(
     request: Request,
     purchase_id: int,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
     tab: str = "lottery",
-    db: Session = Depends(get_db),
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
+
     if not current_user:
         context = {
             "request": request,
@@ -393,11 +392,10 @@ def get_edit_purchase_form(
 def get_form_for_lottery(
     request: Request,
     purchase_id: int,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
     tab: str = "info",
-    db: Session = Depends(get_db)
 ):  
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -446,12 +444,11 @@ def get_form_for_lottery(
 def delete_purchase(
     request: Request,
     response: Response,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     purchase_id: int
 ):
     """Sign out a user"""
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -564,11 +561,10 @@ def delete_purchase(
 @router.get("/purchases/details/{date}")
 def get_purchase_details_page(
     request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     date: str,
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
@@ -636,10 +632,9 @@ def get_purchase_details_page(
 def get_updated_purchase_list(
     request: Request,
     selected_date: datetime,
-    db: Annotated[Session, Depends(get_db)]
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
 
     db_purchases = transaction_service.get_user_purchases_by_date(
                                             current_user_id=current_user.id, 
@@ -666,10 +661,9 @@ def get_updated_purchase_list(
 def calculate_total_spent(
     request: Request,
     selected_date: datetime,
-    db: Session = Depends(get_db)
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
 ):
-    current_user = auth_service.get_current_user(
-        db=db, cookies=request.cookies)
     if not current_user:
         context = {
             "request": request,
