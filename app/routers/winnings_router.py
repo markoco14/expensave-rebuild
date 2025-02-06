@@ -14,10 +14,11 @@ from app.auth.auth_service import get_current_user
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/winnings/{time_period}", response_class=HTMLResponse)
+@router.get("/winnings/{selected_year}/{selected_time_period}", response_class=HTMLResponse)
 def get_winnings_page(
     request: Request,
-    time_period: str,
+    selected_year: int,
+    selected_time_period: str,
     current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)]
 ):
@@ -31,12 +32,12 @@ def get_winnings_page(
     context = {
         "request": request,
         "user": current_user,
-        "time_period": time_period}
+        "selected_year": selected_year,
+        "selected_time_period": selected_time_period}
     
-    # get the 2 months from the time_period
-    selected_year = 2024
-    first_month = int(time_period.split("-")[0])
-    second_month = int(time_period.split("-")[1])
+    # get the 2 months from the selected_time_period
+    first_month = int(selected_time_period.split("-")[0])
+    second_month = int(selected_time_period.split("-")[1])
 
     start_of_period = datetime(year=selected_year, month=first_month, day=1)
 
