@@ -295,12 +295,18 @@ def store_new_purchase(
 
 
 @app.get("/signup", response_class=templates.TemplateResponse)
-def get_sign_up_page(request: Request):
-    context = {"request": request}
-    return templates.TemplateResponse(
-        name="website/signup.html",
-        context=context
-    )
+def get_sign_up_page(
+    request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)]
+    ):
+    if not current_user:
+        context = {"request": request}
+        return templates.TemplateResponse(
+            name="website/signup.html",
+            context=context
+        )
+    
+    return RedirectResponse(url="/date/{}".format(datetime.now().strftime("%Y-%m-%d")))
 
 
 @app.post("/signup", response_class=Response)
@@ -349,12 +355,18 @@ def signup(
     return response
 
 @app.get("/signin", response_class=templates.TemplateResponse)
-def get_sign_in_page(request: Request):
-    context = {"request": request}
-    return templates.TemplateResponse(
-        name="website/signin.html",
-        context=context
-    )
+def get_sign_in_page(
+    request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)]
+    ):
+    if not current_user:
+        context = {"request": request}
+        return templates.TemplateResponse(
+            name="website/signin.html",
+            context=context
+        )
+    
+    return RedirectResponse(url="/date/{}".format(datetime.now().strftime("%Y-%m-%d")))
 
 
 @app.post("/signin", response_class=Response)
