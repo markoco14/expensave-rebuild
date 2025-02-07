@@ -22,7 +22,7 @@ from app.core import links, time_service
 from app.transaction import transaction_schemas
 from app.transaction.transaction_model import Transaction, TransactionType
 from app.core import time_service as TimeService
-from app.services import transaction_service
+from app.services import transaction_service, winnings_service
 from datetime import timedelta
 from app import no_purchases_fake_data
 from app.user.user_model import DBUser
@@ -78,7 +78,10 @@ def get_purchases_page(
         "currency",
         "actions"
     ]
-
+    
+    winnings_year = datetime.now().year
+    current_month = datetime.now().month
+    winnings_period = winnings_service.get_winnings_period_by_month(month=current_month) 
 
     context = {
         "user": current_user,
@@ -87,7 +90,9 @@ def get_purchases_page(
         "headings": headings,
         "purchases": purchases,
         "fake_purchases": no_purchases_fake_data.example_purchases_data,
-        "page": page
+        "page": page,
+        "winnings_year": winnings_year,
+        "winnings_period": winnings_period
     }
     
     if request.headers.get("HX-Request"):

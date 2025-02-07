@@ -10,7 +10,8 @@
     <div class="grid grid-cols-4 gap-2">
         <div class="col-span-1">
             <label for="lottery_letters" class="font-semibold">Letters <span class="text-red-600">*</span></label>
-            <input type="text"
+            <input id="lottery_letters" 
+                type="text"
                 name="lottery_letters"
                 placeholder="JL"
                 value="{{form_values.get('lottery_letters', '') if form_values else ''}}"
@@ -20,7 +21,7 @@
         </div>
         <div class="col-span-3">
             <label for="lottery_numbers" class="font-semibold">Numbers <span class="text-red-600">*</span></label>
-            <input id="lottery"
+            <input id="lottery_numbers"
                     name="lottery_numbers"
                     class="shrink border rounded p-2 bg-gray-100 text-right w-full"
                     type="number" 

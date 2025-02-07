@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Winnings Page{% endblock title %}
+
+{% block content %}
+<section class="pt-8 pb-[96px]">
+	<div class="max-w-[1000px] mx-auto">
+        <h1 class="sr-only">Lottery Winnings</h1>
+        <section class="px-2 md:px-0">
+            <h2 class="text-2xl font-semibold">Years</h2>
+            <ul class="bg-gray-200 w-fit flex flex-nowrap justify-evenly overflow-x-auto divide-x divide-green-200 shadow-inner rounded-md">
+                {% for year in available_years  %}               
+                    <li class="w-full text-center">
+                    {% if year in request.url.path %}
+                        <a href="/winnings/{{year}}/{{selected_time_period}}" class="w-full text-nowrap inline-block px-3 py-1 bg-green-400 hover:bg-green-300 active:bg-green-500 active:scale-95 duration-200 ease-in-out">
+                    
+                    {% else %}
+                        <a href="/winnings/{{year}}/{{selected_time_period}}" class="w-full text-nowrap inline-block px-3 py-1 bg-green-100 hover:bg-green-300 active:bg-green-500 active:scale-95 duration-200 ease-in-out">
+                    {% endif %} 
+                            {{year}}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+        <hr class="my-4 md:my-8"/>
+        <section class="px-2 md:px-0">
+            <h2 class="text-2xl font-semibold">Months</h2>
+            <ul class="bg-gray-200 grid grid-cols-6 w-fit overflow-x-auto divide-x divide-green-200 shadow-inner rounded-md">
+            {% for time_period in time_periods %}
+                <li class="w-full text-center">
+                    {% if time_period in request.url.path %}
+                    <a href="/winnings/{{selected_year}}/{{time_period}}" 
+                        class="w-full text-nowrap inline-block px-3 py-1 bg-green-400 hover:bg-green-300 active:bg-green-500 active:scale-95 duration-200 ease-in-out"
+                        >
+                    {% else %}
+                    <a href="/winnings/{{selected_year}}/{{time_period}}" 
+                        class="w-full text-nowrap inline-block px-3 py-1 bg-green-100 hover:bg-green-300 active:bg-green-500 active:scale-95 duration-200 ease-in-out"
+                        >
+                    {% endif %}
+                        {{time_period}}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+        <hr class="my-4 md:my-8"/>
+        <section class="px-2 md:px-0">
+            <h2 class="text-2xl font-semibold">Winning Receipts</h2>
+            <ul>
+                {% if not winners %}
+                    <p>You had no winning tickets this time.</p>
+                {% else %}
+                    {% for winner in winners  %}
+                        <p>Winning ticket found: {{winner.receipt_lottery_number}}</p>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </section>
+        <hr class="my-4 md:my-8"/>
+        <section class="px-2 md:px-0">
+            <h2 class="text-2xl font-semibold">Total Winnings</h2>
+            {% if total_winnings %}
+                <p>You have won a total of NTD {{"${:,}".format(total_winnings)}}.</p>
+            {% else %}
+                <p>You have not won any money this time.</p>
+            {% endif %}
+        </section>
+        <hr class="my-4 md:my-8"/>
+        <section class="px-2 md:px-0">
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h2 class="text-2xl font-semibold">{{start_of_period.month}} - {{start_of_period.strftime("%B")}}</h2>
+                    {% if purchases["first_month_purchases"]|length == 0 %}
+                        <p>No purchases in {{start_of_period.strftime("%B")}} {{selected_year}}</p>
+                    {% else %}
+                        {% for purchase in purchases["first_month_purchases"]  %}
+                            {% if purchase.receipt_lottery_number %}
+                                <p>{{ purchase.purchase_time}}: {{ purchase.receipt_lottery_number }}</p>
+                            {% else %}
+                                <p>{{ purchase.purchase_time}}: No lottery number</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div>
+                    <h2 class="text-2xl font-semibold">{{end_of_period.month}} - {{end_of_period.strftime("%B")}}</h2>
+                    {% if purchases["second_month_purchases"]|length == 0 %}
+                        <p>No purchases in {{end_of_period.strftime("%B")}} {{selected_year}}</p>
+                    {% else %}
+                        {% for purchase in purchases["second_month_purchases"]  %}
+                            {% if purchase.receipt_lottery_number %}
+                                <p>{{ purchase.purchase_time}}: {{ purchase.receipt_lottery_number }}</p>
+                            {% else %}
+                                <p>{{ purchase.purchase_time}}: No lottery number</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+{% endblock content %}

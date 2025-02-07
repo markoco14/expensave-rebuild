@@ -1,4 +1,5 @@
 """Camera feature routes"""
+from datetime import datetime
 from io import BytesIO
 import os
 from typing import Annotated
@@ -13,6 +14,7 @@ from sqlalchemy.orm import Session
 from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.core import links
+from app.services import winnings_service
 from app.transaction.transaction_model import Transaction
 from app.background import camera_tasks
 from app import utils
@@ -53,38 +55,36 @@ def get_receipts_page(
                                 ).limit(limit).offset(offset
                                 ).all()
     
+    winnings_year = datetime.now().year
+    current_month = datetime.now().month
+    winnings_period = winnings_service.get_winnings_period_by_month(month=current_month) 
+    
+    context = {
+        "request": request,
+        "user": current_user,
+        "transactions": dbTransactions,
+        "page": page,
+        "winnings_year": winnings_year,
+        "winnings_period": winnings_period
+    }
+    
     if request.headers.get("HX-Request"):
         if not request.query_params.get("page"):
             response = templates.TemplateResponse(
             name="/camera/receipts.html",
-            context={
-                "request": request,
-                "user": current_user,
-                "transactions": dbTransactions,
-                "page": page
-                },
+            context=context,
             status_code=200)
             return response
         
         response = templates.TemplateResponse(
             name="/camera/partials/receipt-list.html",
-            context={
-                "request": request,
-                "user": current_user,
-                "transactions": dbTransactions,
-                "page": page
-            },
+            context=context,
             status_code=200)
         return response
     
     response = templates.TemplateResponse(
         name="/camera/receipts.html",
-        context={
-            "request": request,
-            "user": current_user,
-            "transactions": dbTransactions,
-            "page": page
-            },
+        context=context,
         status_code=200)
     return response
 
