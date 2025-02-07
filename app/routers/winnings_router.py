@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.data import winnings
+from app.services import winnings_service
 from app.transaction.transaction_model import Transaction, TransactionType
 from app.user.user_model import DBUser
 from app.auth.auth_service import get_current_user
@@ -51,7 +51,7 @@ def get_winnings_page(
 
     context["start_of_period"] = start_of_period
     context["end_of_period"] = end_of_period
-    context["time_periods"] = winnings.time_periods
+    context["time_periods"] = winnings_service.time_periods
 
     db_purchases = db.query(Transaction
                             ).filter(
@@ -81,7 +81,7 @@ def get_winnings_page(
     winners = []
     total_winnings = 0
     
-    selected_period_winning_numbers = winnings.winning_numbers.get(str(selected_year), {}).get(selected_time_period, {})
+    selected_period_winning_numbers = winnings_service.winning_numbers.get(str(selected_year), {}).get(selected_time_period, {})
     print(selected_period_winning_numbers)
 
     for db_purchase in db_purchases:
@@ -91,10 +91,10 @@ def get_winnings_page(
         print(f"Receipt number: {db_purchase.receipt_lottery_number}")
 
         # get only the digits
-        extracted_receipt_digits = winnings.get_digits_from_receipt_id(db_purchase.receipt_lottery_number)
+        extracted_receipt_digits = winnings_service.get_digits_from_receipt_id(db_purchase.receipt_lottery_number)
         print(f"Extracted digits: {extracted_receipt_digits}")
         
-        is_special_prize_winner = winnings.check_all_digits_match(extracted_receipt_digits, selected_period_winning_numbers.get("special"))
+        is_special_prize_winner = winnings_service.check_all_digits_match(extracted_receipt_digits, selected_period_winning_numbers.get("special"))
         if is_special_prize_winner:
             winners.append(db_purchase)
             total_winnings += 10000000
@@ -103,7 +103,7 @@ def get_winnings_page(
         print(f"Special prize comparing {extracted_receipt_digits} with {selected_period_winning_numbers.get('special')}.. is winner?: {is_special_prize_winner}")
         # print(f"Match all digits of special prize: {is_special_prize_winner}")
 
-        is_grand_prize_winner = winnings.check_all_digits_match(extracted_receipt_digits, selected_period_winning_numbers.get("grand"))
+        is_grand_prize_winner = winnings_service.check_all_digits_match(extracted_receipt_digits, selected_period_winning_numbers.get("grand"))
         if is_grand_prize_winner:
             winners.append(db_purchase)
             total_winnings += 2000000
@@ -116,7 +116,7 @@ def get_winnings_page(
         first_prize_numbers = selected_period_winning_numbers.get("first")
         for index, first_prize_number in enumerate(first_prize_numbers):
             # check all digits match
-            is_first_prize_first_winner = winnings.check_all_digits_match(extracted_receipt_digits, first_prize_number)
+            is_first_prize_first_winner = winnings_service.check_all_digits_match(extracted_receipt_digits, first_prize_number)
             if is_first_prize_first_winner:
                 winners.append(db_purchase)
                 total_winnings += 200000
@@ -127,9 +127,9 @@ def get_winnings_page(
             print(f"First prize all comparing {extracted_receipt_digits} with {first_prize_number}.. is  winner?: {is_first_prize_first_winner}")
 
             # check last 7 digits match
-            recipt_last_seven_digits = winnings.get_last_seven_digits(extracted_receipt_digits)
-            prize_last_sevent_digits = winnings.get_last_seven_digits(first_prize_number)
-            is_last_seven_digits_match = winnings.check_all_digits_match(recipt_last_seven_digits, prize_last_sevent_digits)
+            recipt_last_seven_digits = winnings_service.get_last_seven_digits(extracted_receipt_digits)
+            prize_last_sevent_digits = winnings_service.get_last_seven_digits(first_prize_number)
+            is_last_seven_digits_match = winnings_service.check_all_digits_match(recipt_last_seven_digits, prize_last_sevent_digits)
             if is_last_seven_digits_match:
                 winners.append(db_purchase)
                 total_winnings += 40000
@@ -138,9 +138,9 @@ def get_winnings_page(
             # print(f"Match last 7 digits of first prize number {index + 1}: {is_last_seven_digits_match}")
 
             # check last 6 digits match
-            recipt_last_six_digits = winnings.get_last_six_digits(extracted_receipt_digits)
-            prize_last_six_digits = winnings.get_last_six_digits(first_prize_number)
-            is_last_six_digits_match = winnings.check_all_digits_match(recipt_last_six_digits, prize_last_six_digits)
+            recipt_last_six_digits = winnings_service.get_last_six_digits(extracted_receipt_digits)
+            prize_last_six_digits = winnings_service.get_last_six_digits(first_prize_number)
+            is_last_six_digits_match = winnings_service.check_all_digits_match(recipt_last_six_digits, prize_last_six_digits)
             if is_last_six_digits_match:
                 winners.append(db_purchase)
                 total_winnings += 10000
@@ -148,9 +148,9 @@ def get_winnings_page(
             print(f"Match last 6 digits of first prize number {index + 1}: {is_last_six_digits_match}")
 
             # check last 5 digits match
-            recipt_last_five_digits = winnings.get_last_five_digits(extracted_receipt_digits)
-            prize_last_five_digits = winnings.get_last_five_digits(first_prize_number)
-            is_last_five_digits_match = winnings.check_all_digits_match(recipt_last_five_digits, prize_last_five_digits)
+            recipt_last_five_digits = winnings_service.get_last_five_digits(extracted_receipt_digits)
+            prize_last_five_digits = winnings_service.get_last_five_digits(first_prize_number)
+            is_last_five_digits_match = winnings_service.check_all_digits_match(recipt_last_five_digits, prize_last_five_digits)
             if is_last_five_digits_match:
                 winners.append(db_purchase)
                 total_winnings += 4000
@@ -158,9 +158,9 @@ def get_winnings_page(
             print(f"Match last 5 digits of first prize number {index + 1}: {is_last_five_digits_match}")
 
             # check last 4 digits match
-            recipt_last_four_digits = winnings.get_last_four_digits(extracted_receipt_digits)
-            prize_last_four_digits = winnings.get_last_four_digits(first_prize_number)
-            is_last_four_digits_match = winnings.check_all_digits_match(recipt_last_four_digits, prize_last_four_digits)
+            recipt_last_four_digits = winnings_service.get_last_four_digits(extracted_receipt_digits)
+            prize_last_four_digits = winnings_service.get_last_four_digits(first_prize_number)
+            is_last_four_digits_match = winnings_service.check_all_digits_match(recipt_last_four_digits, prize_last_four_digits)
             if is_last_four_digits_match:
                 winners.append(db_purchase)
                 total_winnings += 1000
@@ -168,9 +168,9 @@ def get_winnings_page(
             print(f"Match last 4 digits of first prize number {index + 1}: {is_last_four_digits_match}")
 
             # check last 3 digits match
-            recipt_last_three_digits = winnings.get_last_three_digits(extracted_receipt_digits)
-            prize_last_three_digits = winnings.get_last_three_digits(first_prize_number)
-            is_last_three_digits_match = winnings.check_all_digits_match(recipt_last_three_digits, prize_last_three_digits)
+            recipt_last_three_digits = winnings_service.get_last_three_digits(extracted_receipt_digits)
+            prize_last_three_digits = winnings_service.get_last_three_digits(first_prize_number)
+            is_last_three_digits_match = winnings_service.check_all_digits_match(recipt_last_three_digits, prize_last_three_digits)
             if is_last_three_digits_match:
                 winners.append(db_purchase)
                 total_winnings += 200
