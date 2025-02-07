@@ -1,4 +1,5 @@
 """Camera feature routes"""
+from datetime import datetime
 from io import BytesIO
 import os
 import time
@@ -15,6 +16,7 @@ from PIL import Image
 from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.core import links
+from app.services import winnings_service
 from app.transaction.transaction_model import Transaction
 from app import utils
 from app.user.user_model import DBUser
@@ -42,10 +44,16 @@ def get_camera_page(
     if not current_user.feature_camera:
         response = RedirectResponse(url="/", status_code=303)
         return response
+    
+    winnings_year = datetime.now().year
+    current_month = datetime.now().month
+    winnings_period = winnings_service.get_winnings_period_by_month(month=current_month) 
 
     context = {
         "user": current_user,
         "request": request,
+        "winnings_year": winnings_year,
+        "winnings_period": winnings_period
     }
 
     

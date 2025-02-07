@@ -18,7 +18,7 @@ from app.core.config import get_settings
 from app.core.database import get_db
 from app.routers import purchase_router, totals_router, faker_router, receipts_router, winnings_router
 from app.camera import camera_router
-from app.services import transaction_service
+from app.services import transaction_service, winnings_service
 from app.transaction import transaction_schemas
 from app.transaction.transaction_model import Transaction
 from app.user import user_schemas, user_service
@@ -114,6 +114,10 @@ def get_app_index_page(
         "time": current_time.strftime("%I:%M:%S")
     }
 
+    winnings_year = datetime.now().year
+    current_month = datetime.now().month
+    winnings_period = winnings_service.get_winnings_period_by_month(month=current_month) 
+
     context = {
         "request": request,
         "user": current_user,
@@ -122,7 +126,9 @@ def get_app_index_page(
         "tomorrow_date": tomorrow_date.strftime("%Y-%m-%d"),
         "purchases": db_purchases,
         "totalSpent": totalSpent,
-        "form_values": form_values
+        "form_values": form_values,
+        "winnings_year": winnings_year,
+        "winnings_period": winnings_period
     }
 
     return templates.TemplateResponse(

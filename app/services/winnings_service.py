@@ -28,6 +28,22 @@ winning_numbers = {
     }
 }
 
+
+def get_winnings_period_by_month(month: int) -> str:
+    if month in [1, 2]:
+        return "1-2"
+    elif month in [3, 4]:
+        return "3-4"
+    elif month in [5, 6]:
+        return "5-6"
+    elif month in [7, 8]:
+        return "7-8"
+    elif month in [9, 10]:
+        return "9-10"
+    elif month in [11, 12]:
+        return "11-12"
+
+
 def get_digits_from_receipt_id(receipt_id: str) -> str:
     "Removes the prefix from the receipt_id and returns the digits"
     digit_regex = r"\d+"

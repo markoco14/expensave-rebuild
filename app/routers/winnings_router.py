@@ -29,12 +29,19 @@ def get_winnings_page(
             name="/website/index.html",
             context=context
         )
+    
+    winnings_year = datetime.now().year
+    current_month = datetime.now().month
+    winnings_period = winnings_service.get_winnings_period_by_month(month=current_month) 
 
     context = {
         "request": request,
         "user": current_user,
         "selected_year": selected_year,
-        "selected_time_period": selected_time_period}
+        "selected_time_period": selected_time_period,
+        "winnings_year": winnings_year,
+        "winnings_period": winnings_period
+        }
     
     # get the 2 months from the selected_time_period
     first_month = int(selected_time_period.split("-")[0])

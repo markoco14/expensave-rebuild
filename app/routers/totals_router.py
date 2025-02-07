@@ -1,4 +1,5 @@
 """ Main application file """
+from datetime import datetime
 from typing import Annotated
 from fastapi import Depends, Request, APIRouter
 from fastapi.templating import Jinja2Templates
@@ -9,6 +10,7 @@ from app.auth import auth_service
 from app.auth.auth_service import get_current_user
 from app.core.database import get_db
 from app.core import links
+from app.services import winnings_service
 from app.user.user_model import DBUser
 
 
@@ -57,6 +59,10 @@ def get_totals_page(
         results_dict.append(result._asdict())
         if not result.total_spent == None:
             grand_total += result.total_spent
+
+    winnings_year = datetime.now().year
+    current_month = datetime.now().month
+    winnings_period = winnings_service.get_winnings_period_by_month(month=current_month) 
     
     context = {
         "user": current_user,
@@ -65,7 +71,9 @@ def get_totals_page(
         "totals": results_dict,
         "grand_total": grand_total,
         "page": page,
-        "limit": limit
+        "limit": limit,
+        "winnings_year": winnings_year,
+        "winnings_period": winnings_period
     }
     return templates.TemplateResponse(
         name="/totals/index.html",
