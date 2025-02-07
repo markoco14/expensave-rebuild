@@ -1,5 +1,6 @@
 import re
 
+available_years = ["2024", "2025"]
 time_periods = ["1-2","3-4","5-6","7-8","9-10","11-12"]
 
 prize_amounts = {

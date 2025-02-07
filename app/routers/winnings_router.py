@@ -59,6 +59,7 @@ def get_winnings_page(
     context["start_of_period"] = start_of_period
     context["end_of_period"] = end_of_period
     context["time_periods"] = winnings_service.time_periods
+    context["available_years"] = winnings_service.available_years
 
     db_purchases = db.query(Transaction
                             ).filter(
