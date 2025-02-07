@@ -80,15 +80,27 @@ def get_winnings_page(
 
     winners = []
     total_winnings = 0
-    
-    selected_period_winning_numbers = winnings_service.winning_numbers.get(str(selected_year), {}).get(selected_time_period, {})
-    print(selected_period_winning_numbers)
 
+    selected_period_winning_numbers = winnings_service.winning_numbers.get(str(selected_year), {}).get(selected_time_period, {})
+    
+    if not selected_period_winning_numbers:
+        context["purchases"] = {
+            "first_month_purchases": first_month_purchases,
+            "second_month_purchases": second_month_purchases
+            }
+        context["winners"] = winners
+        context["total_winnings"] = total_winnings
+        
+        return templates.TemplateResponse(
+            name="/winnings/index.html",
+            context=context
+        )
+    
     for db_purchase in db_purchases:
         # skip if no lottery number recorded
         if not db_purchase.receipt_lottery_number:
             continue
-
+        
         # get only the digits
         extracted_receipt_digits = winnings_service.get_digits_from_receipt_id(db_purchase.receipt_lottery_number)
 

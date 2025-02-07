@@ -29,7 +29,11 @@
             {% endif %}
         </ul>
         <h2 class="text-2xl font-semibold">Total Winnings</h2>
-        <p>You have won a total of NTD {{"${:,}".format(total_winnings)}}.</p>
+        {% if total_winnings %}
+            <p>You have won a total of NTD {{"${:,}".format(total_winnings)}}.</p>
+        {% else %}
+            <p>You have not won any money this time.</p>
+        {% endif %}
         <div class="grid md:grid-cols-2 gap-4">
             <div>
                 <h2 class="text-xl font-semibold">{{start_of_period.month}} - {{start_of_period.strftime("%B")}}</h2>
