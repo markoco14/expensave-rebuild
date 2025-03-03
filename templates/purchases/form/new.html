@@ -2,7 +2,16 @@
 	  hx-target="this"
 	  hx-swap="outerHTML"
 	  hx-indicator="#expense-form-indicator"
-	  class="px-2 grid gap-2">
+	  class="px-2 grid gap-2"
+	  novalidate>
+	  {% if form_errors %}
+		{% set first_error_field = "letters" if form_errors.get("letters") 
+			else "numbers" if form_errors.get("numbers") 
+			else "time" if form_errors.get("time") 
+			else "amount" if form_errors.get("amount")
+			else None
+		%}
+	  {% endif %}
 	{% include "purchases/form/inputs/lottery.html" %}
 	{% include "purchases/form/inputs/time.html" %}
 	{% include "purchases/form/inputs/amount.html" %}

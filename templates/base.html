@@ -129,6 +129,27 @@
 			  class="opacity-0 fixed top-2 left-2 p-2 rounded-md shadow bg-green-500 text-white w-[300px] transition-opacity duration-100">
 		</span>		
 		<script>
+		document.addEventListener('htmx:afterSettle', (event) => {
+			const errors = document.querySelectorAll('.js-error');
+			const firstError = errors[0];
+			console.log(firstError.textContent)
+
+			let input = null;
+			if (firstError.textContent.includes("letter")) {
+				input = document.querySelector("#lottery_letters")
+			} else if (firstError.textContent.includes("number")) {
+				input = document.querySelector("#lottery_numbers")
+			} else if (firstError.textContent.includes("time")) {
+				input = document.querySelector("#time")
+			} else {
+				input = document.querySelector("#amount")
+			}
+
+			input.focus();
+			
+		})
+		</script>
+		<script>
 			document.addEventListener('notifyUser', (event) => {
 				const toast = document.getElementById('toast');
 				const message = event.detail.value
