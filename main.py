@@ -216,14 +216,11 @@ def store_new_purchase(
     # validate amount
     if not amount:
         form_errors["amount"] = "Please enter a purchase amount."
-    else:
-        try:
-            amount_int = int(amount.strip())  # Remove spaces and convert to int
-            
-            if amount_int < 1:
-                form_errors["amount"] = "Amount must be greater than 0."
-        except ValueError:
-            form_errors["amount"] = "Amount must be a valid integer."
+    elif not amount.isdigit():
+        form_errors["amount"] = "Amount must be a number greater than or equal to 0."
+    elif int(amount) < 0:
+        form_errors["amount"] = "Amount must not be less than 0"
+    
 
     # Convert the time string to a time object
     try:

@@ -19,6 +19,7 @@
                 maxlength="2"
                 class="shrink border rounded p-2 bg-gray-100 w-full"
                 {% if not first_error_field or first_error_field == "letters" %} autofocus {% endif %}
+                onfocus="this.setSelectionRange(this.value.length,this.value.length);"
                 />
         </div>
         <div class="col-span-3">
@@ -26,10 +27,12 @@
             <input id="lottery_numbers"
                     name="lottery_numbers"
                     class="shrink border rounded p-2 bg-gray-100 text-right w-full"
-                    type="number" 
+                    type="text"
+                    inputmode="numeric"
                     placeholder="12345678"
                     value="{{form_values.get('lottery_numbers', '') if form_values else ''}}"
                     {% if first_error_field == "numbers" %} autofocus {% endif %}
+                    onfocus="this.setSelectionRange(this.value.length,this.value.length);"
                     />
         </div>
     </div>
