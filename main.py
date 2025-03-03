@@ -169,23 +169,25 @@ def store_new_purchase(
 
     # validate lottery info
     if not lottery_letters and not lottery_numbers:
-        form_errors["lottery"] = "Lottery ID letters and numbers are required."
+        form_errors["letters"] = "Lottery ID letters and numbers are required."
     elif not lottery_letters:
-        form_errors["lottery"] = "Lottery ID numbers are required."
-    elif not lottery_numbers:
-        form_errors["lottery"] = "Lottery ID letters are required."
+        form_errors["letters"] = "Lottery ID letters are required."
     elif not lottery_letters.isalpha():
-        form_errors["lottery"] = "Lottery ID letters must be A-Z."
+        form_errors["letters"] = "Lottery ID letters must be A-Z."
     elif not lottery_letters.isupper():
-        form_errors["lottery"] = "Lottery ID letters must be uppercase."
-    elif len(lottery_letters) != 2:
-        form_errors["lottery"] = "There can only be 2 letters."
+        form_errors["letters"] = "Lottery ID letters must be uppercase."
+    elif len(lottery_letters) < 2:
+        form_errors["letters"] = "There needs to be 2 letters."
+    elif len(lottery_letters) > 2:
+        form_errors["letters"] = "There can only be 2 letters."
+    elif not lottery_numbers:
+        form_errors["numbers"] = "Lottery ID numbers are required."
     elif not lottery_numbers.isdigit():
-        form_errors["lottery"] = "Lottery ID numbers must be 0-9."
+        form_errors["numbers"] = "Lottery ID numbers must be 0-9."
     elif len(lottery_numbers) < 8:
-        form_errors["lottery"] = "Lottery number must have at least 8 numbers"
+        form_errors["numbers"] = "Lottery number must have at least 8 numbers"
     elif len(lottery_numbers) > 8:
-        form_errors["lottery"] = "Lottery number must have at most 8 numbers"
+        form_errors["numbers"] = "Lottery number must have at most 8 numbers"
     
     # first check whether the lottery number has at least 8 digits
     # digit_regex = r"(\d+)"
@@ -207,17 +209,18 @@ def store_new_purchase(
     if not time:
         form_errors["time"] = "Please enter a purchase time."
     
+    if len(time.split(":")) < 3:
+        form_errors["time"] = "Please enter a valid time."
+        form_values["time"] = ""
+    
     # validate amount
     if not amount:
         form_errors["amount"] = "Please enter a purchase amount."
-    else:
-        try:
-            amount_int = int(amount.strip())  # Remove spaces and convert to int
-            
-            if amount_int < 1:
-                form_errors["amount"] = "Amount must be greater than 0."
-        except ValueError:
-            form_errors["amount"] = "Amount must be a valid integer."
+    elif not amount.isdigit():
+        form_errors["amount"] = "Amount must be a number greater than or equal to 0."
+    elif int(amount) < 0:
+        form_errors["amount"] = "Amount must not be less than 0"
+    
 
     # Convert the time string to a time object
     try:

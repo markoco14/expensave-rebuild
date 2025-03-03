@@ -3,13 +3,19 @@
     <input  id="amount"
             name="amount"
             class="border rounded p-2 bg-gray-100 text-right"
-            type="number"
+            type="text"
+            inputmode="numeric"
             placeholder="0"
             default="0" 
-            value="{{form_values.get('amount', '') if form_values else ''}}"/>
-    <div class="text-red-500 text-sm min-h-[20px] text-[12px] text-right">
+            value="{{form_values.get('amount', '') if form_values else ''}}"
+            {% if first_error_field == "amount" %} autofocus {% endif %}
+            onfocus="this.setSelectionRange(this.value.length,this.value.length);"
+            />
+    <div class="min-h-[20px] text-sm text-right">
         {% if form_errors and form_errors["amount"] %}
-            {{ form_errors["amount"] }}
+            <span class="js-error text-red-500">
+                    {{ form_errors["amount"] }}
+            </span>
         {% endif %}
     </div>
 </div>

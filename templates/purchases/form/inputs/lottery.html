@@ -17,21 +17,34 @@
                 value="{{form_values.get('lottery_letters', '') if form_values else ''}}"
                 oninput="this.value = this.value.toUpperCase()"
                 maxlength="2"
-                class="shrink border rounded p-2 bg-gray-100 w-full"/>
+                class="shrink border rounded p-2 bg-gray-100 w-full"
+                {% if not first_error_field or first_error_field == "letters" %} autofocus {% endif %}
+                onfocus="this.setSelectionRange(this.value.length,this.value.length);"
+                />
         </div>
         <div class="col-span-3">
             <label for="lottery_numbers" class="font-semibold">Numbers <span class="text-red-600">*</span></label>
             <input id="lottery_numbers"
                     name="lottery_numbers"
                     class="shrink border rounded p-2 bg-gray-100 text-right w-full"
-                    type="number" 
+                    type="text"
+                    inputmode="numeric"
                     placeholder="12345678"
-                    value="{{form_values.get('lottery_numbers', '') if form_values else ''}}" />
+                    value="{{form_values.get('lottery_numbers', '') if form_values else ''}}"
+                    {% if first_error_field == "numbers" %} autofocus {% endif %}
+                    onfocus="this.setSelectionRange(this.value.length,this.value.length);"
+                    />
         </div>
     </div>
-    <div class="text-red-500 text-sm min-h-[20px] text-[12px] text-right">
-        {% if form_errors and form_errors["lottery"] %}
-            {{ form_errors["lottery"] }}
+    <div class="min-h-[20px] text-sm text-right">
+        {% if form_errors %}
+            <span class="js-error text-red-500">
+            {% if form_errors["letters"]%}
+                {{ form_errors["letters"] }}
+            {% elif not form_errors["letters"] and form_errors["numbers"]%}
+                {{ form_errors["numbers"] }}
+            </span>
+            {%endif%}
         {% endif %}
     </div>
 </div>
