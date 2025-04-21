@@ -117,11 +117,14 @@
 		<title>{% block title %}{%endblock title%}</title>
 	</head>
 
-	<body class="overflow-y-scroll scroll-bar-thin">
+	<body class="overflow-y-scroll">
+		<div class="page-indicator htmx-indicator absolute top-0 left-0 h-1 w-full z-50">
+			<div class="w-[40%] md:w-[20%] h-1 bg-blue-500 animate-move rounded-md"></div>
+		</div>
 		{% block header %}
 			{% include "ui/header.html" %}
 		{% endblock header %}
-		<main>
+		<main class="py-[48px]">
 			{% block content %}
 			{% endblock content %}
 		</main>
