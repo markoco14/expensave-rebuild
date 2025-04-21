@@ -1,23 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Camera 1 Page{% endblock title %}
+{% block title %}My Save Money Life — Camera{% endblock title %}
 
 {% block content %}
-<section class="px-2 pt-[24px] pb-[96px]">
-	<div class="max-w-[1000px] mx-auto">
+<section class="px-2 sm:px-0 flex flex-col justify-between items-center">
 		<h1 class="sr-only text-center text-3xl mb-8">Camera 1</h1>
-        <div class="w-full aspect-[3/4] flex overflow-x-auto">
-            <div id="noPhotoDisplay" class="w-full aspect-[3/4] flex justify-center items-center border border-gray-300">
+        <div class="w-full sm:w-[500px] mx-auto aspect-[3/4] flex overflow-x-auto mb-[24px] pt-2 rounded">
+            <div id="noPhotoDisplay" class="w-full aspect-[3/4] flex justify-center items-center rounded border border-gray-300">
                 <p>Take a photo and see preview here.</p>
             </div>
-            <img id="cameraImage" class="hidden w-full aspect-[3/4] bg-black object-cover" src="" alt=""/>
+            <img id="cameraImage" class="hidden w-full aspect-[3/4] bg-black object-cover rounded" src="" alt=""/>
         </div>
-        <input id="cameraInput" form="cameraForm" name="photo" type="file" accept="image/*" capture="environment" class="hidden mb-16" />
+        <input id="cameraInput" form="cameraForm" name="photo" type="file" accept="image/*" capture="environment" class="hidden" />
         <form hx-post="/camera" action="/camera" method="POST" enctype="multipart/form-data" hx-swap="none" id="cameraForm">
             <button
                 id="cameraButton"
-                class="bg-gray-200 px-4 py-2 border rounded-md"
+                class="bg-gray-200 px-4 py-2 border rounded-md hover:bg-gray-100"
                 type="button">
-                Camera
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" class="stroke-black">
+                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+                    <circle cx="12" cy="13" r="3"></circle>
+                </svg>
             </button>
             <button
                 id="submitButton"
