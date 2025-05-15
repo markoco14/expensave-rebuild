@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{purchase.purchase_time}} | MySaveMoneyLife{% endblock title %}
+{% block title %}Purchase {{purchase.purchase_time.strftime("%B %d, %Y")}} | MySaveMoneyLife{% endblock title %}
 {% block content %}
 <section class="px-2 pt-[24px] pb-[96px]">
 	<div class="max-w-[1000px] mx-auto">
