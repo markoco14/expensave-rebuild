@@ -271,10 +271,16 @@ def get_purchase_detail_row(
         "purchase": db_purchase,
     }
 
-    return block_templates.TemplateResponse(
-        name="/app/spending-list-item.html",
-        context=context,
-        block_name="content"
+    if request.headers.get("hx-request"):
+        return block_templates.TemplateResponse(
+            name="/app/spending-list-item.html",
+            context=context,
+            block_name="content"
+        )
+
+    return templates.TemplateResponse(
+        name="/purchases/show.html",
+        context=context
     )
 
 
@@ -341,7 +347,7 @@ def update_purchase(
     )
 
 
-@router.get("/purchases/edit/{purchase_id}")
+@router.get("/purchases/{purchase_id}/edit")
 def get_edit_purchase_form(
     request: Request,
     purchase_id: int,
@@ -385,7 +391,7 @@ def get_edit_purchase_form(
         "purchase": db_purchase,
         "tab": tab
     }
-
+    
     return templates.TemplateResponse(
         name="purchases/edit-purchase-form.html",
         context=context
