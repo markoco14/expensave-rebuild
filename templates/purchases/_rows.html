@@ -1,0 +1,13 @@
+{% for purchase in purchases %}
+    <li class="flex justify-between"><p>{{purchase.purchase_time.strftime("%B %d, %Y @ %H:%M")}}</p><a href="/purchases/{{purchase.id}}">Details</a></li>
+{% endfor %}
+{% if purchases|length == 10 %}                   
+    <li 
+        hx-get="/purchases?page={{ page + 1 }}"
+        hx-target="this"
+        hx-trigger="revealed"
+        hx-swap="outerHTML"
+        {# hx-select="tbody > tr" #}
+        class="bg-green-200 h-8 animate-pulse">
+    </li>
+{% endif %}

@@ -34,13 +34,12 @@ block_templates = Jinja2Blocks(directory="templates")
 
 
 @router.get("/purchases")
-def get_purchases_page(
+def index(
     request: Request,
     current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
     page: int = 1
 ):
-    
     if not current_user:
         context = {
             "request": request,
@@ -101,9 +100,9 @@ def get_purchases_page(
                 name="purchases/index.html",
                 context=context
             )
-
+        
         return block_templates.TemplateResponse(
-            name="purchases/purchase-table-rows.html",
+            name="purchases/_rows.html",
             context=context,
         )
     

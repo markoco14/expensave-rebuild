@@ -18,14 +18,9 @@ MySaveMoneyLife - Purchase History
 				</tbody>
 			</table>
 		{% else %}
-			<table class="min-w-full divide-y divide-gray-400">
-				<thead>
-                    {% include 'purchases/purchase-table-header.html'%}
-                </thead>
-				<tbody class="divide-y divide-gray-200 bg-white">
-                    {% include 'purchases/purchase-table-rows.html' %}
-				</tbody>
-			</table>
+			<ul class="max-w-[400px] mx-auto">
+				{% include "/purchases/_rows.html" %}
+			</ul>
 		{% endif %}
 	</div>
 </section>
