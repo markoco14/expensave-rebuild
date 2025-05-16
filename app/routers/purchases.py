@@ -394,11 +394,11 @@ def get_edit_purchase_form(
 
     if request.headers.get("hx-request"):
         return templates.TemplateResponse(
-            name="purchases/edit-purchase-form.html",
+            name="purchases/edit/_form.html",
             context=context
         )
     return templates.TemplateResponse(
-        name="purchases/edit.html",
+        name="purchases/edit/index.html",
         context=context
     )
 
