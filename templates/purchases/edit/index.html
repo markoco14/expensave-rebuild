@@ -7,6 +7,7 @@
         <div class="max-w-[500px]">
             {% include "/purchases/edit/_form.html" %}
         </div>
+        <a hx-delete="/purchases/{{purchase.id}}">Delete</a>
         <a href="/purchases/{{purchase.id}}">Back</a>
 	</div>
 </section>

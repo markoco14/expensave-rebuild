@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 import boto3
 from fastapi import APIRouter, Depends, Request, Response, Form
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from jinja2_fragments.fastapi import Jinja2Blocks
 from sqlalchemy.orm import Session
@@ -568,9 +568,13 @@ def delete_purchase(
         return response
     
     # if request comes from "/purchases" we only need to send a response
-    response = Response(status_code=200)
-    
-    return response
+    if request.headers.get("hx-request"):
+        response = Response(status_code=200)
+        response.headers["hx-redirect"] = "/purchases"
+
+        return response
+        
+    return RedirectResponse(status_code=200)
 
 
 @router.get("/purchases/details/{date}")
