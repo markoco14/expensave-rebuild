@@ -128,7 +128,7 @@ def new(
 
 
 @router.post("/purchases", response_class=Response)
-def store_new_purchase(
+def store(
     request: Request,
     lottery_letters: Annotated[str, Form(...)],
     lottery_numbers: Annotated[str, Form(...)],
@@ -213,30 +213,15 @@ def store_new_purchase(
         )
 
         return response
-    print(date)
-    print(time)
     combined_purchase_time = f"{date} {time}"
-    print(combined_purchase_time)
-    # return "oK"
-    print(time)
     purchase_time_object = datetime.strptime(combined_purchase_time, "%Y-%m-%d %H:%M:%S")
-    print(purchase_time_object)
     utc_corrected_time = purchase_time_object - timedelta(hours=8)
-    print(utc_corrected_time)
 
     if lottery_letters:
         final_lottery_number = f"{lottery_letters}-{lottery_numbers}"
     else:
         final_lottery_number = lottery_numbers
     
-    # new_purchase = transaction_schemas.PurchaseCreateMinimal(
-    #     user_id=current_user.id,
-    #     price=amount,
-    #     receipt_lottery_number=final_lottery_number,
-    #     purchase_time=utc_corrected_time
-    # )
-
-    # db_purchase = Transaction(**new_purchase.model_dump())
     db_purchase = Transaction(
         user_id=current_user.id,
         price=amount,
@@ -280,9 +265,8 @@ def store_new_purchase(
     return response
 
 
-
 @router.get("/purchases/{purchase_id}")
-def get_purchase_detail_row(
+def show(
     request: Request,
     purchase_id: int,
     current_user: Annotated[DBUser, Depends(get_current_user)],
@@ -328,8 +312,68 @@ def get_purchase_detail_row(
     )
 
 
+@router.get("/purchases/{purchase_id}/edit")
+def edit(
+    request: Request,
+    purchase_id: int,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+    tab: str = "lottery",
+):
+
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+
+    db_purchase = db.query(Transaction).filter(
+        Transaction.id == purchase_id
+    ).first()
+
+    if not db_purchase.location:
+        db_purchase.location = ""
+
+    if not db_purchase.items:
+        db_purchase.items = ""
+
+    # correct date time
+    db_purchase.purchase_time = TimeService.format_taiwan_time(
+        purchase_time=db_purchase.purchase_time)
+
+    formatted_purchase_time = db_purchase.purchase_time.strftime("%Y-%m-%dT%H:%M:%S")
+    db_purchase.formatted_purchase_time = formatted_purchase_time
+
+    if not db_purchase.receipt_lottery_number:
+        db_purchase.receipt_lottery_number = ""
+
+    context = {
+        "request": request,
+        "user": current_user,
+        "purchase": db_purchase,
+        "tab": tab
+    }
+
+    if request.headers.get("hx-request"):
+        return templates.TemplateResponse(
+            name="purchases/edit/_form.html",
+            context=context
+        )
+    
+    response = templates.TemplateResponse(
+        name="purchases/edit/index.html",
+        context=context
+    )
+
+    return response
+
+
 @router.put("/purchases/{purchase_id}")
-def update_purchase(
+def update(
     request: Request,
     purchase_id: int,
     current_user: Annotated[DBUser, Depends(get_current_user)],
@@ -391,120 +435,8 @@ def update_purchase(
     )
 
 
-@router.get("/purchases/{purchase_id}/edit")
-def get_edit_purchase_form(
-    request: Request,
-    purchase_id: int,
-    current_user: Annotated[DBUser, Depends(get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-    tab: str = "lottery",
-):
-
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/index.html",
-            context=context
-        )
-
-    db_purchase = db.query(Transaction).filter(
-        Transaction.id == purchase_id
-    ).first()
-
-    if not db_purchase.location:
-        db_purchase.location = ""
-
-    if not db_purchase.items:
-        db_purchase.items = ""
-
-    # correct date time
-    db_purchase.purchase_time = TimeService.format_taiwan_time(
-        purchase_time=db_purchase.purchase_time)
-
-    formatted_purchase_time = db_purchase.purchase_time.strftime("%Y-%m-%dT%H:%M:%S")
-    db_purchase.formatted_purchase_time = formatted_purchase_time
-
-    if not db_purchase.receipt_lottery_number:
-        db_purchase.receipt_lottery_number = ""
-
-    context = {
-        "request": request,
-        "user": current_user,
-        "purchase": db_purchase,
-        "tab": tab
-    }
-
-    if request.headers.get("hx-request"):
-        return templates.TemplateResponse(
-            name="purchases/edit/_form.html",
-            context=context
-        )
-    
-    response = templates.TemplateResponse(
-        name="purchases/edit/index.html",
-        context=context
-    )
-
-    return response
-
-
-@router.get("/purchases/edit/form/{purchase_id}")
-def get_form_for_lottery(
-    request: Request,
-    purchase_id: int,
-    current_user: Annotated[DBUser, Depends(get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-    tab: str = "info",
-):  
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/index.html",
-            context=context
-        )
-
-    db_purchase = db.query(Transaction).filter(Transaction.id == purchase_id).first()
-    context = {
-        "request": request,
-        "purchase": db_purchase,
-        "tab": tab
-    }
-
-    if tab == "info":
-        return templates.TemplateResponse(
-            name="purchases/edit/inputs/edit-info.html",
-            context=context
-        )
-    
-    if tab == "time":
-        # change from UTC to Taiwan time
-        db_purchase.purchase_time += timedelta(hours=8)
-        return templates.TemplateResponse(
-            name="purchases/edit/inputs/edit-time.html",
-            context=context
-        )
-    
-    if tab == "lottery":
-        return templates.TemplateResponse(
-            name="purchases/edit/inputs/edit-lottery.html",
-            context=context
-        )
-
-    if tab == "method":
-        return templates.TemplateResponse(
-            name="purchases/edit/inputs/edit-method.html",
-            context=context
-        )
-
-
 @router.delete("/purchases/{purchase_id}", response_class=HTMLResponse)
-def delete_purchase(
+def delete(
     request: Request,
     response: Response,
     current_user: Annotated[DBUser, Depends(get_current_user)],
@@ -625,78 +557,9 @@ def delete_purchase(
     return RedirectResponse(status_code=200)
 
 
-@router.get("/purchases/details/{date}")
-def get_purchase_details_page(
-    request: Request,
-    current_user: Annotated[DBUser, Depends(get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-    date: str,
-):
-    if not current_user:
-        context = {
-            "request": request,
-            "nav_links": links.unauthenticated_navlinks
-        }
-        return templates.TemplateResponse(
-            name="/website/index.html",
-            context=context
-        )
-    year = int(date.split("-")[0])
-    month = int(date.split("-")[1])
-    day = int(date.split("-")[2])
-
-    start_of_day = TimeService.get_utc_start_of_current_day(
-        year=year,
-        month=month,
-        day=day,
-        utc_offset=8
-    )
-    end_of_day = TimeService.get_utc_end_of_current_day(
-        year=year,
-        month=month,
-        day=day,
-        utc_offset=8
-    )
-
-    purchases = db.query(Transaction).filter(
-        Transaction.user_id == current_user.id,
-        Transaction.purchase_time >= start_of_day,
-        Transaction.purchase_time <= end_of_day
-    ).order_by(Transaction.purchase_time.desc()).all()
-
-    for purchase in purchases:
-        purchase.purchase_time = TimeService.format_taiwan_time(
-            purchase_time=purchase.purchase_time)
-        
-    date_from_iso = datetime.fromisoformat(date)
-    yesterday_from_iso = (date_from_iso - timedelta(days=1)).strftime("%Y-%m-%d")
-    tomorrow_from_iso = (date_from_iso + timedelta(days=1)).strftime("%Y-%m-%d")
-
-    context = {
-        "user": current_user,
-        "request": request,
-        "nav_links": links.authenticated_navlinks,
-        "purchases": purchases,
-        "today_date": date,
-        "yesterday_date": yesterday_from_iso,
-        "tomorrow_date": tomorrow_from_iso,
-    }
-
-    if request.headers.get("HX-Request"):
-        return block_templates.TemplateResponse(
-            name="/purchases/day-list.html",
-            context=context,
-        )
-
-    return templates.TemplateResponse(
-        name="purchases/purchase-detail.html",
-        context=context
-    )
-
-
 
 @router.get("/purchases/date/{selected_date}")
-def get_updated_purchase_list(
+def get_date_purchases(
     request: Request,
     selected_date: datetime,
     current_user: Annotated[DBUser, Depends(get_current_user)],
@@ -724,9 +587,8 @@ def get_updated_purchase_list(
     )
 
 
-
 @router.get("/purchases/totals/{selected_date}")
-def calculate_total_spent(
+def get_date_total_spent(
     request: Request,
     selected_date: datetime,
     current_user: Annotated[DBUser, Depends(get_current_user)],
@@ -775,3 +637,55 @@ def validate_items(request: Request, items: Annotated[str, Form()] = None):
         name="app/item-tags.html",
         context={"items": items}
     )
+
+
+@router.get("/purchases/edit/form/{purchase_id}")
+def get_form_for_lottery(
+    request: Request,
+    purchase_id: int,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+    tab: str = "info",
+):  
+    if not current_user:
+        context = {
+            "request": request,
+            "nav_links": links.unauthenticated_navlinks
+        }
+        return templates.TemplateResponse(
+            name="/website/index.html",
+            context=context
+        )
+
+    db_purchase = db.query(Transaction).filter(Transaction.id == purchase_id).first()
+    context = {
+        "request": request,
+        "purchase": db_purchase,
+        "tab": tab
+    }
+
+    if tab == "info":
+        return templates.TemplateResponse(
+            name="purchases/edit/inputs/edit-info.html",
+            context=context
+        )
+    
+    if tab == "time":
+        # change from UTC to Taiwan time
+        db_purchase.purchase_time += timedelta(hours=8)
+        return templates.TemplateResponse(
+            name="purchases/edit/inputs/edit-time.html",
+            context=context
+        )
+    
+    if tab == "lottery":
+        return templates.TemplateResponse(
+            name="purchases/edit/inputs/edit-lottery.html",
+            context=context
+        )
+
+    if tab == "method":
+        return templates.TemplateResponse(
+            name="purchases/edit/inputs/edit-method.html",
+            context=context
+        )
