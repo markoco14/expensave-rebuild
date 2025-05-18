@@ -317,10 +317,9 @@ def get_purchase_detail_row(
     }
 
     if request.headers.get("hx-request"):
-        return block_templates.TemplateResponse(
-            name="/app/spending-list-item.html",
+        return templates.TemplateResponse(
+            name="/purchases/_purchase.html",
             context=context,
-            block_name="content"
         )
 
     return templates.TemplateResponse(
