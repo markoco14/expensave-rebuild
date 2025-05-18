@@ -15,27 +15,7 @@
             </div> #}
             <p>${{purchase.price}}</p>
         </div>
-        <a onclick="document.getElementById('details-{{purchase.id}}').classList.toggle('hidden');">Details</a>
-        <hr class="my-2 border-gray-500"/>
-        <div id="details-{{purchase.id}}" class="hidden">
-            <p class="text-xl">Lottery: <span class="font-semibold">{{purchase.receipt_lottery_number}}</span></p>
-            <p class="text-xl text-gray-500">Store: {{purchase.location}}</p>
-            {% if purchase.items %}
-                <p>{{purchase.items}}</p>
-            {% endif %}
-            <div class="text-center">
-                <a hx-get="/purchases/{{purchase.id}}/edit"
-                        hx-target="closest .detail-card"
-                        hx-swap="innerHTML settle:1s"
-                        href="/purchases/{{purchase.id}}/edit">Edit</a>
-
-                <button hx-delete="/purchases/{{purchase.id}}"
-                        hx-confirm="Are you sure you want to delete this purchase?"
-                        hx-target="closest li"
-                        hx-swap="outerHTML swap:1s"
-                        class="hover:text-red-500">Delete</button>
-            </div>
-        </div>
+        <a href="/purchases/{{purchase.id}}">Details</a>
     </li>
 {% endfor %}
 {% if purchases|length == 10 %}                   
