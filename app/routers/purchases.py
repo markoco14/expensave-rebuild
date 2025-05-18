@@ -118,7 +118,7 @@ def new(
     db: Annotated[Session, Depends(get_db)]
 ):
     context = {"request": request, "user": current_user}
-    
+
     response = templates.TemplateResponse(
         name="/purchases/new/index.html",
         context=context
@@ -324,7 +324,7 @@ def get_purchase_detail_row(
         )
 
     return templates.TemplateResponse(
-        name="/purchases/show.html",
+        name="/purchases/show/index.html",
         context=context
     )
 
