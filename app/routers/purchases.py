@@ -392,6 +392,8 @@ def get_edit_purchase_form(
         "tab": tab
     }
 
+    
+
     if request.headers.get("hx-request"):
         return templates.TemplateResponse(
             name="purchases/edit/_form.html",
