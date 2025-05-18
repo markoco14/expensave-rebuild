@@ -8,11 +8,15 @@
 	{% else %}
 	<p class="border rounded-md px-4 py-1 text-center mb-4">No image available</p>
 	{% endif %} #}
-{% include "/purchases/partials/edit-tabs.html" %}
+{# {% include "/purchases/partials/edit-tabs.html" %} #}
 <form hx-put="/purchases/{{purchase.id}}"
 	hx-swap="none"
-	hx-target="this">
+	hx-target="this"
+	class="grid gap-4">
+	{% include "/purchases/partials/edit-time.html" %}
 	{% include "/purchases/partials/edit-lottery.html" %}
+	{% include "/purchases/partials/edit-info.html" %}
+	{% include "/purchases/partials/edit-method.html" %}
 	{# <button type="button"
 			hx-get="/purchases/{{purchase.id}}"
 			hx-target="closest .detail-card"

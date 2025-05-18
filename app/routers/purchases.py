@@ -268,6 +268,7 @@ def get_purchase_detail_row(
 
     context = {
         "request": request,
+        "user": current_user,
         "purchase": db_purchase,
     }
 
@@ -388,21 +389,23 @@ def get_edit_purchase_form(
 
     context = {
         "request": request,
+        "user": current_user,
         "purchase": db_purchase,
         "tab": tab
     }
-
-    
 
     if request.headers.get("hx-request"):
         return templates.TemplateResponse(
             name="purchases/edit/_form.html",
             context=context
         )
-    return templates.TemplateResponse(
+    
+    response = templates.TemplateResponse(
         name="purchases/edit/index.html",
         context=context
     )
+
+    return response
 
 
 @router.get("/purchases/edit/form/{purchase_id}")

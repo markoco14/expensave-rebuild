@@ -4,28 +4,31 @@
         hx-get="/purchases/edit/form/{{purchase.id}}?tab=lottery"
         hx-target="next div"
         hx-swap="innerHTML"
-        class="underline underline-offset-2 text-decoration-green-700">
+        class="{% if tab == 'lottery' %}underline underline-offset-2 text-decoration-green-700{% endif %}">
             Lottery
     </button>
     <button 
         type="button"
         hx-get="/purchases/edit/form/{{purchase.id}}?tab=time"
         hx-target="next div"
-        hx-swap="innerHTML">
+        hx-swap="innerHTML"
+        class="{% if tab == 'time' %}underline underline-offset-2 text-decoration-green-700{% endif %}">
             Time
     </button>
     <button 
         type="button"
         hx-get="/purchases/edit/form/{{purchase.id}}?tab=info"
         hx-target="next div"
-        hx-swap="innerHTML">
+        hx-swap="innerHTML"
+        class="{% if tab == 'info' %}underline underline-offset-2 text-decoration-green-700{% endif %}">
             Info
     </button>
     <button 
         type="button"
         hx-get="/purchases/edit/form/{{purchase.id}}?tab=method"
         hx-target="next div"
-        hx-swap="innerHTML">
+        hx-swap="innerHTML"
+        class="{% if tab == 'method' %}underline underline-offset-2 text-decoration-green-700{% endif %}">
             Method
     </button>
 </div>
