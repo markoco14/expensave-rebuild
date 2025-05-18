@@ -179,7 +179,7 @@ def store_new_purchase(
 
     if form_errors:
         response = templates.TemplateResponse(
-            name="purchases/form/new.html",
+            name="purchases/new/form.html",
             context={
                 "request": request,
                 "form_errors": form_errors,
@@ -217,14 +217,14 @@ def store_new_purchase(
 
         return templates.TemplateResponse(
             headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
-            name="purchases/form/new.html",
+            name="purchases/new/form.html",
             context=context
         )
     
     db_purchase.purchase_time = TimeService.format_taiwan_time(purchase_time=db_purchase.purchase_time)
     
     response = templates.TemplateResponse(
-        name="purchases/form/new.html",
+        name="purchases/new/form.html",
         headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
         context={
             "request": request,
@@ -435,7 +435,7 @@ def get_form_for_lottery(
 
     if tab == "info":
         return templates.TemplateResponse(
-            name="purchases/partials/edit-info.html",
+            name="purchases/edit/inputs/edit-info.html",
             context=context
         )
     
@@ -443,19 +443,19 @@ def get_form_for_lottery(
         # change from UTC to Taiwan time
         db_purchase.purchase_time += timedelta(hours=8)
         return templates.TemplateResponse(
-            name="purchases/partials/edit-time.html",
+            name="purchases/edit/inputs/edit-time.html",
             context=context
         )
     
     if tab == "lottery":
         return templates.TemplateResponse(
-            name="purchases/partials/edit-lottery.html",
+            name="purchases/edit/inputs/edit-lottery.html",
             context=context
         )
 
     if tab == "method":
         return templates.TemplateResponse(
-            name="purchases/partials/edit-method.html",
+            name="purchases/edit/inputs/edit-method.html",
             context=context
         )
 

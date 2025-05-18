@@ -230,7 +230,7 @@ def store_new_purchase(
 
     if form_errors:
         response = templates.TemplateResponse(
-            name="purchases/form/new.html",
+            name="purchases/new/form.html",
             context={
                 "request": request,
                 "today_date": selected_date,
@@ -284,12 +284,12 @@ def store_new_purchase(
 
         return templates.TemplateResponse(
             headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
-            name="purchases/form/new.html",
+            name="purchases/new/form.html",
             context=context
         )
     
     response = templates.TemplateResponse(
-        name="purchases/form/new.html",
+        name="purchases/new/form.html",
         headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
         context={
             "request": request,
