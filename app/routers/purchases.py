@@ -111,12 +111,29 @@ def index(
         context=context
     )
 
+@router.get("/purchases/new")
+def new(
+    request: Request,
+    current_user: Annotated[DBUser, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)]
+):
+    context = {"request": request, "user": current_user}
+    
+    response = templates.TemplateResponse(
+        name="/purchases/new/index.html",
+        context=context
+    )
+
+    return response
+
 
 @router.post("/purchases", response_class=Response)
 def store_new_purchase(
     request: Request,
-    lottery: Annotated[str, Form(...)],
-    purchase_time: Annotated[str, Form(...)],
+    lottery_letters: Annotated[str, Form(...)],
+    lottery_numbers: Annotated[str, Form(...)],
+    date: Annotated[str, Form(...)],
+    time: Annotated[str, Form(...)],
     amount: Annotated[str, Form(...)],
     current_user: Annotated[DBUser, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
@@ -134,48 +151,56 @@ def store_new_purchase(
         )
     
     form_values = {
-        "lottery": lottery,
-        "purchase_time": purchase_time,
+        "lottery_letters": lottery_letters,
+        "lottery_numbers": lottery_numbers,
+        "time": time,
         "amount": amount
     }
 
     form_errors = {}
 
-    # validate lottery number
-    if not lottery:
-        form_errors["lottery"] = "Please enter a lottery number."
+    # validate lottery info
+    if not lottery_letters and not lottery_numbers:
+        form_errors["letters"] = "Lottery ID letters and numbers are required."
+    elif not lottery_letters:
+        form_errors["letters"] = "Lottery ID letters are required."
+    elif not lottery_letters.isalpha():
+        form_errors["letters"] = "Lottery ID letters must be A-Z."
+    elif not lottery_letters.isupper():
+        form_errors["letters"] = "Lottery ID letters must be uppercase."
+    elif len(lottery_letters) < 2:
+        form_errors["letters"] = "There needs to be 2 letters."
+    elif len(lottery_letters) > 2:
+        form_errors["letters"] = "There can only be 2 letters."
+    elif not lottery_numbers:
+        form_errors["numbers"] = "Lottery ID numbers are required."
+    elif not lottery_numbers.isdigit():
+        form_errors["numbers"] = "Lottery ID numbers must be 0-9."
+    elif len(lottery_numbers) < 8:
+        form_errors["numbers"] = "Lottery number must have at least 8 numbers"
+    elif len(lottery_numbers) > 8:
+        form_errors["numbers"] = "Lottery number must have at most 8 numbers"
+
+    # in case somehow not a time
+    if not time:
+        form_errors["time"] = "Please enter a purchase time."
     
-    # first check whether the lottery number has at least 8 digits
-    digit_regex = r"(\d+)"
-    lottery = lottery.upper()
-    digit_match = re.search(digit_regex, lottery)
-
-    try:
-        lottery_digits = digit_match.group()
-    except AttributeError:
-        lottery_digits = None
-
-    # validate lotttery number is at least 8 digits
-    if not lottery_digits:
-        form_errors["lottery"] = "Please enter a valid lottery number."
-    elif len(lottery_digits) != 8:
-        form_errors["lottery"] = "Lottery number must be 8 digits digits."
-
-    # validate purchase time
-    if not purchase_time:
-        form_errors["purchase_time"] = "Please enter a purchase time."
+    if len(time.split(":")) < 3:
+        form_errors["time"] = "Please enter a valid time."
+        form_values["time"] = ""
     
     # validate amount
     if not amount:
         form_errors["amount"] = "Please enter a purchase amount."
-    else:
-        try:
-            amount_int = int(amount.strip())  # Remove spaces and convert to int
-            
-            if amount_int < 1:
-                form_errors["amount"] = "Amount must be greater than 0."
-        except ValueError:
-            form_errors["amount"] = "Amount must be a valid integer."
+    elif not amount.isdigit():
+        form_errors["amount"] = "Amount must be a number greater than or equal to 0."
+    elif int(amount) < 0:
+        form_errors["amount"] = "Amount must not be less than 0"
+
+    try:
+        purchase_time_object = datetime.strptime(time, "%H:%M:%S").time()
+    except ValueError:
+        form_errors["time"] = "Please enter a valid time."
 
     if form_errors:
         response = templates.TemplateResponse(
@@ -188,18 +213,37 @@ def store_new_purchase(
         )
 
         return response
-    
-    purchase_time_object = datetime.fromisoformat(purchase_time)
+    print(date)
+    print(time)
+    combined_purchase_time = f"{date} {time}"
+    print(combined_purchase_time)
+    # return "oK"
+    print(time)
+    purchase_time_object = datetime.strptime(combined_purchase_time, "%Y-%m-%d %H:%M:%S")
+    print(purchase_time_object)
     utc_corrected_time = purchase_time_object - timedelta(hours=8)
+    print(utc_corrected_time)
+
+    if lottery_letters:
+        final_lottery_number = f"{lottery_letters}-{lottery_numbers}"
+    else:
+        final_lottery_number = lottery_numbers
     
-    new_purchase = transaction_schemas.PurchaseCreateMinimal(
+    # new_purchase = transaction_schemas.PurchaseCreateMinimal(
+    #     user_id=current_user.id,
+    #     price=amount,
+    #     receipt_lottery_number=final_lottery_number,
+    #     purchase_time=utc_corrected_time
+    # )
+
+    # db_purchase = Transaction(**new_purchase.model_dump())
+    db_purchase = Transaction(
         user_id=current_user.id,
         price=amount,
-        receipt_lottery_number=lottery,
-        purchase_time=utc_corrected_time
+        receipt_lottery_number=final_lottery_number,
+        purchase_time=purchase_time_object
     )
 
-    db_purchase = Transaction(**new_purchase.model_dump())
     db.add(db_purchase)
     db.commit()
     db.refresh(db_purchase)
