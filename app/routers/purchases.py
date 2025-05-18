@@ -685,7 +685,7 @@ def get_purchase_details_page(
 
     if request.headers.get("HX-Request"):
         return block_templates.TemplateResponse(
-            name="/app/spending-list.html",
+            name="/purchases/day-list.html",
             context=context,
         )
 
@@ -696,7 +696,7 @@ def get_purchase_details_page(
 
 
 
-@router.get("/purchase-list/{selected_date}")
+@router.get("/purchases/date/{selected_date}")
 def get_updated_purchase_list(
     request: Request,
     selected_date: datetime,
@@ -718,8 +718,9 @@ def get_updated_purchase_list(
         "today_date": selected_date,
         "purchases": db_purchases
     }
+
     return templates.TemplateResponse(
-        name="/app/spending-list.html",
+        name="/purchases/day-list.html",
         context=context
     )
 

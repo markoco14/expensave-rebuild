@@ -37,12 +37,12 @@ Expense Tracker App
 		</div>
 		
 		<div class="px-2 sm:px-0 grid rounded-md gap-4">
-			{% include 'app/spending-list.html'%}
+			{% include "/purchases/day-list.html" %}
 		</div>
 	</div>
 </section>
 <script>gsap.registerPlugin(Flip);</script>
-<script src="../../../static/js/spendingItemEditToggle.js"></script>
+{# <script src="../../../static/js/spendingItemEditToggle.js"></script> #}
 {# <script src="../../../static/js/spendingList.js"></script> #}
 {# <script src="../../../static/js/animateDeleteListItem.js"></script> #}
 {% endblock content %}

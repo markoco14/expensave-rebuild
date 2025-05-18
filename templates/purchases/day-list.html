@@ -1,0 +1,17 @@
+{% if purchases|length == 0 %}
+    <ul id="today-purchases"
+        class="py-4 px-8 bg-white rounded-md shadow"
+        hx-get="/purchases/date/{{today_date.strftime('%Y-%m-%d')}}"
+        hx-trigger="getPurchaseList from:body"
+        hx-swap="outerHTML">
+        <li>You haven't bought anything today!</li>
+    </ul>
+{% else %}
+    <ul id="today-purchases"
+        class="grid divide-y gap-4"
+        hx-get="/purchases/date/{{today_date.strftime('%Y-%m-%d')}}"
+        hx-trigger="getPurchaseList from:body"
+        hx-swap="outerHTML">
+        {% include "/purchases/_rows.html" %}
+    </ul>
+{% endif %}
