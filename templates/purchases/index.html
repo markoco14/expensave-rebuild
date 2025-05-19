@@ -4,8 +4,11 @@ MySaveMoneyLife - Purchase History
 {% endblock title %}
 {% block content %}
 <section class="px-2 pt-[24px] pb-[96px]">
-	<div class="max-w-[1000px] mx-auto">
-		<h1 class="text-center text-3xl mb-8">Your Purchases</h1>
+	<div class="max-w-[500px] mx-auto">
+		<hgroup class="flex items-baseline justify-between">
+			<h1 class="text-3xl mb-8">Your Purchases</h1>
+			<a href="/purchases/new" class="hover:text-blue-600 hover:underline hover:underline-offset-2">New</a>
+		</hgroup>
 		{% if purchases|length == 0 %}
 			<p>You have no purchase history.</p>
 			<p>If you decide to track your purchases, you will see a table like the one below.</p>
@@ -18,14 +21,9 @@ MySaveMoneyLife - Purchase History
 				</tbody>
 			</table>
 		{% else %}
-			<table class="min-w-full divide-y divide-gray-400">
-				<thead>
-                    {% include 'purchases/purchase-table-header.html'%}
-                </thead>
-				<tbody class="divide-y divide-gray-200 bg-white">
-                    {% include 'purchases/purchase-table-rows.html' %}
-				</tbody>
-			</table>
+			<ul class="max-w-[500px] mx-auto">
+				{% include "/purchases/_rows.html" %}
+			</ul>
 		{% endif %}
 	</div>
 </section>

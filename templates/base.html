@@ -134,9 +134,13 @@
 		<script>
 		document.addEventListener('htmx:afterSettle', (event) => {
 			const errors = document.querySelectorAll('.js-error');
-			const firstError = errors[0];
-			console.log(firstError.textContent)
+	
+			if (errors.length === 0) {
+				return
+			}
 
+			const firstError = errors[0];
+			
 			let input = null;
 			if (firstError.textContent.includes("letter")) {
 				input = document.querySelector("#lottery_letters")

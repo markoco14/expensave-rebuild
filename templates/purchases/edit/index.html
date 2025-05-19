@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Edit Purchase {{purchase.purchase_time.strftime("%B %d, %Y")}} | MySaveMoneyLife{% endblock title %}
+{% block content %}
+<section class="px-2 pt-[24px] pb-[96px]">
+	<div class="max-w-[500px] mx-auto">
+		<h1 class="text-3xl mb-8">Edit Purchase {{purchase.id}}</h1>
+        {% include "/purchases/edit/_form.html" %}
+        <hr class="my-8"/>
+        <p class="mb-8">Click the button below to delete this purchase. Warning: this will permanently delete the purchase with no going back.</p>
+        <a href="/purchases/{{purchase.id}}/delete" class="text-center inline-block px-3 py-1 border border-red-700 rounded text-red-700 hover:underline underline-offset-2 cursor-pointer hover:text-red-600 hover:border-red-600 active:scale-95">Delete purchase</a>
+	</div>
+</section>
+{% endblock content %}

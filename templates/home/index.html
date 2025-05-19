@@ -25,24 +25,24 @@ Expense Tracker App
 				</a>
 			</div>
 		</div>
-		{% include 'purchases/form/new.html' %}
+		{% include 'purchases/new/form.html' %}
 		<hr class="border border-gray-700" />
 		{# <a href="/purchases/details/{{today_date.strftime('%Y-%m-%d')}}"
 			class="underline underline-offset-2 text-gray-600">Details</a> #}
 		<div class="px-2 sm:px-0">
 			<div class="flex justify-between items-center rounded-md gap-4 text-2xl bg-white p-2 rounded-md shadow">
 				<span>Total Spent:</span>
-				{% include "/app/total-spent-span.html" %}
+				{% include "/home/total-spent-span.html" %}
 			</div>
 		</div>
 		
 		<div class="px-2 sm:px-0 grid rounded-md gap-4">
-			{% include 'app/spending-list.html'%}
+			{% include "/purchases/day-list.html" %}
 		</div>
 	</div>
 </section>
 <script>gsap.registerPlugin(Flip);</script>
-<script src="../../../static/js/spendingItemEditToggle.js"></script>
+{# <script src="../../../static/js/spendingItemEditToggle.js"></script> #}
 {# <script src="../../../static/js/spendingList.js"></script> #}
 {# <script src="../../../static/js/animateDeleteListItem.js"></script> #}
 {% endblock content %}

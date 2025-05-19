@@ -16,7 +16,7 @@ from app.auth.auth_service import get_current_user
 from app.core import time_service
 from app.core.config import get_settings
 from app.core.database import get_db
-from app.routers import purchase_router, totals_router, faker_router, receipts_router, winnings_router
+from app.routers import purchases, totals_router, faker_router, receipts_router, winnings_router
 from app.camera import camera_router
 from app.services import transaction_service, winnings_service
 from app.transaction import transaction_schemas
@@ -27,7 +27,7 @@ from app.user.user_model import DBUser
 settings = get_settings()
 
 app = FastAPI()
-app.include_router(purchase_router.router)
+app.include_router(purchases.router)
 app.include_router(admin_router.router)
 app.include_router(totals_router.router)
 app.include_router(faker_router.router)
@@ -132,176 +132,9 @@ def get_app_index_page(
     }
 
     return templates.TemplateResponse(
-        name="app/index.html",
+        name="home/index.html",
         context=context
     )
-
-
-@app.post("/date/{selected_date}", response_class=templates.TemplateResponse)
-def store_new_purchase(
-    request: Request,
-    selected_date: datetime,
-    lottery_letters: Annotated[str, Form(...)],
-    lottery_numbers: Annotated[str, Form(...)],
-    time: Annotated[str, Form(...)],
-    amount: Annotated[str, Form(...)],
-    current_user: Annotated[DBUser, Depends(get_current_user)],
-    db: Annotated[Session, Depends(get_db)],
-    ):
-    """Store a new purchase"""
-    if not current_user:
-        context = {
-            "request": request,
-        }
-        return templates.TemplateResponse(
-            name="/website/index.html",
-            context=context
-        )
-    
-    form_values = {
-        "lottery_letters": lottery_letters,
-        "lottery_numbers": lottery_numbers,
-        "time": time,
-        "amount": amount
-    }
-
-    form_errors = {}
-
-    # validate lottery info
-    if not lottery_letters and not lottery_numbers:
-        form_errors["letters"] = "Lottery ID letters and numbers are required."
-    elif not lottery_letters:
-        form_errors["letters"] = "Lottery ID letters are required."
-    elif not lottery_letters.isalpha():
-        form_errors["letters"] = "Lottery ID letters must be A-Z."
-    elif not lottery_letters.isupper():
-        form_errors["letters"] = "Lottery ID letters must be uppercase."
-    elif len(lottery_letters) < 2:
-        form_errors["letters"] = "There needs to be 2 letters."
-    elif len(lottery_letters) > 2:
-        form_errors["letters"] = "There can only be 2 letters."
-    elif not lottery_numbers:
-        form_errors["numbers"] = "Lottery ID numbers are required."
-    elif not lottery_numbers.isdigit():
-        form_errors["numbers"] = "Lottery ID numbers must be 0-9."
-    elif len(lottery_numbers) < 8:
-        form_errors["numbers"] = "Lottery number must have at least 8 numbers"
-    elif len(lottery_numbers) > 8:
-        form_errors["numbers"] = "Lottery number must have at most 8 numbers"
-    
-    # first check whether the lottery number has at least 8 digits
-    # digit_regex = r"(\d+)"
-    # lottery_numbers = lottery_numbers.upper()
-    # digit_match = re.search(digit_regex, lottery_numbers)
-
-    # try:
-    #     lottery_digits = digit_match.group()
-    # except AttributeError:
-    #     lottery_digits = None
-
-    # # validate lotttery number is at least 8 digits
-    # if not lottery_digits:
-    #     form_errors["lottery"] = "Please enter a valid lottery number."
-    # elif len(lottery_digits) != 8:
-    #     form_errors["lottery"] = "Lottery number must be 8 digits digits."
-
-    # in case somehow not a time
-    if not time:
-        form_errors["time"] = "Please enter a purchase time."
-    
-    if len(time.split(":")) < 3:
-        form_errors["time"] = "Please enter a valid time."
-        form_values["time"] = ""
-    
-    # validate amount
-    if not amount:
-        form_errors["amount"] = "Please enter a purchase amount."
-    elif not amount.isdigit():
-        form_errors["amount"] = "Amount must be a number greater than or equal to 0."
-    elif int(amount) < 0:
-        form_errors["amount"] = "Amount must not be less than 0"
-    
-
-    # Convert the time string to a time object
-    try:
-        purchase_time_object = datetime.strptime(time, "%H:%M:%S").time()
-    except ValueError:
-        form_errors["time"] = "Please enter a valid time."
-
-    if form_errors:
-        response = templates.TemplateResponse(
-            name="purchases/form/new.html",
-            context={
-                "request": request,
-                "today_date": selected_date,
-                "form_errors": form_errors,
-                "form_values": form_values
-                },
-        )
-
-        return response
-    
-    utc_corrected_time = datetime.combine(selected_date, purchase_time_object) - timedelta(hours=8)
-
-    if lottery_letters:
-        final_lottery_number = f"{lottery_letters}-{lottery_numbers}"
-    else:
-        final_lottery_number = lottery_numbers
-    
-    new_purchase = transaction_schemas.PurchaseCreateMinimal(
-        user_id=current_user.id,
-        price=amount,
-        receipt_lottery_number=final_lottery_number,
-        purchase_time=utc_corrected_time
-    )
-
-    db_purchase = Transaction(**new_purchase.model_dump())
-    db.add(db_purchase)
-    db.commit()
-    db.refresh(db_purchase)
-
-    db_purchases = transaction_service.get_user_purchases_by_date(
-                                            current_user_id=current_user.id, 
-                                            selected_date=selected_date, 
-                                            db=db
-                                        )
-    
-    # corrent the time for UI
-    db_purchase.purchase_time = time_service.format_taiwan_time(purchase_time=db_purchase.purchase_time)
-    
-    if len(db_purchases) == 0:
-        db_purchases.append(db_purchase)
-        context = {
-            "request": request,
-            "today_date": selected_date,
-            "purchases": db_purchases,
-            "form_errors": {},
-            "form_values": {
-                "time": datetime.now().time().strftime("%I:%M:%S")
-            },
-            "message": "Purchase tracked!"
-        }
-
-        return templates.TemplateResponse(
-            headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
-            name="purchases/form/new.html",
-            context=context
-        )
-    
-    response = templates.TemplateResponse(
-        name="purchases/form/new.html",
-        headers={"HX-Trigger": "calculateTotalSpent, getPurchaseList"},
-        context={
-            "request": request,
-            "today_date": selected_date,
-            "form_errors": {},
-            "form_values": {
-                "time": datetime.now().time().strftime("%I:%M:%S")
-            }
-            },
-    )
-
-    return response
 
 
 @app.get("/signup", response_class=templates.TemplateResponse)
