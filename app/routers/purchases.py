@@ -511,7 +511,7 @@ def get_date_total_spent(
         purchases=db_purchases)
 
     return templates.TemplateResponse(
-        name="app/total-spent-span.html",
+        name="home/total-spent-span.html",
         context={
             "totalSpent": totalSpent,
             "today_date": selected_date,

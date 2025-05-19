@@ -132,7 +132,7 @@ def get_app_index_page(
     }
 
     return templates.TemplateResponse(
-        name="app/index.html",
+        name="home/index.html",
         context=context
     )
 
