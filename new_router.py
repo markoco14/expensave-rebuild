@@ -7,7 +7,10 @@ router = APIRouter()
 
 # routes follow ('method', 'path', 'endpoint/handler', 'dependencies')
 routes = [
-    ("GET",     "/v2",  public.home,   []),   # None
+    ("GET",     "/v2",          public.home,        []),   # None
+    ("GET",     "/v2/signup",   public.signup,      []),
+    ("POST",    "/v2/register", public.register,    []),
+    ("GET",     "/v2/app",      public.app,         []),
 
 ]
 

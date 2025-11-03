@@ -1,0 +1,16 @@
+{% extends "new/base.html" %}
+{% block title %}Taiwan Receipt and Budget{% endblock title %}
+{% block content %}
+<h1>Taiwan Receipt and Budget</h1>
+<form action="/v2/register" method="POST">
+    <div class="input-group">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" />
+    </div>
+    <div class="input-group">
+        <label for="pwd">Password</label>
+        <input id="pwd" name="password" type="password" />
+    </div>
+    <button type="submit">Register</button>
+</form>
+{% endblock %}
