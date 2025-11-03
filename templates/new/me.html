@@ -17,21 +17,23 @@ Me | Taiwan Receipt and Budget
     <p>Create spending buckets as you need them.</p>
     {% if request.query_params.get("add") and request.query_params.get("add") == "bucket" %}
     <a href="/me">Cancel add bucket</a>
-    {% else %}
-    <a href="/me?add=bucket">Add bucket</a>
-    {% endif %}
-    {% if request.query_params.get("add") and request.query_params.get("add") == "bucket" %}
-        <form>
+    <form action="/users/{{ request.state.user.user_id }}/buckets" method="POST">
         <div class="input-group">
             <label for="bucket">Add a new spending bucket for more control over your spending.</label>
             <input id="bucket" name="bucket" type="text" />
         </div>
-        </form>
-    
+    <button type="submit">Create bucket</button>
+    </form>
+    {% else %}
+    <a href="/me?add=bucket">Add bucket</a>
+    {% endif %}
+    {% if not buckets %}
+    <p>You haven't made any spending buckets yet.</p>
     {% else %}
     <ul>
-        <li>Daily</li>
-        <li>Groceries</li>
+    {% for bucket in buckets %}
+        <li>{{ bucket.name }}</li>
+    {% endfor %}
     </ul>
     {% endif %}
 </section>

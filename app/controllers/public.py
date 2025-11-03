@@ -1,5 +1,6 @@
 import sqlite3
 import time
+from types import SimpleNamespace
 import uuid
 from fastapi import Request
 from fastapi.responses import RedirectResponse
@@ -107,7 +108,6 @@ async def session(request: Request):
     if not db_user:
         return "user does not exist"
     
-    # make sure the password is correct
     if not auth_service.verify_password(
             plain_password=password,
             hashed_password=db_user[2]
@@ -142,10 +142,37 @@ async def me(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
+        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+        
     return templates.TemplateResponse(
         request=request,
         name="new/me.html",
         context={
-            "current_user": request.state.user
+            "current_user": request.state.user,
+            "buckets": buckets
         }
     )
+
+
+async def buckets(request: Request, user_id: int):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    form_data = await request.form()
+
+    bucket_name = form_data.get("bucket")
+
+    if not bucket_name:
+        return "You need a bucket name"
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute("INSERT INTO bucket (user_id, name) VALUES (?, ?);", (user_id, bucket_name))
+        except Exception as e:
+            return f"You already have a {bucket_name} bucket."
+    
+    return RedirectResponse(url="/me", status_code=303)
