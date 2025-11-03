@@ -71,9 +71,46 @@ async def app(request: Request):
     )
 
 async def login(request: Request):
+     return templates.TemplateResponse(
+        request=request,
+        name="new/login.html",
+        context={}
+    )
+
+async def session(request: Request):
     form_data = await request.form()
-    print(form_data)
     email = form_data.get("email")
     password = form_data.get("password")
 
-    return RedirectResponse(url="/v2", status_code=303)
+    if not email:
+        return "no email"
+    
+    if not password:
+        return "no password"
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM user WHERE email = ?;", (email, ))
+        db_user = cursor.fetchone()
+
+    if not db_user:
+        return "user does not exist"
+    
+    # make sure the password is correct
+    if not auth_service.verify_password(
+            plain_password=password,
+            hashed_password=db_user[2]
+        ):
+            return "wrong password"
+    
+    token = str(uuid.uuid4())
+    expires_at = int(time.time()) + (60 * 60 * 24 * 3)
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO session (token, user_id, expires_at) VALUES (?, ?, ?);", (token, db_user[0], expires_at))
+
+    response = RedirectResponse(url="/v2/app", status_code=303)
+    response.set_cookie(key="session-id", value=token)
+
+    return response

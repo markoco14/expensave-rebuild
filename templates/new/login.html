@@ -1,8 +1,8 @@
 {% extends "new/base.html" %}
-{% block title %}Sign Up | Taiwan Receipt and Budget{% endblock title %}
+{% block title %}Log In | Taiwan Receipt and Budget{% endblock title %}
 {% block content %}
-<h1>Sign Up</h1>
-<form action="/v2/register" method="POST">
+<h1>Log In</h1>
+<form action="/v2/session" method="POST">
     <div class="input-group">
         <label for="email">Email</label>
         <input id="email" name="email" type="email" />
@@ -11,6 +11,6 @@
         <label for="pwd">Password</label>
         <input id="pwd" name="password" type="password" />
     </div>
-    <button type="submit">Register</button>
+    <button type="submit">Log In</button>
 </form>
 {% endblock %}

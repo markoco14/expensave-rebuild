@@ -10,6 +10,8 @@ routes = [
     ("GET",     "/v2",          public.home,        []),   # None
     ("GET",     "/v2/signup",   public.signup,      []),
     ("POST",    "/v2/register", public.register,    []),
+    ("GET",     "/v2/login",    public.login,       []),
+    ("POST",    "/v2/session",  public.session,     []),
     ("GET",     "/v2/app",      public.app,         []),
 
 ]
