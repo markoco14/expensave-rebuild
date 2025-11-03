@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow-y: scroll;
+}
+
+
+form {
+    .input-group {
+        display: grid;
+    }
+
+    input {
+        border: 1px solid rgba(124, 124, 124, 1);
+        border-radius: 0.25rem;
+        padding:0.25rem;
+    }
+}
