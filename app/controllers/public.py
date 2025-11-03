@@ -11,20 +11,31 @@ templates = Jinja2Templates(directory="templates")
 
 
 def home(request: Request):
+    if request.state.user:
+        return RedirectResponse(url="/v2/app", status_code=303)
+    
     return templates.TemplateResponse(
         request=request,
         name="new/index.html",
         context={}
     )
 
+
 def signup(request: Request):
+    if request.state.user:
+        return RedirectResponse(url="/v2/app", status_code=303)
+    
     return templates.TemplateResponse(
         request=request,
         name="new/signup.html",
         context={}
     )
 
+
 async def register(request: Request):
+    if request.state.user:
+        return RedirectResponse(url="/v2/app", status_code=303)
+    
     form_data = await request.form()
     email = form_data.get("email")
     password = form_data.get("password")
@@ -63,21 +74,21 @@ async def register(request: Request):
     return response
 
 
-async def app(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="new/app.html",
-        context={}
-    )
-
 async def login(request: Request):
-     return templates.TemplateResponse(
+    if request.state.user:
+        return RedirectResponse(url="/v2/app", status_code=303)
+    
+    return templates.TemplateResponse(
         request=request,
         name="new/login.html",
         context={}
     )
 
+
 async def session(request: Request):
+    if request.state.user:
+        return RedirectResponse(url="/v2/app", status_code=303)
+    
     form_data = await request.form()
     email = form_data.get("email")
     password = form_data.get("password")
@@ -114,3 +125,14 @@ async def session(request: Request):
     response.set_cookie(key="session-id", value=token)
 
     return response
+
+
+async def app(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/v2/login", status_code=303)
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="new/app.html",
+        context={}
+    )
