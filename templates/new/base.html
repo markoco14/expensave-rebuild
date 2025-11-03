@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		{% block head %}
+
+		{% endblock head %}
+		<meta charset="UTF-8">
+		<meta name="viewport"
+			  content="width=device-width, initial-scale=1.0">
+		<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+
+        <link href="/static/styles.css" rel="stylesheet" />
+		<title>{% block title %}{%endblock title%}</title>
+	</head>
+
+	<body>
+		{% block header %}
+        <header>
+            <span>TRAB</span>
+			{% if not request.state.user %}
+				<a href="/signup">Sign Up</a>
+				<a href="/login">Log In</a>
+			{% else %}
+				<a href="/app">App</a>
+			{% endif %}
+        </header>
+		{% endblock header %}
+		<main >
+			{% block content %}
+			{% endblock content %}
+		</main>
+
+
+	</body>
+
+</html>
