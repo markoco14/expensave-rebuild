@@ -8,9 +8,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport"
 			  content="width=device-width, initial-scale=1.0">
-		<script src="https://unpkg.com/htmx.org@1.9.10"
-				integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-				crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
 
         <link href="/static/styles.css" rel="stylesheet" />
 		<title>{% block title %}{%endblock title%}</title>
@@ -20,9 +18,12 @@
 		{% block header %}
         <header>
             <span>TRAB</span>
-            <a href="/v2/signup">Sign Up</a>
-            <a href="/v2/login">Log In</a>
-            <a href="/v2/app">App</a>
+			{% if not request.state.user %}
+				<a href="/signup">Sign Up</a>
+				<a href="/login">Log In</a>
+			{% else %}
+				<a href="/app">App</a>
+			{% endif %}
         </header>
 		{% endblock header %}
 		<main >

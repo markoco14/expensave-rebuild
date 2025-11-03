@@ -12,7 +12,7 @@ templates = Jinja2Templates(directory="templates")
 
 def home(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/v2/app", status_code=303)
+        return RedirectResponse(url="/app", status_code=303)
     
     return templates.TemplateResponse(
         request=request,
@@ -23,7 +23,7 @@ def home(request: Request):
 
 def signup(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/v2/app", status_code=303)
+        return RedirectResponse(url="/app", status_code=303)
     
     return templates.TemplateResponse(
         request=request,
@@ -34,7 +34,7 @@ def signup(request: Request):
 
 async def register(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/v2/app", status_code=303)
+        return RedirectResponse(url="/app", status_code=303)
     
     form_data = await request.form()
     email = form_data.get("email")
@@ -68,7 +68,7 @@ async def register(request: Request):
         cursor = conn.cursor()
         cursor.execute("INSERT INTO session (token, user_id, expires_at) VALUES (?, ?, ?);", (token, user_id, expires_at))
 
-    response = RedirectResponse(url="/v2/app", status_code=303)
+    response = RedirectResponse(url="/app", status_code=303)
     response.set_cookie(key="session-id", value=token)
 
     return response
@@ -76,7 +76,7 @@ async def register(request: Request):
 
 async def login(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/v2/app", status_code=303)
+        return RedirectResponse(url="/app", status_code=303)
     
     return templates.TemplateResponse(
         request=request,
@@ -87,7 +87,7 @@ async def login(request: Request):
 
 async def session(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/v2/app", status_code=303)
+        return RedirectResponse(url="/app", status_code=303)
     
     form_data = await request.form()
     email = form_data.get("email")
@@ -121,7 +121,7 @@ async def session(request: Request):
         cursor = conn.cursor()
         cursor.execute("INSERT INTO session (token, user_id, expires_at) VALUES (?, ?, ?);", (token, db_user[0], expires_at))
 
-    response = RedirectResponse(url="/v2/app", status_code=303)
+    response = RedirectResponse(url="/app", status_code=303)
     response.set_cookie(key="session-id", value=token)
 
     return response
@@ -129,7 +129,7 @@ async def session(request: Request):
 
 async def app(request: Request):
     if not request.state.user:
-        return RedirectResponse(url="/v2/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     
     return templates.TemplateResponse(
         request=request,
