@@ -8,7 +8,11 @@ body {
     overflow-y: scroll;
 }
 
-
+section {
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-inline: auto;
+}
 form {
     .input-group {
         display: grid;

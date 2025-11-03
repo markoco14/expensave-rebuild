@@ -1,0 +1,58 @@
+{% extends "new/base.html" %}
+
+{% block title %}
+Me | Taiwan Receipt and Budget
+{% endblock title %}
+
+{% block content %}
+<section>
+    <h1>This is you</h1>
+</section>
+<section>
+    <h2>Your account information</h2>
+    <p>Email: {{ current_user.email }}</p>
+</section>
+<section>
+    <h2>Spending Buckets</h2>
+    <p>Create spending buckets as you need them.</p>
+    {% if request.query_params.get("add") and request.query_params.get("add") == "bucket" %}
+    <a href="/me">Cancel add bucket</a>
+    {% else %}
+    <a href="/me?add=bucket">Add bucket</a>
+    {% endif %}
+    {% if request.query_params.get("add") and request.query_params.get("add") == "bucket" %}
+        <form>
+        <div class="input-group">
+            <label for="bucket">Add a new spending bucket for more control over your spending.</label>
+            <input id="bucket" name="bucket" type="text" />
+        </div>
+        </form>
+    
+    {% else %}
+    <ul>
+        <li>Daily</li>
+        <li>Groceries</li>
+    </ul>
+    {% endif %}
+</section>
+<section>
+    <h2>Budget</h2>
+    {% if request.query_params.get("edit") and request.query_params.get("edit") == "budget" %}
+    <a href="/me">Cancel</a>
+    {% else %}
+    <a href="/me?edit=budget">Edit</a>
+    {% endif %}
+    <p>Set your daily spending allowance. Choose a daily number and every month we'll automatically calculate your monthly budget.</p>
+    {% if request.query_params.get("edit") and request.query_params.get("edit") == "budget" %}
+        <form>
+        <div class="input-group">
+            <label for="budget">Set your new daily spending budget.</label>
+            <p>This will automatically expire your current budget because you can only have one active daily budget each month.</p>
+            <input id="budget" name="budget" type="text" />
+        </div>
+        </form>
+    {% else %}
+        <p>Daily Budget: $500 (TWD)</p>
+    {% endif %}
+</section>
+{% endblock content %}

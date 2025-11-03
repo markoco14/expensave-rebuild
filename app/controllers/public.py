@@ -136,3 +136,16 @@ async def app(request: Request):
         name="new/app.html",
         context={}
     )
+
+
+async def me(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="new/me.html",
+        context={
+            "current_user": request.state.user
+        }
+    )
