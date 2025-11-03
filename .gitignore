@@ -3,3 +3,4 @@ venv
 requirements_*
 __pycache__
 temp
+db.sqlite3
