@@ -11,6 +11,27 @@ from app.auth import auth_service
 templates = Jinja2Templates(directory="templates")
 
 
+
+async def create(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    form_data = await request.form()
+
+    bucket_name = form_data.get("bucket")
+
+    if not bucket_name:
+        return "You need a bucket name"
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute("INSERT INTO bucket (user_id, name) VALUES (?, ?);", (request.state.user.user_id, bucket_name))
+        except Exception as e:
+            return f"You already have a {bucket_name} bucket."
+    
+    return RedirectResponse(url="/me", status_code=303)
+
+
 def delete(request: Request, bucket_id: int):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)

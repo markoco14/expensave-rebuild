@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers import bucket, budget, public
+from app.controllers import bucket, budget, public, user
 from app.dependencies import is_user
 
 router = APIRouter()
@@ -14,13 +14,13 @@ routes = [
     ("POST",    "/session",                     public.session,     [Depends(is_user)]),
     ("GET",     "/app",                         public.app,         [Depends(is_user)]),
 
-    ("GET",     "/me",                          public.me,          [Depends(is_user)]),
+    ("GET",     "/me",                          user.me,            [Depends(is_user)]),
 
+    ("POST",    "/buckets",                     bucket.create,      [Depends(is_user)]),
     ("DELETE",  "/buckets/{bucket_id}",         bucket.delete,      [Depends(is_user)]),
 
-    ("POST",    "/users/{user_id}/budgets",     budget.create,      [Depends(is_user)]),
+    ("POST",    "/budgets",                     budget.create,      [Depends(is_user)]),
 
-    ("POST",    "/users/{user_id}/buckets",     public.buckets,     [Depends(is_user)]),
 ]
 
 for method, path, handler, dependencies in routes:
