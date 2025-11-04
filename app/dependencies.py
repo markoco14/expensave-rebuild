@@ -50,4 +50,5 @@ def is_user(request: Request):
         return
     
     request.state.user = SimpleNamespace(**db_user)
+    
     return

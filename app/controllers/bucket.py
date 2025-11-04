@@ -17,8 +17,18 @@ def delete(request: Request, bucket_id: int):
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
-        
+        conn.row_factory = sqlite3.Row
+
         cursor = conn.cursor()
+        cursor.execute("SELECT bucket_id, user_id FROM bucket WHERE bucket_id = ?;", (bucket_id,))
+
+        bucket = cursor.fetchone()
+        if not bucket:
+            return "There is no bucket"
+
+        if bucket["user_id"] != request.state.user.user_id:
+            return "You are not the right user"
+        
         cursor.execute("DELETE FROM bucket WHERE bucket_id = ?;", (bucket_id,))
     
     response = Response(status_code=204, headers={"hx-refresh": "true"})
