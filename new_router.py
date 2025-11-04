@@ -17,6 +17,7 @@ routes = [
     ("GET",     "/me",                          user.me,            [Depends(is_user)]),
 
     ("POST",    "/buckets",                     bucket.create,      [Depends(is_user)]),
+    ("POST",    "/buckets/daily",               bucket.create,      [Depends(is_user)]),
     ("DELETE",  "/buckets/{bucket_id}",         bucket.delete,      [Depends(is_user)]),
 
     ("POST",    "/budgets",                     budget.create,      [Depends(is_user)]),
