@@ -14,13 +14,28 @@ section {
     margin-inline: auto;
 }
 form {
-    .input-group {
+    .input_group {
         display: grid;
+        margin-bottom: 0.5rem;
     }
 
     input {
         border: 1px solid rgba(124, 124, 124, 1);
         border-radius: 0.25rem;
         padding:0.25rem;
+    }
+
+    .button_group {
+        display: flex;
+        gap: 1rem;
+    }
+}
+
+
+.bucket_list {
+    li {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
     }
 }
