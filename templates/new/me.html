@@ -1,0 +1,65 @@
+{% extends "new/base.html" %}
+
+{% block title %}
+Me | Taiwan Receipt and Budget
+{% endblock title %}
+
+{% block content %}
+<section>
+    <h1>This is you</h1>
+</section>
+<section>
+    <h2>Your account information</h2>
+    <p>Email: {{ current_user.email }}</p>
+</section>
+<section>
+    <h2>Spending Buckets</h2>
+    <p>Create spending buckets as you need them. <a href="/me?add=bucket">Add bucket</a>.</p>
+    {% if request.query_params.get("add") and request.query_params.get("add") == "bucket" %}
+    <form action="/buckets" method="POST">
+        <div class="input_group">
+            <label for="bucket">Add a new spending bucket for more control over your spending.</label>
+            <input id="bucket" name="bucket" type="text" autofocus/>
+        </div>
+        <div class="button_group">
+    <a href="/me">Cancel add bucket</a><button type="submit">Create bucket</button>
+        </div>
+    </form>
+    {% endif %}
+    {% if not buckets %}
+    <p>You haven't made any spending buckets yet.</p>
+    {% else %}
+    <ul class="bucket_list">
+    {% for bucket in buckets %}
+        <li><span>{{ bucket.name }}</span><button hx-delete="/buckets/{{ bucket.bucket_id }}" hx-swap="none">Delete</button></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+</section>
+<section>
+    <h2>Budget</h2>
+    <p>Set your daily spending allowance. Choose a daily number and every month we'll automatically calculate your monthly budget.</p>
+    <a href="/me?edit=budget">Change spending allowance</a>
+    {% if request.query_params.get("edit") and request.query_params.get("edit") == "budget" %}
+        <form action="/budgets" method="POST">
+            <div class="input_group">
+                <label for="amount">Set your new daily spending budget.</label>
+                <input id="amount" name="amount" type="text" />
+            </div>
+            <div class="input_group">
+                <label for="start_date">Starts at</label>
+                <input id="start_date" name="start_date" type="date" value="{{ today_date.strftime('%Y-%m-%d') }}"/>
+            </div>
+            <div class="button_group">
+                <a href="/me">Cancel change spending allowance</a>
+                <button type="submit">Change spending allowance</button>
+            </div>
+        </form>
+    {% endif %}
+    {% if not budget %}
+    <p>You haven't set a spending budget yet.</p>    
+    {% else %}
+    <p>Your daily spending allowance: ${{ budget.amount }}</p>
+    {% endif %}
+</section>
+{% endblock content %}

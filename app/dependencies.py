@@ -1,6 +1,7 @@
 
 import sqlite3
 import time
+from types import SimpleNamespace
 from fastapi import Request
 
 
@@ -39,6 +40,7 @@ def is_user(request: Request):
         return
     
     with sqlite3.connect("db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute("SELECT user_id, email FROM user WHERE user_id = ?;", (db_session[2],))
         db_user = cursor.fetchone()
@@ -47,5 +49,6 @@ def is_user(request: Request):
         request.state.user = None
         return
     
-    request.state.user = db_user
+    request.state.user = SimpleNamespace(**db_user)
+    
     return

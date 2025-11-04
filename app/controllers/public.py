@@ -1,5 +1,7 @@
+from datetime import date
 import sqlite3
 import time
+from types import SimpleNamespace
 import uuid
 from fastapi import Request
 from fastapi.responses import RedirectResponse
@@ -107,7 +109,6 @@ async def session(request: Request):
     if not db_user:
         return "user does not exist"
     
-    # make sure the password is correct
     if not auth_service.verify_password(
             plain_password=password,
             hashed_password=db_user[2]
@@ -136,3 +137,4 @@ async def app(request: Request):
         name="new/app.html",
         context={}
     )
+
