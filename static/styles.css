@@ -14,6 +14,8 @@ section {
     margin-inline: auto;
 }
 form {
+    display: grid;
+    
     .input_group {
         display: grid;
         margin-bottom: 0.5rem;

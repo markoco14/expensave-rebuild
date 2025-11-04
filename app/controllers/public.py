@@ -1,3 +1,4 @@
+from datetime import date
 import sqlite3
 import time
 from types import SimpleNamespace
@@ -147,13 +148,20 @@ async def me(request: Request):
         cursor = conn.cursor()
         cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
+        cursor.execute("SELECT budget_id, amount FROM budget WHERE user_id = ? AND ended_at IS NULL;", (request.state.user.user_id,))
+        budget = cursor.fetchone()
+        if budget:
+            budget = SimpleNamespace(**budget)
         
     return templates.TemplateResponse(
         request=request,
         name="new/me.html",
         context={
             "current_user": request.state.user,
-            "buckets": buckets
+            "buckets": buckets,
+            "budget": budget,
+            "today_date": date.today()
         }
     )
 

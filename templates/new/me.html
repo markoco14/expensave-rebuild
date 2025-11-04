@@ -38,22 +38,28 @@ Me | Taiwan Receipt and Budget
 </section>
 <section>
     <h2>Budget</h2>
-    {% if request.query_params.get("edit") and request.query_params.get("edit") == "budget" %}
-    <a href="/me">Cancel</a>
-    {% else %}
-    <a href="/me?edit=budget">Edit</a>
-    {% endif %}
     <p>Set your daily spending allowance. Choose a daily number and every month we'll automatically calculate your monthly budget.</p>
+    <a href="/me?edit=budget">Change spending allowance</a>
     {% if request.query_params.get("edit") and request.query_params.get("edit") == "budget" %}
-        <form>
-        <div class="input-group">
-            <label for="budget">Set your new daily spending budget.</label>
-            <p>This will automatically expire your current budget because you can only have one active daily budget each month.</p>
-            <input id="budget" name="budget" type="text" />
-        </div>
+        <form action="/users/{{ request.state.user.user_id }}/budgets" method="POST">
+            <div class="input_group">
+                <label for="amount">Set your new daily spending budget.</label>
+                <input id="amount" name="amount" type="text" />
+            </div>
+            <div class="input_group">
+                <label for="start_date">Starts at</label>
+                <input id="start_date" name="start_date" type="date" value="{{ today_date.strftime('%Y-%m-%d') }}"/>
+            </div>
+            <div class="button_group">
+                <a href="/me">Cancel change spending allowance</a>
+                <button type="submit">Change spending allowance</button>
+            </div>
         </form>
+    {% endif %}
+    {% if not budget %}
+    <p>You haven't set a spending budget yet.</p>    
     {% else %}
-        <p>Daily Budget: $500 (TWD)</p>
+    <p>Your daily spending allowance: ${{ budget.amount }}</p>
     {% endif %}
 </section>
 {% endblock content %}
