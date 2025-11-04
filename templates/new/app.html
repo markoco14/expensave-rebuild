@@ -3,13 +3,30 @@
 {% block content %}
 <section>
     <h1>Taiwan Receipt and Budget</h1>
-    <p>Daily allowed spending: </p>
+    {% if not daily_spending_bucket %}
+    <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
+    {% else %}
+    <nav>
+        <a href="/app?bucket={{ daily_spending_bucket.bucket_id }}">{{ daily_spending_bucket.name }}</a>
+
+        {% for bucket in other_buckets  %}
+        <a href="/app?bucket={{ bucket.bucket_id }}">{{ bucket.name }}</a>
+        {% endfor %}
+    </nav>
+    <p>Daily allowed spending: ${{ daily_spending_bucket.daily_amount }}</p>
     <form action="/purchases" method="POST">
+        {% if request.query_params.get("bucket") %}
+            {% set bucket_id = request.query_params.get("bucket") %}
+        {% else %}
+            {% set bucket_id = daily_spending_bucket.bucket_id %}
+        {% endif %}
+        <input type="hidden" name="bucket" value="{{ bucket_id }}"/>
         <div class="input_group">
             <label for="amount">Amount</label>
-            <input type="number" autofocus />
+            <input id="amount" name="amount" type="number" autofocus />
         </div>
         <button type="submit">Save purchase</button>
     </form>
+    {% endif%}
 </section>
 {% endblock %}

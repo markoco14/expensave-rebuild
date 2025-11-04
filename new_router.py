@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers import application, auth, bucket, budget, public, user
+from app.controllers import application, auth, bucket, budget, public, purchase, user
 from app.dependencies import is_user
 
 router = APIRouter()
@@ -15,6 +15,8 @@ routes = [
     ("POST",    "/session",                     auth.session,       [Depends(is_user)]),
 
     ("GET",     "/app",                         application.home,   [Depends(is_user)]),
+    
+    ("POST",    "/purchases",                   purchase.create,    [Depends(is_user)]),
 
     ("GET",     "/me",                          user.me,            [Depends(is_user)]),
 
