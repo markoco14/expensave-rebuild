@@ -1,6 +1,15 @@
 {% extends "new/base.html" %}
 {% block title %}Taiwan Receipt and Budget{% endblock title %}
 {% block content %}
-<h1>Taiwan Receipt and Budget</h1>
-<p>You are in the app now.</p>
+<section>
+    <h1>Taiwan Receipt and Budget</h1>
+    <p>Daily allowed spending: </p>
+    <form action="/purchases" method="POST">
+        <div class="input_group">
+            <label for="amount">Amount</label>
+            <input type="number" autofocus />
+        </div>
+        <button type="submit">Save purchase</button>
+    </form>
+</section>
 {% endblock %}
