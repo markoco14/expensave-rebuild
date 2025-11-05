@@ -1,0 +1,20 @@
+{% extends "new/base.html" %}
+
+{% block title %}
+Purchases | Taiwan Receipt and Budget
+{% endblock title %}
+
+{% block content %}
+<section>
+    <h1>Your purchases</h1>
+    {% if not purchases %}
+    <p>You haven't tracked any purchases yet.</p>
+    {% else %}
+    <ul>
+        {% for purchase in purchases %}
+        <li>{{ purchase.amount }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</section>
+{% endblock content %}

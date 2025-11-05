@@ -1,8 +1,28 @@
+import sqlite3
+from types import SimpleNamespace
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 templates = Jinja2Templates(directory="templates")
+
+async def list(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM purchase WHERE user_id = ?;", (request.state.user.user_id, ))
+        purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
+    return templates.TemplateResponse(
+        request=request,
+        name="new/purchases/index.html",
+        context={"purchases": purchases}
+    )
 
 
 async def create(request: Request):
