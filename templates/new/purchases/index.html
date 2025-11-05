@@ -1,18 +1,19 @@
 {% extends "new/base.html" %}
 
 {% block title %}
-Purchases | Taiwan Receipt and Budget
+Purchases | The Money Game
 {% endblock title %}
 
 {% block content %}
 <section>
     <h1>Your purchases</h1>
     {% if not purchases %}
-    <p>You haven't tracked any purchases yet.</p>
+    <p>You haven't tracked any purchases yet. <a href="/purchases/new">Store your first purchase</a>.</p>
     {% else %}
+    <a href="/purchases/new">Add more purchases</a>
     <ul>
         {% for purchase in purchases %}
-        <li>{{ purchase.amount }}</li>
+        <li>${{ purchase.amount }} {{ purchase.currency }} {{ purchase.timezone }} {{ purchase.purchased_at }} {{ purchase.bucket_id }}</li>
         {% endfor %}
     </ul>
     {% endif %}

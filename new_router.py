@@ -18,6 +18,7 @@ routes = [
     
     ("GET",     "/purchases",                   purchase.list,      [Depends(is_user)]),
     ("POST",    "/purchases",                   purchase.create,    [Depends(is_user)]),
+    ("GET",     "/purchases/new",               purchase.new,       [Depends(is_user)]),
 
     ("GET",     "/me",                          user.me,            [Depends(is_user)]),
 
