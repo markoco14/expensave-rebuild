@@ -1,7 +1,5 @@
-from datetime import date
 import sqlite3
 import time
-from types import SimpleNamespace
 import uuid
 from fastapi import Request
 from fastapi.responses import RedirectResponse
@@ -92,4 +90,17 @@ async def session(request: Request):
     response = RedirectResponse(url="/app", status_code=303)
     response.set_cookie(key="session-id", value=token)
 
+    return response
+
+
+async def logout(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/signin", status_code=303)
+        
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()        
+        cursor.execute("DELETE FROM session where session_id = ?;", (request.state.user.session_id,))
+
+    response = RedirectResponse(url="/login", status_code=303)
+    response.delete_cookie("session-id")
     return response

@@ -13,6 +13,7 @@ routes = [
 
     ("POST",    "/register",                    auth.register,      [Depends(is_user)]),
     ("POST",    "/session",                     auth.session,       [Depends(is_user)]),
+    ("GET",     "/logout",                      auth.logout,        [Depends(is_user)]),
 
     ("GET",     "/app",                         application.home,   [Depends(is_user)]),
     
