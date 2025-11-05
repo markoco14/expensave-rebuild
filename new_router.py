@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers import bucket, budget, public, user
+from app.controllers import application, auth, bucket, budget, public, purchase, user
 from app.dependencies import is_user
 
 router = APIRouter()
@@ -9,14 +9,22 @@ router = APIRouter()
 routes = [
     ("GET",     "/",                            public.home,        [Depends(is_user)]),   # None
     ("GET",     "/signup",                      public.signup,      [Depends(is_user)]),
-    ("POST",    "/register",                    public.register,    [Depends(is_user)]),
     ("GET",     "/login",                       public.login,       [Depends(is_user)]),
-    ("POST",    "/session",                     public.session,     [Depends(is_user)]),
-    ("GET",     "/app",                         public.app,         [Depends(is_user)]),
+
+    ("POST",    "/register",                    auth.register,      [Depends(is_user)]),
+    ("POST",    "/session",                     auth.session,       [Depends(is_user)]),
+    ("GET",     "/logout",                      auth.logout,        [Depends(is_user)]),
+
+    ("GET",     "/app",                         application.home,   [Depends(is_user)]),
+    
+    ("GET",     "/purchases",                   purchase.list,      [Depends(is_user)]),
+    ("POST",    "/purchases",                   purchase.create,    [Depends(is_user)]),
+    ("GET",     "/purchases/new",               purchase.new,       [Depends(is_user)]),
 
     ("GET",     "/me",                          user.me,            [Depends(is_user)]),
 
     ("POST",    "/buckets",                     bucket.create,      [Depends(is_user)]),
+    ("POST",    "/buckets/daily",               bucket.create,      [Depends(is_user)]),
     ("DELETE",  "/buckets/{bucket_id}",         bucket.delete,      [Depends(is_user)]),
 
     ("POST",    "/budgets",                     budget.create,      [Depends(is_user)]),

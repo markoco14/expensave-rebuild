@@ -12,7 +12,7 @@ steps = [
             token TEXT NOT NULL,
             user_id INTEGER NOT NULL,
             expires_at INTEGER NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES users(id)
+            FOREIGN KEY(user_id) REFERENCES user(id)
         );""",
         "DROP TABLE IF EXISTS session;")
 ]

@@ -18,13 +18,17 @@
 		{% block header %}
         <header>
             <span>TRAB</span>
-			{% if not request.state.user %}
+			<nav>
+				{% if not request.state.user %}
 				<a href="/signup">Sign Up</a>
 				<a href="/login">Log In</a>
-			{% else %}
+				{% else %}
 				<a href="/app">App</a>
 				<a href="/me">Me</a>
-			{% endif %}
+				<a href="/purchases">Purchases</a>
+				<a href="/logout">Logout</a>
+				{% endif %}
+			</nav>
         </header>
 		{% endblock header %}
 		<main >

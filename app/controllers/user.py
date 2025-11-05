@@ -19,10 +19,13 @@ async def me(request: Request):
     with sqlite3.connect("db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
+        try:
+            cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
+        except Exception as e:
+            print(f"something went wrong selecting from the bucket table: {e}")
+            return "Internal server error"
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
-        cursor.execute("SELECT budget_id, amount FROM budget WHERE user_id = ? AND ended_at IS NULL;", (request.state.user.user_id,))
         budget = cursor.fetchone()
         if budget:
             budget = SimpleNamespace(**budget)

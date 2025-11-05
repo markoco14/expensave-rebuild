@@ -1,0 +1,52 @@
+{% extends "new/base.html" %}
+
+{% block title %}
+New Purchase | The Money Game
+{% endblock title %}
+
+{% block content %}
+<section>
+    <h1>Enter the data for your new purchase</h1>
+    {% if not daily_spending_bucket %}
+    <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
+    {% else %}
+    <nav>
+        <a href="/purchases/new?bucket={{ daily_spending_bucket.bucket_id }}">{{ daily_spending_bucket.name }}</a>
+
+        {% for bucket in other_buckets  %}
+        <a href="/purchases/new?bucket={{ bucket.bucket_id }}">{{ bucket.name }}</a>
+        {% endfor %}
+    </nav>
+    <p>Daily allowed spending: ${{ daily_spending_bucket.daily_amount }}</p>
+    <form action="/purchases" method="POST">
+        {% if request.query_params.get("bucket") %}
+            {% set bucket_id = request.query_params.get("bucket") %}
+        {% else %}
+            {% set bucket_id = daily_spending_bucket.bucket_id %}
+        {% endif %}
+        <input type="hidden" name="bucket" value="{{ bucket_id }}"/>
+        <div class="input_group">
+            <label for="amount">Amount</label>
+            <input id="amount" name="amount" type="number" autofocus />
+        </div>
+        <div class="input_group">
+            <label for="currency">Currency</label>
+            <input id="currency" name="currency" type="text" value="TWD"/>
+        </div>
+        <div class="input_group">
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date"  value="{{ default_date }}" />
+        </div>
+        <div class="input_group">
+            <label for="time">Time</label>
+            <input id="time" name="time" type="time" step="2" value="{{ default_time }}" />
+        </div>
+        <div class="input_group">
+            <label for="timezone">Timezone</label>
+            <input id="timezone" name="timezone" type="text" value="Asia/Taipei" />
+        </div>
+        <button type="submit">Save purchase</button>
+    </form>
+    {% endif%}
+</section>
+{% endblock content %}

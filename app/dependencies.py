@@ -42,7 +42,7 @@ def is_user(request: Request):
     with sqlite3.connect("db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
-        cursor.execute("SELECT user_id, email FROM user WHERE user_id = ?;", (db_session[2],))
+        cursor.execute("SELECT user.user_id, user.email, session.session_id FROM user JOIN session USING (user_id) WHERE user_id = ?;", (db_session[2],))
         db_user = cursor.fetchone()
 
     if not db_user:
