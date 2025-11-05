@@ -9,7 +9,8 @@ __depends__ = {'20251103_03_oVfwp-create-bucket-table'}
 steps = [
     step("""CREATE TABLE IF NOT EXISTS purchase(
             purchase_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            amount NOT NULL,
+            amount INTEGER NOT NULL,
+            currency TEXT NOT NULL,
             lotto_number TEXT,
             purchased_at TEXT NOT NULL,
             timezone TEXT NOT NULL,
