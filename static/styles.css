@@ -69,14 +69,13 @@ form {
 }
 
 .purchase-new {
-    display: block;
+    display: inline-block;
     padding: 0.5rem 1rem;
     text-decoration: none;
     color: white;
     background-color: rgba(18, 146, 67, 1);
     border-radius: 0.25rem;
     margin-bottom: 1rem;
-    place-self: end;
 }
 
 .purchase-list {

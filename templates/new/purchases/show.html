@@ -1,0 +1,17 @@
+{% extends "new/base.html" %}
+
+{% block title %}
+Edit Purchase {{ purchase.purchase_id }} | The Money Game
+{% endblock title %}
+
+{% block content %}
+<section>
+    <h1>Purchase {{ purchase.purchase_id }}</h1>
+    <p>You spent: </p>
+    <p>${{ purchase.amount }} ({{ purchase.currency }})</p>
+    <p>At:</p>
+    <p>${{ purchase.purchased_at }} ({{ purchase.timezone }})</p>
+    <p>Bucket:</p>
+    <p>{{ purchase.bucket_name }}</p>
+</section>
+{% endblock content %}

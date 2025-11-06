@@ -16,7 +16,7 @@ Purchases | The Money Game
     {% if purchases %}
     <ul class="purchase-list">
         {% for purchase in purchases %}
-        <li>${{ purchase.amount }} {{ purchase.currency }} {{ purchase.timezone }} {{ purchase.purchased_at }} {{ purchase.bucket_id }}</li>
+        <li>${{ purchase.amount }} {{ purchase.currency }} {{ purchase.timezone }} {{ purchase.purchased_at }} {{ purchase.bucket_id }} <a href="/purchases/{{ purchase.purchase_id }}">Details</a></li>
         {% endfor %}
     </ul>
     {% endif %}
