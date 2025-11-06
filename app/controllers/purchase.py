@@ -133,12 +133,14 @@ async def show(request: Request, purchase_id: int):
 
         cursor = conn.cursor()
         cursor.execute("""
-                    SELECT purchase.purchase_id,
-                        purchase.amount, purchase.currency, purchase.purchased_at, purchase.timezone, purchase.user_id,
+                    SELECT purchase.purchase_id, purchase.amount,
+                        purchase.currency, purchase.purchased_at,
+                        purchase.timezone, purchase.user_id,
+                        purchase.bucket_id as bucket_id,
                         bucket.name as bucket_name 
                     FROM purchase 
-                    JOIN bucket USING (user_id) 
-                    WHERE user_id = ? AND purchase_id = ?;""", (request.state.user.user_id, purchase_id))
+                    JOIN bucket USING (bucket_id) 
+                    WHERE purchase.user_id = ? AND purchase.purchase_id = ?;""", (request.state.user.user_id, purchase_id))
         row = cursor.fetchone()
         purchase = SimpleNamespace(**row) if row else None
 
