@@ -17,7 +17,7 @@ async def list(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM purchase WHERE user_id = ?;", (request.state.user.user_id, ))
+        cursor.execute("SELECT * FROM purchase WHERE user_id = ? ORDER BY purchased_at DESC;", (request.state.user.user_id, ))
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
     return templates.TemplateResponse(
@@ -34,8 +34,6 @@ async def new(request: Request):
     current_datetime = datetime.now()
     default_date = current_datetime.date()
     default_time = current_datetime.time().strftime("%H:%M:%S")
-    print(default_date)
-    print(default_time)
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -101,17 +99,9 @@ async def create(request: Request):
     timezone = form_data.get("timezone")
     if not timezone:
         return "You need to choose a timezone."
-
-    print("amount", amount)
-    print("date", date)
-    print("time", time)
-    print("timezone", timezone)
     
     local_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
     utc_time = local_time - timedelta(hours=8)
-    print(local_time)
-    print(utc_time)
-
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
