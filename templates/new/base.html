@@ -17,18 +17,20 @@
 	<body>
 		{% block header %}
         <header>
-            <span>TRAB</span>
-			<nav>
-				{% if not request.state.user %}
-				<a href="/signup">Sign Up</a>
-				<a href="/login">Log In</a>
-				{% else %}
-				<a href="/app">App</a>
-				<a href="/me">Me</a>
-				<a href="/purchases">Purchases</a>
-				<a href="/logout">Logout</a>
-				{% endif %}
-			</nav>
+			<div class="wrapper header">
+				<span>TRAB</span>
+				<nav>
+					{% if not request.state.user %}
+					<a href="/signup">Sign Up</a>
+					<a href="/login">Log In</a>
+					{% else %}
+					<a href="/app">App</a>
+					<a href="/me">Me</a>
+					<a href="/purchases">Purchases</a>
+					<a href="/logout">Logout</a>
+					{% endif %}
+				</nav>
+			</div>
         </header>
 		{% endblock header %}
 		<main >

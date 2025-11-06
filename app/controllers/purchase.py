@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 
 templates = Jinja2Templates(directory="templates")
 
+
 async def list(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
@@ -17,14 +18,18 @@ async def list(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM purchase WHERE user_id = ?;", (request.state.user.user_id, ))
+        cursor.execute("SELECT * FROM purchase WHERE user_id = ? ORDER BY purchased_at DESC;", (request.state.user.user_id, ))
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
+    for purchase in purchases:
+        purchase.purchased_at = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
 
     return templates.TemplateResponse(
         request=request,
         name="new/purchases/index.html",
         context={"purchases": purchases}
     )
+
 
 async def new(request: Request):
     if not request.state.user:
@@ -34,8 +39,6 @@ async def new(request: Request):
     current_datetime = datetime.now()
     default_date = current_datetime.date()
     default_time = current_datetime.time().strftime("%H:%M:%S")
-    print(default_date)
-    print(default_time)
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -65,6 +68,7 @@ async def new(request: Request):
             "default_time": default_time
         }
     )
+
 
 async def create(request: Request):
     if not request.state.user:
@@ -101,17 +105,9 @@ async def create(request: Request):
     timezone = form_data.get("timezone")
     if not timezone:
         return "You need to choose a timezone."
-
-    print("amount", amount)
-    print("date", date)
-    print("time", time)
-    print("timezone", timezone)
     
     local_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
     utc_time = local_time - timedelta(hours=8)
-    print(local_time)
-    print(utc_time)
-
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -125,3 +121,47 @@ async def create(request: Request):
             return "Something went wrong on our server."
     
     return RedirectResponse(url="/purchases", status_code=303)
+
+
+async def show(request: Request, purchase_id: int):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("""
+                    SELECT purchase.purchase_id,
+                        purchase.amount, purchase.currency, purchase.purchased_at, purchase.timezone, purchase.user_id,
+                        bucket.name as bucket_name 
+                    FROM purchase 
+                    JOIN bucket USING (user_id) 
+                    WHERE user_id = ? AND purchase_id = ?;""", (request.state.user.user_id, purchase_id))
+        row = cursor.fetchone()
+        purchase = SimpleNamespace(**row) if row else None
+
+    if not purchase:
+        return templates.TemplateResponse(
+            request=request,
+            name="new/404.html",
+            context={
+                "header": "Purchase Not Found",
+                "apology": "We are sorry, but we were unable to find your purchase.",
+                "link": "purchases",
+                "link_text": "Back to purchases"
+            },
+            status_code=404
+        )
+
+    if request.state.user.user_id != purchase.user_id:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    purchase.purchased_at = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="new/purchases/show.html",
+        context={"purchase": purchase}
+    )

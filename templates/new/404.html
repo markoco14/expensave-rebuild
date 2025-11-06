@@ -1,0 +1,13 @@
+{% extends "new/base.html" %}
+
+{% block title %}
+Purchase Not Found | The Money Game
+{% endblock title %}
+
+{% block content %}
+<section class="wrapper">
+<h1>{{ header }}</h1>
+<p>{{ apology }}</p>
+<a href="/{{ link }}">{{ link_text }}</a>
+</section>
+{% endblock content %}
