@@ -1,7 +1,8 @@
 from calendar import monthrange
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 import sqlite3
 from types import SimpleNamespace
+from zoneinfo import ZoneInfo
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -36,9 +37,11 @@ async def new(request: Request):
         return RedirectResponse(url="/login", status_code=303)
     
     month_start = date.today().replace(day=1)
-    current_datetime = datetime.now()
-    default_date = current_datetime.date()
-    default_time = current_datetime.time().strftime("%H:%M:%S")
+    current_datetime_utc = datetime.now(timezone.utc)
+    localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+
+    default_date = localized_datetime.date()
+    default_time = localized_datetime.time().strftime("%H:%M:%S")
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
