@@ -5,7 +5,7 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
 {% endblock title %}
 
 {% block content %}
-<section>
+<div class="wrapper">
     <h1>Purchase {{ purchase.purchase_id }}</h1>
     <a href="/purchases/{{ purchase.purchase_id }}/edit">Edit</a>
     <p>You spent: </p>
@@ -14,5 +14,5 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
     <p>${{ purchase.purchased_at }} ({{ purchase.timezone }})</p>
     <p>Bucket:</p>
     <p>{{ purchase.bucket_name }}</p>
-</section>
+</div>
 {% endblock content %}

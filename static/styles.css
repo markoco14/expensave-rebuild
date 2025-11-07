@@ -39,10 +39,19 @@ section {
     }
 }
 
+.how-to-list {
+    list-style-type: none;
+    list-style-position: inside;
+    
+    .list-item {
+        margin-bottom: 0.5rem;
+    }
+}
+
 form {
     display: grid;
     
-    .input_group {
+    .input-group {
         display: grid;
         margin-bottom: 0.5rem;
     }

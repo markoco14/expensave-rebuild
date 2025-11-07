@@ -8,19 +8,19 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
 <section class="wrapper">
     <h1>Purchase {{ purchase.purchase_id }}</h1>
     <form hx-put="/purchases/{{ purchase.purchase_id }}" hx-swap="none">
-        <div class="input_group">
+        <div class="input-group">
             <label for="amount">Amount</label>
             <input id="amount" name="amount" type="text" value="{{ purchase.amount }}"/>
         </div>
-        <div class="input_group">
+        <div class="input-group">
             <label for="date">Date</label>
             <input id="date" name="date" type="date" value="{{ purchase.purchased_at.strftime('%Y-%m-%d') }}"/>
         </div>
-        <div class="input_group">
+        <div class="input-group">
             <label for="time">Time</label>
             <input id="time" name="time" type="time" value="{{ purchase.purchased_at.strftime('%H:%M:%S') }}"/>
         </div>
-        <div class="input_group">
+        <div class="input-group">
             <label for="timezone">Timezone</label>
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly />
         </div>
