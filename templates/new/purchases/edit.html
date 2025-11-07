@@ -7,7 +7,7 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
 {% block content %}
 <section>
     <h1>Purchase {{ purchase.purchase_id }}</h1>
-    <form>
+    <form hx-put="/purchases/{{ purchase.purchase_id }}" hx-swap="none">
         <div class="input_group">
             <label for="amount">Amount</label>
             <input id="amount" name="amount" type="text" value="{{ purchase.amount }}"/>
@@ -24,9 +24,11 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
             <label for="timezone">Timezone</label>
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly />
         </div>
-        <span>Bucket</span>
-        <fieldset >
+        <fieldset class="fieldset">
+            <legend class="legend">Bucket</legend>
+            <div class="fieldset-group">
             {% for bucket in buckets  %}
+
             <label for="{{ bucket.bucket_id }}">{{ bucket.name }}</label>
             <input 
                 id="{{ bucket.bucket_id }}"
@@ -35,6 +37,7 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
                 value="{{ bucket.bucket_id }}"
                 {% if bucket.bucket_id == purchase.bucket_id %}checked{% endif %}/>
             {% endfor %}
+            </div>
         </fieldset>
         <button type="submit">Update purchase</button>
     </form>

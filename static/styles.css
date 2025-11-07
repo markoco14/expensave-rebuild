@@ -47,10 +47,19 @@ form {
         margin-bottom: 0.5rem;
     }
 
-    fieldset {
+    .fieldset {
+        border: none;
         margin-bottom: 0.5rem;
-        padding: 0.25rem;
+    }
+
+    .legend {
+        width: 100%;
+    }
+
+    .fieldset-group {
+        border: 1px solid rgba(124, 124, 124, 1);
         border-radius: 0.25rem;
+        padding: 0.25rem;
     }
 
     input {
