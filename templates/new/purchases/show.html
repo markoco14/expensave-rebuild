@@ -11,7 +11,7 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
     <p>You spent: </p>
     <p>${{ purchase.amount }} ({{ purchase.currency }})</p>
     <p>At:</p>
-    <p>${{ purchase.purchased_at }} ({{ purchase.timezone }})</p>
+    <p>{{ purchase.purchased_at.strftime("%b %d %H:%M:%S") }} ({{ purchase.timezone }})</p>
     <p>Bucket:</p>
     <p>{{ purchase.bucket_name }}</p>
 </div>
