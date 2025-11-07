@@ -1,3 +1,7 @@
+@view-transition {
+    navigation: auto;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -43,10 +47,29 @@ form {
         margin-bottom: 0.5rem;
     }
 
+    .fieldset {
+        border: none;
+        margin-bottom: 0.5rem;
+    }
+
+    .legend {
+        width: 100%;
+    }
+
+    .fieldset-group {
+        border: 1px solid rgba(124, 124, 124, 1);
+        border-radius: 0.25rem;
+        padding: 0.25rem;
+    }
+
     input {
         border: 1px solid rgba(124, 124, 124, 1);
         border-radius: 0.25rem;
         padding:0.25rem;
+    }
+
+    input[readonly] {
+        background-color: rgb(239,239,239);
     }
 
     .button_group {
@@ -54,6 +77,38 @@ form {
         gap: 1rem;
     }
 }
+
+.danger-zone {
+    h2 {
+        margin-bottom: 0.5rem;
+    }
+    
+    p {
+        margin-bottom: 1rem;
+    }
+
+    .delete-btn {
+        text-transform: uppercase;
+        font-weight: bold;
+        display: inline-block;
+        border: 1px solid red;
+        color: white;
+        background-color: red;
+        border-radius: 0.25rem;
+        padding: 0.5rem 0.5rem;
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background-color: rgba(177, 33, 33, 1);
+        border-color: rgba(177, 33, 33, 1);
+    }
+
+    .delete-btn:active {
+        scale: 0.99;
+    }
+}
+
 
 
 .bucket_list {
