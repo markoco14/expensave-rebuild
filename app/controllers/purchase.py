@@ -2,7 +2,7 @@ from calendar import monthrange
 from datetime import date, datetime, timedelta
 import sqlite3
 from types import SimpleNamespace
-from fastapi import Request
+from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -221,3 +221,57 @@ async def edit(request: Request, purchase_id: int):
         name="new/purchases/edit.html",
         context={"purchase": purchase, "buckets": buckets}
     )
+
+
+async def update(request: Request, purchase_id: int):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    form_data = await request.form()
+    
+    amount = form_data.get("amount")
+    if not amount:
+        return "You need to choose an amount"
+    
+    date = form_data.get("date")
+    if not date:
+        return "You need to choose a date"
+    
+    time = form_data.get("time")
+    if not time:
+        return "You need to choose a time"
+    
+    bucket = form_data.get("bucket")
+    if not bucket:
+        return "You need to choose a bucket"
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM purchase WHERE purchase_id = ?;", (purchase_id,))
+        row = cursor.fetchone()
+        purchase = SimpleNamespace(**row) if row else None
+
+    if not purchase:
+        return Response(status_code=404, headers={"hx-refresh": "/true"})
+
+    if request.state.user.user_id != purchase.user_id:
+        if request.headers.get("hx-request"):
+            return Response(status_code=404, headers={"hx-redirect": "/login"})
+        return RedirectResponse(url="/login", status_code=303)
+    
+
+    local_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+    utc_time = local_time - timedelta(hours=8)
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("UPDATE purchase SET amount = ?, purchased_at = ?, bucket_id = ? WHERE purchase_id = ?;", (amount, utc_time, bucket, purchase_id))
+
+    response = Response(headers={"hx-refresh": "true"})
+    return response
