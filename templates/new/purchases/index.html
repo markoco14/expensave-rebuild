@@ -20,7 +20,7 @@ Purchases | The Money Game
         <span>${{ purchase.amount }} ({{ purchase.currency }})</span>
         <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
         <span>{{ purchase.purchased_at.strftime("%H:%M:%S") }} ({{ purchase.timezone }})</span>
-        <span>{{ purchase.bucket_id }}</span>
+        <span>{{ purchase.bucket_name }}</span>
         <span><a href="/purchases/{{ purchase.purchase_id }}">Details</a></li></span>
         {% endfor %}
     </ul>

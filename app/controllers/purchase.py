@@ -19,7 +19,16 @@ async def list(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM purchase WHERE user_id = ? ORDER BY purchased_at DESC;", (request.state.user.user_id, ))
+        cursor.execute("""SELECT purchase.purchase_id,
+                            purchase.amount, purchase.currency,
+                            purchase.purchased_at, purchase.timezone,
+                            purchase.user_id,
+                            purchase.bucket_id as bucket_id,
+                            bucket.name as bucket_name
+                        FROM purchase
+                        JOIN bucket USING (bucket_id)
+                        WHERE purchase.user_id = ?
+                        ORDER BY purchased_at DESC;""", (request.state.user.user_id, ))
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
     for purchase in purchases:
