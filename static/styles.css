@@ -78,6 +78,38 @@ form {
     }
 }
 
+.danger-zone {
+    h2 {
+        margin-bottom: 0.5rem;
+    }
+    
+    p {
+        margin-bottom: 1rem;
+    }
+
+    .delete-btn {
+        text-transform: uppercase;
+        font-weight: bold;
+        display: inline-block;
+        border: 1px solid red;
+        color: white;
+        background-color: red;
+        border-radius: 0.25rem;
+        padding: 0.5rem 0.5rem;
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background-color: rgba(177, 33, 33, 1);
+        border-color: rgba(177, 33, 33, 1);
+    }
+
+    .delete-btn:active {
+        scale: 0.99;
+    }
+}
+
+
 
 .bucket_list {
     li {

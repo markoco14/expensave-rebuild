@@ -228,7 +228,7 @@ async def update(request: Request, purchase_id: int):
         return RedirectResponse(url="/login", status_code=303)
     
     form_data = await request.form()
-    
+
     amount = form_data.get("amount")
     if not amount:
         return "You need to choose an amount"
@@ -274,4 +274,36 @@ async def update(request: Request, purchase_id: int):
         cursor.execute("UPDATE purchase SET amount = ?, purchased_at = ?, bucket_id = ? WHERE purchase_id = ?;", (amount, utc_time, bucket, purchase_id))
 
     response = Response(headers={"hx-refresh": "true"})
+    return response
+
+
+async def delete(request: Request, purchase_id: int):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM purchase WHERE purchase_id = ?;", (purchase_id,))
+        row = cursor.fetchone()
+        purchase = SimpleNamespace(**row) if row else None
+
+    if not purchase:
+        return Response(status_code=404, headers={"hx-redirect": "/purchases"})
+    
+    if request.state.user.user_id != purchase.user_id:
+        if request.headers.get("hx-request"):
+            return Response(status_code=404, headers={"hx-redirect": "/purchases"})
+        return RedirectResponse(url="/login", status_code=303)
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM purchase WHERE purchase_id = ?;", (purchase_id, ))
+
+    response = Response(headers={"hx-redirect": "/purchases"})
     return response

@@ -5,7 +5,7 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
 {% endblock title %}
 
 {% block content %}
-<section>
+<section class="wrapper">
     <h1>Purchase {{ purchase.purchase_id }}</h1>
     <form hx-put="/purchases/{{ purchase.purchase_id }}" hx-swap="none">
         <div class="input_group">
@@ -41,5 +41,17 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
         </fieldset>
         <button type="submit">Update purchase</button>
     </form>
+</section>
+<hr class="wrapper"/>
+<section class="wrapper danger-zone">
+    <h2>Danger Zone</h2>
+    <p>Press the button below to delete this purchase. Warning, you cannot undo this action.</p>
+    <button 
+        class="delete-btn"
+        hx-delete="/purchases/{{ purchase.purchase_id }}"
+        hx-confirm="Are you sure you want to delete this purchase? This action is permanent."
+        >
+        Delete purchase
+    </button>
 </section>
 {% endblock content %}
