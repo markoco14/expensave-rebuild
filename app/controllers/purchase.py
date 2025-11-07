@@ -1,7 +1,8 @@
 from calendar import monthrange
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 import sqlite3
 from types import SimpleNamespace
+from zoneinfo import ZoneInfo
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -18,11 +19,22 @@ async def list(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM purchase WHERE user_id = ? ORDER BY purchased_at DESC;", (request.state.user.user_id, ))
+        cursor.execute("""SELECT purchase.purchase_id,
+                            purchase.amount, purchase.currency,
+                            purchase.purchased_at, purchase.timezone,
+                            purchase.user_id,
+                            purchase.bucket_id as bucket_id,
+                            bucket.name as bucket_name
+                        FROM purchase
+                        JOIN bucket USING (bucket_id)
+                        WHERE purchase.user_id = ?
+                        ORDER BY purchased_at DESC;""", (request.state.user.user_id, ))
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
     for purchase in purchases:
-        purchase.purchased_at = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
+        naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+        utc_aware = naive.replace(tzinfo=timezone.utc)
+        purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
     return templates.TemplateResponse(
         request=request,
@@ -36,9 +48,11 @@ async def new(request: Request):
         return RedirectResponse(url="/login", status_code=303)
     
     month_start = date.today().replace(day=1)
-    current_datetime = datetime.now()
-    default_date = current_datetime.date()
-    default_time = current_datetime.time().strftime("%H:%M:%S")
+    current_datetime_utc = datetime.now(timezone.utc)
+    localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+
+    default_date = localized_datetime.date()
+    default_time = localized_datetime.time().strftime("%H:%M:%S")
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -102,12 +116,14 @@ async def create(request: Request):
     if not time:
         return "You need to choose a time."
 
-    timezone = form_data.get("timezone")
-    if not timezone:
+    form_timezone = form_data.get("timezone")
+    if not form_timezone:
         return "You need to choose a timezone."
     
-    local_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
-    utc_time = local_time - timedelta(hours=8)
+    local_naive = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+    local_tz_aware = local_naive.replace(tzinfo=ZoneInfo(form_timezone))
+    utc_time = local_tz_aware.astimezone(timezone.utc)
+    utc_naive = utc_time.replace(tzinfo=None)
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -115,7 +131,7 @@ async def create(request: Request):
 
         cursor = conn.cursor()
         try:
-            cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);", (amount, currency, utc_time, timezone, request.state.user.user_id, bucket_id))
+            cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);", (amount, currency, utc_naive, form_timezone, request.state.user.user_id, bucket_id))
         except Exception as e:
             print(f"something went wrong storing the purchase: {e}")
             return "Something went wrong on our server."
@@ -160,7 +176,9 @@ async def show(request: Request, purchase_id: int):
     if request.state.user.user_id != purchase.user_id:
         return RedirectResponse(url="/login", status_code=303)
     
-    purchase.purchased_at = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
+    naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+    utc_aware = naive.replace(tzinfo=timezone.utc)
+    purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
     return templates.TemplateResponse(
         request=request,
@@ -214,7 +232,9 @@ async def edit(request: Request, purchase_id: int):
         cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id,))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
     
-    purchase.purchased_at = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
+    naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+    utc_aware = naive.replace(tzinfo=timezone.utc)
+    purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
     
     return templates.TemplateResponse(
         request=request,
@@ -241,6 +261,10 @@ async def update(request: Request, purchase_id: int):
     if not time:
         return "You need to choose a time"
     
+    form_timezone = form_data.get("timezone")
+    if not form_timezone:
+        return "You need to choose a timezone."
+    
     bucket = form_data.get("bucket")
     if not bucket:
         return "You need to choose a bucket"
@@ -262,16 +286,17 @@ async def update(request: Request, purchase_id: int):
             return Response(status_code=404, headers={"hx-redirect": "/login"})
         return RedirectResponse(url="/login", status_code=303)
     
-
-    local_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
-    utc_time = local_time - timedelta(hours=8)
+    local_naive = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+    local_tz_aware = local_naive.replace(tzinfo=ZoneInfo(form_timezone))
+    utc_time = local_tz_aware.astimezone(timezone.utc)
+    utc_naive = utc_time.replace(tzinfo=None)
 
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("UPDATE purchase SET amount = ?, purchased_at = ?, bucket_id = ? WHERE purchase_id = ?;", (amount, utc_time, bucket, purchase_id))
+        cursor.execute("UPDATE purchase SET amount = ?, purchased_at = ?, bucket_id = ? WHERE purchase_id = ?;", (amount, utc_naive, bucket, purchase_id))
 
     response = Response(headers={"hx-refresh": "true"})
     return response
