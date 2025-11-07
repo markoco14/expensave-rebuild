@@ -23,7 +23,9 @@ async def list(request: Request):
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
     for purchase in purchases:
-        purchase.purchased_at = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
+        naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+        utc_aware = naive.replace(tzinfo=timezone.utc)
+        purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
     return templates.TemplateResponse(
         request=request,

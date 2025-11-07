@@ -151,4 +151,9 @@ form {
         margin-bottom: 0.25rem;
         border-radius: 0.25rem;
     }
+    
+    .list-item {
+        display: flex;
+        justify-content: space-evenly;
+    }
 }
