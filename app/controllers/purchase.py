@@ -107,12 +107,14 @@ async def create(request: Request):
     if not time:
         return "You need to choose a time."
 
-    timezone = form_data.get("timezone")
-    if not timezone:
+    form_timezone = form_data.get("timezone")
+    if not form_timezone:
         return "You need to choose a timezone."
     
-    local_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
-    utc_time = local_time - timedelta(hours=8)
+    local_naive = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+    local_tz_aware = local_naive.replace(tzinfo=ZoneInfo(form_timezone))
+    utc_time = local_tz_aware.astimezone(timezone.utc)
+    utc_naive = utc_time.replace(tzinfo=None)
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -120,7 +122,7 @@ async def create(request: Request):
 
         cursor = conn.cursor()
         try:
-            cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);", (amount, currency, utc_time, timezone, request.state.user.user_id, bucket_id))
+            cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);", (amount, currency, utc_naive, form_timezone, request.state.user.user_id, bucket_id))
         except Exception as e:
             print(f"something went wrong storing the purchase: {e}")
             return "Something went wrong on our server."
