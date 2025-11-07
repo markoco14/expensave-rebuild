@@ -167,3 +167,57 @@ async def show(request: Request, purchase_id: int):
         name="new/purchases/show.html",
         context={"purchase": purchase}
     )
+
+
+async def edit(request: Request, purchase_id: int):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("""
+                    SELECT purchase.purchase_id, purchase.amount,
+                        purchase.currency, purchase.purchased_at,
+                        purchase.timezone, purchase.user_id,
+                        purchase.bucket_id as bucket_id,
+                        bucket.name as bucket_name 
+                    FROM purchase 
+                    JOIN bucket USING (bucket_id) 
+                    WHERE purchase.user_id = ? AND purchase.purchase_id = ?;""", (request.state.user.user_id, purchase_id))
+        row = cursor.fetchone()
+        purchase = SimpleNamespace(**row) if row else None
+
+    if not purchase:
+        return templates.TemplateResponse(
+            request=request,
+            name="new/404.html",
+            context={
+                "heading": "Purchase Not Found",
+                "apology": "We are sorry, but we were unable to find your purchase.",
+                "link": "purchases",
+                "link_text": "Back to purchases"
+            },
+            status_code=404
+        )
+
+    if request.state.user.user_id != purchase.user_id:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id,))
+        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+    
+    purchase.purchased_at = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S") + timedelta(hours=8)
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="new/purchases/edit.html",
+        context={"purchase": purchase, "buckets": buckets}
+    )

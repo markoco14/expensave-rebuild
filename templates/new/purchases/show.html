@@ -7,6 +7,7 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
 {% block content %}
 <section>
     <h1>Purchase {{ purchase.purchase_id }}</h1>
+    <a href="/purchases/{{ purchase.purchase_id }}/edit">Edit</a>
     <p>You spent: </p>
     <p>${{ purchase.amount }} ({{ purchase.currency }})</p>
     <p>At:</p>

@@ -1,0 +1,42 @@
+{% extends "new/base.html" %}
+
+{% block title %}
+Edit Purchase {{ purchase.purchase_id }} | The Money Game
+{% endblock title %}
+
+{% block content %}
+<section>
+    <h1>Purchase {{ purchase.purchase_id }}</h1>
+    <form>
+        <div class="input_group">
+            <label for="amount">Amount</label>
+            <input id="amount" name="amount" type="text" value="{{ purchase.amount }}"/>
+        </div>
+        <div class="input_group">
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date" value="{{ purchase.purchased_at.strftime('%Y-%m-%d') }}"/>
+        </div>
+        <div class="input_group">
+            <label for="time">Time</label>
+            <input id="time" name="time" type="time" value="{{ purchase.purchased_at.strftime('%H:%M:%S') }}"/>
+        </div>
+        <div class="input_group">
+            <label for="timezone">Timezone</label>
+            <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly />
+        </div>
+        <span>Bucket</span>
+        <fieldset >
+            {% for bucket in buckets  %}
+            <label for="{{ bucket.bucket_id }}">{{ bucket.name }}</label>
+            <input 
+                id="{{ bucket.bucket_id }}"
+                name="bucket"
+                type="radio"
+                value="{{ bucket.bucket_id }}"
+                {% if bucket.bucket_id == purchase.bucket_id %}checked{% endif %}/>
+            {% endfor %}
+        </fieldset>
+        <button type="submit">Update purchase</button>
+    </form>
+</section>
+{% endblock content %}

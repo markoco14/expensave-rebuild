@@ -1,3 +1,7 @@
+@view-transition {
+    navigation: auto;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -43,10 +47,20 @@ form {
         margin-bottom: 0.5rem;
     }
 
+    fieldset {
+        margin-bottom: 0.5rem;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+    }
+
     input {
         border: 1px solid rgba(124, 124, 124, 1);
         border-radius: 0.25rem;
         padding:0.25rem;
+    }
+
+    input[readonly] {
+        background-color: rgb(239,239,239);
     }
 
     .button_group {
