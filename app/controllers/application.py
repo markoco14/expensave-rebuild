@@ -1,7 +1,8 @@
 from calendar import monthrange
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 import sqlite3
 from types import SimpleNamespace
+from zoneinfo import ZoneInfo
 
 from fastapi import Request
 from fastapi.responses import RedirectResponse
@@ -10,11 +11,18 @@ from fastapi.templating import Jinja2Templates
 templates = Jinja2Templates(directory="templates")
 
 
-async def home(request: Request):
+async def today(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
     month_start = date.today().replace(day=1)
+
+    utc_date_today = datetime.now(timezone.utc)
+    local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
+    local_start_of_day = local_date_today.replace(hour=0, minute=0, second=0)
+    local_start_of_tomorrow = local_start_of_day + timedelta(days=1)
+    utc_start_of_day =  local_start_of_day.astimezone(timezone.utc)
+    utc_start_of_tomorrow =  local_start_of_tomorrow.astimezone(timezone.utc)
     
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -23,6 +31,16 @@ async def home(request: Request):
         cursor = conn.cursor()
         cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ?", (month_start, ))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
+        cursor.execute("SELECT purchase_id, amount, currency, purchased_at, timezone, bucket_id FROM purchase WHERE user_id = ? AND purchased_at >= ? AND purchased_at < ?;", (request.state.user.user_id, utc_start_of_day, utc_start_of_tomorrow))
+        purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
+        
+    total_spent = 0
+    for purchase in purchases:
+        naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+        utc_aware = naive.replace(tzinfo=timezone.utc)
+        purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
+        total_spent += purchase.amount
 
     daily_spending_bucket = None
     other_buckets = []
@@ -35,8 +53,10 @@ async def home(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/app.html",
+        name="new/today.html",
         context={
+            "purchases": purchases,
+            "total_spent": total_spent,
             "buckets": buckets,
             "daily_spending_bucket": daily_spending_bucket,
             "other_buckets": other_buckets

@@ -12,17 +12,15 @@ body {
     overflow-y: scroll;
 }
 
+p {
+    margin-bottom: 1rem;
+}
+
 .header {
     height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 500px;
-    margin-inline: auto;
-}
-
-section {
-    margin-bottom: 2rem;
     max-width: 500px;
     margin-inline: auto;
 }
