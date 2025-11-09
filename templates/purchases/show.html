@@ -6,13 +6,20 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
 
 {% block content %}
 <div class="wrapper">
-    <h1>Purchase {{ purchase.purchase_id }}</h1>
-    <a href="/purchases/{{ purchase.purchase_id }}/edit">Edit</a>
-    <p>You spent: </p>
-    <p>${{ purchase.amount }} ({{ purchase.currency }})</p>
-    <p>At:</p>
-    <p>{{ purchase.purchased_at.strftime("%b %d %H:%M:%S") }} ({{ purchase.timezone }})</p>
-    <p>Bucket:</p>
-    <p>{{ purchase.bucket_name }}</p>
+    <h1 class="page-heading">Purchase {{ purchase.purchase_id }} <a href="/purchases/{{ purchase.purchase_id }}/edit" class="heading-link">Edit</a></h1>
+    <hr />
+    <br />
+    <span>Amount</span>
+    <p class="purchase-info">${{ purchase.amount }}</p>
+    <span>Currency</span>
+    <p class="purchase-info">{{ purchase.currency }}</p>
+    <span>Date</span>
+    <p class="purchase-info">{{ purchase.purchased_at.strftime("%b %d ") }}</p>
+    <span>Time</span>
+    <p class="purchase-info">{{ purchase.purchased_at.strftime("%H:%M:%S") }}</p>
+    <span>Timezone</span>
+    <p class="purchase-info">({{ purchase.timezone }})</p>
+    <span>Bucket</span>
+    <p class="purchase-info">{{ purchase.bucket_name }}</p>
 </div>
 {% endblock content %}

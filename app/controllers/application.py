@@ -32,7 +32,17 @@ async def today(request: Request):
         cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ?", (month_start, ))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
-        cursor.execute("SELECT purchase_id, amount, currency, purchased_at, timezone, bucket_id FROM purchase WHERE user_id = ? AND purchased_at >= ? AND purchased_at < ?;", (request.state.user.user_id, utc_start_of_day, utc_start_of_tomorrow))
+        cursor.execute("""SELECT purchase.purchase_id,
+                            purchase.amount, purchase.currency,
+                            purchase.purchased_at, purchase.timezone,
+                            purchase.user_id,
+                            purchase.bucket_id as bucket_id,
+                            bucket.name as bucket_name 
+                       FROM purchase
+                       JOIN bucket USING (bucket_id)
+                       WHERE purchase.user_id = ?
+                       AND purchased_at >= ? AND purchased_at < ?
+                       ORDER BY purchased_at DESC;""", (request.state.user.user_id, utc_start_of_day, utc_start_of_tomorrow))
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
         
     total_spent = 0

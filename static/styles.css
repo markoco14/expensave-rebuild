@@ -31,10 +31,32 @@ p {
     margin-inline: auto;
 }
 
+.divider {
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-inline: auto;
+}
+
 @media screen  and (width <= 500px){
     .wrapper {
         padding-inline: 0.5rem;
     }
+}
+
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    .heading-link {
+        font-size: 18px;
+    }
+}
+
+.purchase-info {
+    padding: 0.25rem;
+    border: 1px solid rgba(124, 124, 124, 1);
+    border-radius: 0.25rem;
 }
 
 .how-to-list {
@@ -51,7 +73,7 @@ form {
     
     .input-group {
         display: grid;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
     }
 
     .fieldset {
@@ -137,21 +159,23 @@ form {
     color: white;
     background-color: rgba(18, 146, 67, 1);
     border-radius: 0.25rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 .purchase-list {
     list-style: none;
 
-    li {
-        border: 1px solid black;
-        padding: 0.25rem;
-        margin-bottom: 0.25rem;
+    .list-item {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border: 1px solid rgba(124, 124, 124, 1);
+        padding: 1rem;
+        margin-bottom: 1rem;
         border-radius: 0.25rem;
+    
     }
     
-    .list-item {
-        display: flex;
-        justify-content: space-evenly;
-    }
+    
 }

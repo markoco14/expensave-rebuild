@@ -59,6 +59,25 @@ Me | The Money Game
     </ul>
     {% endif %}
 </section>
+<section>
+<div class="wrapper">
+    <p>Welcome to The Money Game: a game that challenges you to spend less and save more.</p>
+    <p>How it works:</p>
+    <ul class="how-to-list">
+        <li class="list-item">Choose a daily disposable spending amount.</li>
+        <li class="list-item">When you spend money, save it in this app <a href="/purchases/new">Save a new purchase</a>.</li>
+        <li class="list-item">The app will tell you how money you have spent each day.</li>
+        <li class="list-item">And it will tell you how much money you can spend.</li>
+        <li class="list-item">Every day, try to save some of your money.</li>
+    </ul>
+    {% if not daily_spending_bucket %}
+    <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
+    {% else %}
+    <p>Your daily spending allowance is ${{ daily_spending_bucket.daily_amount }} (TWD)</p>
+    {% endif %}
+</div>
+</section>
+
 {# <section class="wrapper">
     <h2>Budget</h2>
     <p>Set your daily spending allowance. Choose a daily number and every month we'll automatically calculate your monthly budget.</p>
