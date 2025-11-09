@@ -1,8 +1,28 @@
 {% extends "new/base.html" %}
 {% block title %}The Money Game{% endblock title %}
 {% block content %}
+<section>
+    <div class="wrapper">
+        <h1>The Money Game</h1>
+        <p>You have spent ${{ total_spent }}</p>
+        <p>You have {{ daily_spending_bucket.daily_amount - total_spent }} remaining.</p>
+        {% if purchases %}
+        <ul class="purchase-list">
+            {% for purchase in purchases %}
+            <li class="list-item">
+                <span>${{ purchase.amount }} ({{ purchase.currency }})</span>
+                <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
+                <span>{{ purchase.purchased_at.strftime("%H:%M:%S") }} ({{ purchase.timezone }})</span>
+                <span>{{ purchase.bucket_name }}</span>
+                <span><a href="/purchases/{{ purchase.purchase_id }}">Details</a></li></span>
+            </li>
+            {% endfor %}
+        </ul>    
+        {% endif %}
+        </div>
+</section>
+<section>
 <div class="wrapper">
-    <h1>The Money Game</h1>
     <p>Welcome to The Money Game: a game that challenges you to spend less and save more.</p>
     <p>How it works:</p>
     <ul class="how-to-list">
@@ -18,4 +38,5 @@
     <p>Your daily spending allowance is ${{ daily_spending_bucket.daily_amount }} (TWD)</p>
     {% endif %}
 </div>
+</section>
 {% endblock %}

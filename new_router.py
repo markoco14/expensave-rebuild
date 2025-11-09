@@ -15,7 +15,7 @@ routes = [
     ("POST",    "/session",                         auth.session,       [Depends(is_user)]),
     ("GET",     "/logout",                          auth.logout,        [Depends(is_user)]),
 
-    ("GET",     "/app",                             application.home,   [Depends(is_user)]),
+    ("GET",     "/today",                             application.today,   [Depends(is_user)]),
     
     ("GET",     "/purchases",                       purchase.list,      [Depends(is_user)]),
     ("POST",    "/purchases",                       purchase.create,    [Depends(is_user)]),
