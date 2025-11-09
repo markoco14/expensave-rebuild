@@ -17,11 +17,10 @@ Purchases | The Money Game
     <ul class="purchase-list">
         {% for purchase in purchases %}
         <li class="list-item">
-        <span>${{ purchase.amount }} ({{ purchase.currency }})</span>
-        <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
-        <span>{{ purchase.purchased_at.strftime("%H:%M:%S") }} ({{ purchase.timezone }})</span>
-        <span>{{ purchase.bucket_name }}</span>
-        <span><a href="/purchases/{{ purchase.purchase_id }}">Details</a></li></span>
+            <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
+            <span>${{ purchase.amount }} in {{ purchase.bucket_name }}</span>
+            <a href="/purchases/{{ purchase.purchase_id }}">Details</a>
+        </li>
         {% endfor %}
     </ul>
     {% endif %}

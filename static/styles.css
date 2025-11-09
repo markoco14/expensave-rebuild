@@ -137,21 +137,23 @@ form {
     color: white;
     background-color: rgba(18, 146, 67, 1);
     border-radius: 0.25rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 .purchase-list {
     list-style: none;
 
-    li {
-        border: 1px solid black;
-        padding: 0.25rem;
-        margin-bottom: 0.25rem;
+    .list-item {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border: 1px solid rgba(124, 124, 124, 1);
+        padding: 1rem;
+        margin-bottom: 1rem;
         border-radius: 0.25rem;
+    
     }
     
-    .list-item {
-        display: flex;
-        justify-content: space-evenly;
-    }
+    
 }
