@@ -6,7 +6,9 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
 
 {% block content %}
 <section class="wrapper">
-    <h1>Purchase {{ purchase.purchase_id }}</h1>
+    <h1 class="page-heading">Purchase {{ purchase.purchase_id }} <a href="/purchases/{{ purchase.purchase_id }}" class="heading-link">Back</a></h1>
+    <hr />
+    <br />
     <form hx-put="/purchases/{{ purchase.purchase_id }}" hx-swap="none">
         <div class="input-group">
             <label for="amount">Amount</label>
@@ -42,7 +44,7 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
         <button type="submit">Update purchase</button>
     </form>
 </section>
-<hr class="wrapper"/>
+<hr class="divider"/>
 <section class="wrapper danger-zone">
     <h2>Danger Zone</h2>
     <p>Press the button below to delete this purchase. Warning, you cannot undo this action.</p>
