@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers import application, auth, bucket, budget, public, purchase, user
+from app.controllers import application, auth, bucket, public, purchase, user
 from app.dependencies import is_user
 
 router = APIRouter()
 
-# routes follow ('method', 'path', 'endpoint/handler', 'dependencies')
+# ('HTTP method', 'URI path', 'handler function', 'dependencies')
 routes = [
     ("GET",     "/",                                public.home,        [Depends(is_user)]),   # None
     ("GET",     "/signup",                          public.signup,      [Depends(is_user)]),
@@ -15,7 +15,7 @@ routes = [
     ("POST",    "/session",                         auth.session,       [Depends(is_user)]),
     ("GET",     "/logout",                          auth.logout,        [Depends(is_user)]),
 
-    ("GET",     "/today",                           application.today,   [Depends(is_user)]),
+    ("GET",     "/today",                           application.today,  [Depends(is_user)]),
     
     ("GET",     "/purchases",                       purchase.list,      [Depends(is_user)]),
     ("POST",    "/purchases",                       purchase.create,    [Depends(is_user)]),
