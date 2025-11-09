@@ -12,7 +12,7 @@ def home(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/index.html",
+        name="index.html",
         context={}
     )
 
@@ -23,7 +23,7 @@ def signup(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/signup.html",
+        name="signup.html",
         context={}
     )
 
@@ -34,6 +34,6 @@ async def login(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/login.html",
+        name="login.html",
         context={}
     )

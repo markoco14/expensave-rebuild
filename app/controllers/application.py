@@ -53,7 +53,7 @@ async def today(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/today.html",
+        name="today.html",
         context={
             "purchases": purchases,
             "total_spent": total_spent,

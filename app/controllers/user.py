@@ -32,7 +32,7 @@ async def me(request: Request):
         
     return templates.TemplateResponse(
         request=request,
-        name="new/me.html",
+        name="me.html",
         context={
             "current_user": request.state.user,
             "buckets": buckets,
