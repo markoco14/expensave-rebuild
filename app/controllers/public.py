@@ -2,7 +2,6 @@ from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-
 templates = Jinja2Templates(directory="templates")
 
 
@@ -12,7 +11,7 @@ def home(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/index.html",
+        name="index.html",
         context={}
     )
 
@@ -23,7 +22,7 @@ def signup(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/signup.html",
+        name="signup.html",
         context={}
     )
 
@@ -34,6 +33,6 @@ async def login(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/login.html",
+        name="login.html",
         context={}
     )

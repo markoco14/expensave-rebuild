@@ -2,8 +2,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-import new_router
+from app.router import router
 
 app = FastAPI()
-app.include_router(new_router.router)
+app.include_router(router)
 app.mount("/static", StaticFiles(directory="static"), name="static")

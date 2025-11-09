@@ -1,11 +1,12 @@
 import sqlite3
 import time
 import uuid
+
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.auth import auth_service
+from app import cryptography
 
 templates = Jinja2Templates(directory="templates")
 
@@ -33,7 +34,7 @@ async def register(request: Request):
         return "user exists"
 
     if not db_user:
-        hashed_password = auth_service.get_password_hash(password)
+        hashed_password = cryptography.get_password_hash(password)
         with sqlite3.connect("db.sqlite3") as conn:
             cursor = conn.cursor()
             cursor.execute("INSERT INTO user (email, hashed_password) VALUES (?, ?)", (email, hashed_password))
@@ -74,7 +75,7 @@ async def session(request: Request):
     if not db_user:
         return "user does not exist"
     
-    if not auth_service.verify_password(
+    if not cryptography.verify_password(
             plain_password=password,
             hashed_password=db_user[2]
         ):

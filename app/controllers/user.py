@@ -1,13 +1,10 @@
 from datetime import date
 import sqlite3
-import time
 from types import SimpleNamespace
-import uuid
+
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-
-from app.auth import auth_service
 
 templates = Jinja2Templates(directory="templates")
 
@@ -32,7 +29,7 @@ async def me(request: Request):
         
     return templates.TemplateResponse(
         request=request,
-        name="new/me.html",
+        name="me.html",
         context={
             "current_user": request.state.user,
             "buckets": buckets,

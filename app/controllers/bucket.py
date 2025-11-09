@@ -1,10 +1,10 @@
-from datetime import date
 from calendar import monthrange
+from datetime import date
 import sqlite3
+
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-
 
 templates = Jinja2Templates(directory="templates")
 

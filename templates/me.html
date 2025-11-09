@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}
+Me | The Money Game
+{% endblock title %}
+
+{% block content %}
+<section class="wrapper">
+    <h2>Your account information</h2>
+    <p>Email: {{ current_user.email }}</p>
+</section>
+<section class="wrapper">
+    <h2>Spending Buckets</h2>
+    <p>Create spending buckets as you need them.</p>
+    <p>If you want to play the game, make a daily spending bucket. Choose the maximum amount you want to spend each day and we'll set up a bucket to help you track daily progress</p>
+    <p>For everything else, use a monthly budget. If you don't want to play the Daily Spending game, make a Disposable monthly bucket.</p>
+    <a href="/me?bucket=daily">Make Daily Spending bucket</a>
+    <a href="/me?bucket=monthly">Make monthly spending bucket</a>
+    {% if request.query_params.get("bucket") %}
+        {% set bucket = request.query_params.get("bucket") %}
+        {% if bucket == "daily" %}
+        <form action="/buckets/daily" method="POST">
+            <div class="input-group">
+                <label for="amount">Give your bucket a <strong>daily</strong> spending amount</label>
+                <input id="amount" name="amount" type="text" autofocus/>
+            </div>
+            <div class="button_group">
+                <button type="submit">Create bucket</button>
+                <a href="/me">Cancel add bucket</a>
+            </div>
+        </form>
+        {% elif bucket == "monthly" %}
+        <form action="/buckets" method="POST">
+            <div class="input-group">
+                <label for="bucket">Give your monthly spending bucket a name</label>
+                <p>We recommend using these buckets for things where spending may vary, like "Groceries", but not for bills like "Cellphone" or "Rent".</p>
+                <input id="bucket" name="bucket" type="text" autofocus/>
+            </div>
+            <div class="input-group">
+                <label for="amount">Give your bucket a <strong>monthly</strong> spending amount</label>
+                <input id="amount" name="amount" type="text"/>
+            </div>
+            <div class="button_group">
+                <button type="submit">Create bucket</button>
+                <a href="/me">Cancel add bucket</a>
+            </div>
+        </form>
+        {% else %}
+        <p>We don't support {{ bucket }} buckets. Try monthly or daily.</p>
+        {% endif %}
+    {% endif %}
+    {% if not buckets %}
+    <p>You haven't made any spending buckets yet.</p>
+    {% else %}
+    <ul class="bucket_list">
+    {% for bucket in buckets %}
+        <li><span>{{ bucket.name }} {{bucket.amount}}</span><button hx-delete="/buckets/{{ bucket.bucket_id }}" hx-swap="none">Delete</button></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+</section>
+{# <section class="wrapper">
+    <h2>Budget</h2>
+    <p>Set your daily spending allowance. Choose a daily number and every month we'll automatically calculate your monthly budget.</p>
+    <a href="/me?edit=budget">Change spending allowance</a>
+    {% if request.query_params.get("edit") and request.query_params.get("edit") == "budget" %}
+        <form action="/budgets" method="POST">
+            <div class="input-group">
+                <label for="amount">Set your new daily spending budget.</label>
+                <input id="amount" name="amount" type="text" />
+            </div>
+            <div class="input-group">
+                <label for="start_date">Starts at</label>
+                <input id="start_date" name="start_date" type="date" value="{{ today_date.strftime('%Y-%m-%d') }}"/>
+            </div>
+            <div class="button_group">
+                <a href="/me">Cancel change spending allowance</a>
+                <button type="submit">Change spending allowance</button>
+            </div>
+        </form>
+    {% endif %}
+    {% if not budget %}
+    <p>You haven't set a spending budget yet.</p>    
+    {% else %}
+    <p>Your daily spending allowance: ${{ budget.amount }}</p>
+    {% endif %}
+</section> #}
+{% endblock content %}

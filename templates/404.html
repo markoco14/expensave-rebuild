@@ -1,14 +1,13 @@
 {% extends "base.html" %}
+
 {% block title %}
-My Save Money Life - Not Found
+Purchase Not Found | The Money Game
 {% endblock title %}
+
 {% block content %}
-<section class="px-2 py-4 md:px-0 md:py-16">
-    <div class="max-w-[500px] mx-auto">
-        <h1 class="text-center text-3xl mb-8">
-            Page Not Found
-        </h1>
-        <p>We're sorry, the page you requested can't be found.</p>
-        <p>Please <a href="/" class="underline underline-offset-2 text-blue-700">click here</a> to go back to the home page.</p>
-    </div>
-{% endblock content%}
+<div class="wrapper">
+    <h1>{{ heading }}</h1>
+    <p>{{ apology }}</p>
+    <a href="/{{ link }}">{{ link_text }}</a>
+</div>
+{% endblock content %}

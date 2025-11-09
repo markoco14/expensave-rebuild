@@ -1,8 +1,9 @@
 from calendar import monthrange
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 import sqlite3
 from types import SimpleNamespace
 from zoneinfo import ZoneInfo
+
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -38,7 +39,7 @@ async def list(request: Request):
 
     return templates.TemplateResponse(
         request=request,
-        name="new/purchases/index.html",
+        name="purchases/index.html",
         context={"purchases": purchases}
     )
 
@@ -73,7 +74,7 @@ async def new(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/purchases/new.html",
+        name="purchases/new.html",
         context={
             "buckets": buckets,
             "daily_spending_bucket": daily_spending_bucket,
@@ -163,7 +164,7 @@ async def show(request: Request, purchase_id: int):
     if not purchase:
         return templates.TemplateResponse(
             request=request,
-            name="new/404.html",
+            name="404.html",
             context={
                 "header": "Purchase Not Found",
                 "apology": "We are sorry, but we were unable to find your purchase.",
@@ -182,7 +183,7 @@ async def show(request: Request, purchase_id: int):
 
     return templates.TemplateResponse(
         request=request,
-        name="new/purchases/show.html",
+        name="purchases/show.html",
         context={"purchase": purchase}
     )
 
@@ -211,7 +212,7 @@ async def edit(request: Request, purchase_id: int):
     if not purchase:
         return templates.TemplateResponse(
             request=request,
-            name="new/404.html",
+            name="404.html",
             context={
                 "heading": "Purchase Not Found",
                 "apology": "We are sorry, but we were unable to find your purchase.",
@@ -238,7 +239,7 @@ async def edit(request: Request, purchase_id: int):
     
     return templates.TemplateResponse(
         request=request,
-        name="new/purchases/edit.html",
+        name="purchases/edit.html",
         context={"purchase": purchase, "buckets": buckets}
     )
 
