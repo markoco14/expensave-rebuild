@@ -19,6 +19,7 @@
 				<span>TRAB</span>
 				<nav>
 					{% if not request.state.user %}
+					<a href="/">Home</a>
 					<a href="/signup">Sign Up</a>
 					<a href="/login">Log In</a>
 					{% else %}
