@@ -5,7 +5,7 @@ from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.auth import auth_service
+from app import auth_service
 
 templates = Jinja2Templates(directory="templates")
 
