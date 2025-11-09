@@ -8,7 +8,7 @@ templates = Jinja2Templates(directory="templates")
 
 def home(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/app", status_code=303)
+        return RedirectResponse(url="/today", status_code=303)
     
     return templates.TemplateResponse(
         request=request,
@@ -19,7 +19,7 @@ def home(request: Request):
 
 def signup(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/app", status_code=303)
+        return RedirectResponse(url="/today", status_code=303)
     
     return templates.TemplateResponse(
         request=request,
@@ -30,7 +30,7 @@ def signup(request: Request):
 
 async def login(request: Request):
     if request.state.user:
-        return RedirectResponse(url="/app", status_code=303)
+        return RedirectResponse(url="/today", status_code=303)
     
     return templates.TemplateResponse(
         request=request,
