@@ -15,7 +15,7 @@ routes = [
     ("POST",    "/session",                         auth.session,       [Depends(is_user)]),
     ("GET",     "/logout",                          auth.logout,        [Depends(is_user)]),
 
-    ("GET",     "/today",                             application.today,   [Depends(is_user)]),
+    ("GET",     "/today",                           application.today,   [Depends(is_user)]),
     
     ("GET",     "/purchases",                       purchase.list,      [Depends(is_user)]),
     ("POST",    "/purchases",                       purchase.create,    [Depends(is_user)]),
@@ -30,9 +30,6 @@ routes = [
     ("POST",    "/buckets",                         bucket.create,      [Depends(is_user)]),
     ("POST",    "/buckets/daily",                   bucket.create,      [Depends(is_user)]),
     ("DELETE",  "/buckets/{bucket_id}",             bucket.delete,      [Depends(is_user)]),
-
-    ("POST",    "/budgets",                         budget.create,      [Depends(is_user)]),
-
 ]
 
 for method, path, handler, dependencies in routes:

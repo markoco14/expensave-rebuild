@@ -1,8 +1,9 @@
 from calendar import monthrange
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 import sqlite3
 from types import SimpleNamespace
 from zoneinfo import ZoneInfo
+
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates

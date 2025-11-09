@@ -1,12 +1,8 @@
 import sqlite3
-import time
-from types import SimpleNamespace
-import uuid
-from fastapi import Request, Response
+
+from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-
-from app import auth_service
 
 templates = Jinja2Templates(directory="templates")
 
