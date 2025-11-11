@@ -41,8 +41,9 @@ async def today(request: Request):
                        FROM purchase
                        JOIN bucket USING (bucket_id)
                        WHERE purchase.user_id = ?
+                       AND bucket.name = ?
                        AND purchased_at >= ? AND purchased_at < ?
-                       ORDER BY purchased_at DESC;""", (request.state.user.user_id, utc_start_of_day, utc_start_of_tomorrow))
+                       ORDER BY purchased_at DESC;""", (request.state.user.user_id, "Daily Spending", utc_start_of_day, utc_start_of_tomorrow))
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
         
     total_spent = 0
