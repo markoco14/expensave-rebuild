@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Stats | The Money Game{% endblock title %}
+
+{% block content %}
+<div class="wrapper">
+    {% set start_date = "2025-11-01" if not request.query_params.get("start_date") else request.query_params.get("start_date")%}
+    {% set end_date = "2025-11-30" if not request.query_params.get("end_date") else request.query_params.get("end_date")%}
+    <h1>See your spending stats</h1>
+    <p>Select time period</p>
+    <form action="/stats" method="GET">
+        <label for="start">Start</label>
+        <input type="date" id="start"  name="start_date" value="{{ start_date }}"/>
+        <br>
+        <label for="end">End</label>
+        <input type="date" id="end" name="end_date" value="{{ end_date }}"/>
+        <br>
+        <button type="submit">Go</button>
+    </form>
+    <br>
+    <hr>
+    <br>
+    <p>Remaining balance for time period: <span>$7,342 / $10,000</span> (You spent $2,768)</p>
+    <ul class="purchase-list">
+        <li class="list-item">Nov 30 <span>$345 / $500</span></li>
+        <li class="list-item">Nov 28 <span>$499 / $500</span></li>
+        <li class="list-item">Nov 27 <span>$109 / $500</span></li>
+        <li class="list-item">Nov 21 <span>$223 / $500</span></li>
+        <li class="list-item">Nov 15 <span>$423 / $500</span></li>
+        <li class="list-item">Nov 10 <span>$502 / $500</span></li>
+    </ul>
+</div>
+{% endblock content %}

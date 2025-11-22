@@ -74,3 +74,13 @@ async def today(request: Request):
         }
     )
 
+
+async def stats(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)    
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="stats.html",
+        context={}
+    )
