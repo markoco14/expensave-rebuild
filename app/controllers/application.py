@@ -79,12 +79,23 @@ async def stats(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
+    query_params = request.query_params
+    start_date = None
+    end_date = None
+    if query_params:
+        start_date = query_params.get("start_date")
+        end_date = query_params.get("end_date")
+
     current_datetime_utc = datetime.now(timezone.utc)
 
     localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+    
     localized_month_start = localized_datetime.date().replace(day=1)
     month_number_of_days = monthrange(localized_month_start.year, localized_month_start.month)[1]
     localized_month_end = localized_month_start.replace(day=month_number_of_days)
+
+    time_period_start = start_date if start_date else localized_month_start
+    time_period_end = end_date if end_date else localized_month_end
 
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -102,9 +113,10 @@ async def stats(request: Request):
                 context={
                     "bucket": None,
                     "purchases": [],
-                    "amount_remaining": amount_remaining,
-                    "total_spent_in_period": total_spent_in_period,
-                    "number_of_days": month_number_of_days
+                    "amount_remaining": None,
+                    "amount_in_time_period": None,
+                    "total_spent_in_period": None,
+                    "number_of_days": None
                 }
             )
         
@@ -122,7 +134,7 @@ async def stats(request: Request):
                     AND bucket.name = ?
                     AND purchased_at >= ? AND purchased_at < ?
                     ORDER BY purchased_at DESC;""",
-                    (request.state.user.user_id, bucket.name, localized_month_start, localized_month_end))
+                    (request.state.user.user_id, bucket.name, time_period_start, time_period_end))
         
         rows = cursor.fetchall()
 
@@ -131,8 +143,22 @@ async def stats(request: Request):
     total_spent_in_period = 0
     for purchase in purchases:
         total_spent_in_period += purchase.amount
+
+    # Convert strings to datetime objects
+    number_of_days = None
+    if start_date and end_date:
+        start = datetime.strptime(start_date, "%Y-%m-%d")
+        end = datetime.strptime(end_date, "%Y-%m-%d")
+        # Calculate the difference and get the number of days
+        number_of_days = (end - start).days + 1
+
+    days_in_period = month_number_of_days
+    if number_of_days:
+        days_in_period = number_of_days
+
+    num_days_bucket_amount = bucket.amount / month_number_of_days * days_in_period
     
-    amount_remaining = bucket.amount - total_spent_in_period
+    amount_remaining = num_days_bucket_amount - total_spent_in_period
     
     return templates.TemplateResponse(
         request=request,
@@ -141,6 +167,7 @@ async def stats(request: Request):
             "bucket": bucket,
             "purchases": purchases,
             "amount_remaining": amount_remaining,
+            "amount_in_time_period": num_days_bucket_amount,
             "total_spent_in_period": total_spent_in_period,
             "number_of_days": month_number_of_days
         }

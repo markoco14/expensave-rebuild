@@ -23,11 +23,11 @@
     <br>
     <hr>
     <br>
-    <p>Remaining balance for time period: <span>${{"{:,}".format(amount_remaining)}} / ${{ "{:,}".format(bucket.amount) }}</span></p>
+    <p>Remaining balance for time period: <span>${{"{:,}".format(amount_remaining)}} / ${{ "{:,}".format(amount_in_time_period) }}</span></p>
     <p>You spent ${{"{:,}".format(total_spent_in_period)}}</p>
     <ul class="purchase-list">
         {% for purchase in purchases %}
-            <li class="list-item">{{ purchase.purchased_at }} <span>${{ "{:,}".format(purchase.amount) }} / ${{ "{:,}".format((purchase.bucket_amount / number_of_days)|int) }} </span></li>
+            <li class="list-item">{{ purchase.purchased_at }} <span>${{ "{:,}".format(purchase.amount) }}</span></li>
         {% endfor %}
     </ul>
     {% endif %}
