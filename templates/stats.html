@@ -4,6 +4,9 @@
 
 {% block content %}
 <div class="wrapper">
+    {% if not bucket %}
+    <p>You need to set up your buckets before using this page. <a href="/me">Set up buckets.</a></p>
+    {% else %}
     {% set start_date = "2025-11-01" if not request.query_params.get("start_date") else request.query_params.get("start_date")%}
     {% set end_date = "2025-11-30" if not request.query_params.get("end_date") else request.query_params.get("end_date")%}
     <h1>See your spending stats</h1>
@@ -20,14 +23,13 @@
     <br>
     <hr>
     <br>
-    <p>Remaining balance for time period: <span>$7,342 / $10,000</span> (You spent $2,768)</p>
+    <p>Remaining balance for time period: <span>${{"{:,}".format(amount_remaining)}} / ${{ "{:,}".format(bucket.amount) }}</span></p>
+    <p>You spent ${{"{:,}".format(total_spent_in_period)}}</p>
     <ul class="purchase-list">
-        <li class="list-item">Nov 30 <span>$345 / $500</span></li>
-        <li class="list-item">Nov 28 <span>$499 / $500</span></li>
-        <li class="list-item">Nov 27 <span>$109 / $500</span></li>
-        <li class="list-item">Nov 21 <span>$223 / $500</span></li>
-        <li class="list-item">Nov 15 <span>$423 / $500</span></li>
-        <li class="list-item">Nov 10 <span>$502 / $500</span></li>
+        {% for purchase in purchases %}
+            <li class="list-item">{{ purchase.purchased_at }} <span>${{ "{:,}".format(purchase.amount) }} / ${{ "{:,}".format((purchase.bucket_amount / number_of_days)|int) }} </span></li>
+        {% endfor %}
     </ul>
+    {% endif %}
 </div>
 {% endblock content %}

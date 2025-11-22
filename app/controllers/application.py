@@ -77,10 +77,71 @@ async def today(request: Request):
 
 async def stats(request: Request):
     if not request.state.user:
-        return RedirectResponse(url="/login", status_code=303)    
+        return RedirectResponse(url="/login", status_code=303)
+    
+    current_datetime_utc = datetime.now(timezone.utc)
+
+    localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+    localized_month_start = localized_datetime.date().replace(day=1)
+    month_number_of_days = monthrange(localized_month_start.year, localized_month_start.month)[1]
+    localized_month_end = localized_month_start.replace(day=month_number_of_days)
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND name = ?;", (request.state.user.user_id, "Daily Spending"))
+
+        row = cursor.fetchone()
+        if not row:
+            return templates.TemplateResponse(
+                request=request,
+                name="stats.html",
+                context={
+                    "bucket": None,
+                    "purchases": [],
+                    "amount_remaining": amount_remaining,
+                    "total_spent_in_period": total_spent_in_period,
+                    "number_of_days": month_number_of_days
+                }
+            )
+        
+        bucket = SimpleNamespace(**row)
+
+        cursor.execute("""SELECT purchase.purchase_id,
+                        purchase.amount, purchase.currency,
+                        purchase.purchased_at, purchase.timezone,
+                        purchase.user_id,
+                        purchase.bucket_id as bucket_id,
+                        bucket.name as bucket_name, bucket.amount as bucket_amount  
+                    FROM purchase
+                    JOIN bucket USING (bucket_id)
+                    WHERE purchase.user_id = ?
+                    AND bucket.name = ?
+                    AND purchased_at >= ? AND purchased_at < ?
+                    ORDER BY purchased_at DESC;""",
+                    (request.state.user.user_id, bucket.name, localized_month_start, localized_month_end))
+        
+        rows = cursor.fetchall()
+
+    purchases = [SimpleNamespace(**row) for row in rows]
+    
+    total_spent_in_period = 0
+    for purchase in purchases:
+        total_spent_in_period += purchase.amount
+    
+    amount_remaining = bucket.amount - total_spent_in_period
     
     return templates.TemplateResponse(
         request=request,
         name="stats.html",
-        context={}
+        context={
+            "bucket": bucket,
+            "purchases": purchases,
+            "amount_remaining": amount_remaining,
+            "total_spent_in_period": total_spent_in_period,
+            "number_of_days": month_number_of_days
+        }
     )
