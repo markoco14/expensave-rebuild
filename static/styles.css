@@ -59,6 +59,10 @@ body {
     overflow-y: scroll;
 }
 
+body.no-scroll {
+    overflow-y: hidden;
+}
+
 p {
     margin-bottom: 1rem;
 }
@@ -106,6 +110,9 @@ button {
     top: 0;
     left: 0;
     width: 100%;
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-gray-300);
+    z-index: 1000;
 }
 
 .header__wrapper {
@@ -118,6 +125,7 @@ button {
 }
 
 .header__logo {
+    font-weight: 600;
     font-size: 1.5rem;
     color: var(--color-green-600);
 }
@@ -125,10 +133,6 @@ button {
 .header__nav {
    display: flex;
    gap: 0.5rem;
-}
-
-.header__nav.open {
-   
 }
 
 .header__nav a {
@@ -157,7 +161,12 @@ button {
 }
 
  @media screen and (width <= 639px) {
+    .header__wrapper {
+        padding-inline: 0.5rem;
+    }
+
     .header__nav {
+        display: none;
         position: absolute;
         top: 0;
         left: 0;
@@ -165,18 +174,25 @@ button {
         height: 100vh;
         background-color: var(--color-white);
 
+        isolation: isolate;
+        z-index: 1000;
+    }
+
+    .header__nav.open {
+        display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: start;
-        
-        isolation: isolate;
-        z-index: 100;
     }
 
     .header__nav a {
         width: 50%;
         margin-inline: auto;
         font-size: 2rem;
+    }
+
+    .header__open-btn {
+        display: block;
     }
 
     .header__close-btn {

@@ -1,7 +1,7 @@
 <header class="header">
     <div class="header__wrapper">
         <span class="header__logo">MSML</span>
-        <button onclick="htmx.toggleClass(htmx.find('nav'), 'open')" class="header__open-btn">
+        <button onclick="htmx.toggleClass(htmx.find('nav'), 'open'); htmx.toggleClass(htmx.find('body'), 'no-scroll');" class="header__open-btn">
 			{% include "_hamburger.html" %}
 		</button>
         <nav class="header__nav">
@@ -16,7 +16,7 @@
             <a href="/stats">Stats</a>
             <a href="/logout">Logout</a>
             {% endif %}
-            <button class="header__close-btn" onclick="htmx.toggleClass(htmx.find('nav'), 'open')">{% include "_close.html" %}</button>
+            <button class="header__close-btn" onclick="htmx.toggleClass(htmx.find('nav'), 'open'); htmx.toggleClass(htmx.find('body'), 'no-scroll');">{% include "_close.html" %}</button>
         </nav>
     </div>
 </header>
