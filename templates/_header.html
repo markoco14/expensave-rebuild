@@ -1,0 +1,22 @@
+<header class="header">
+    <div class="header__wrapper">
+        <span class="header__logo">MSML</span>
+        <button onclick="htmx.toggleClass(htmx.find('nav'), 'open')" class="header__open-btn">
+			{% include "_hamburger.html" %}
+		</button>
+        <nav class="header__nav">
+            {% if not request.state.user %}
+            <a href="/">Home</a>
+            <a href="/signup">Sign Up</a>
+            <a href="/login">Log In</a>
+            {% else %}
+            <a href="/today">Today</a>
+            <a href="/me">Me</a>
+            <a href="/purchases">Purchases</a>
+            <a href="/stats">Stats</a>
+            <a href="/logout">Logout</a>
+            {% endif %}
+            <button class="header__close-btn" onclick="htmx.toggleClass(htmx.find('nav'), 'open')">{% include "_close.html" %}</button>
+        </nav>
+    </div>
+</header>
