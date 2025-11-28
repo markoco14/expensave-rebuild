@@ -14,28 +14,10 @@
 
 	<body>
 		{% block header %}
-        <header>
-			<div class="wrapper header">
-				<span>SAVE MONEY LIFE</span>
-				<nav>
-					{% if not request.state.user %}
-					<a href="/">Home</a>
-					<a href="/signup">Sign Up</a>
-					<a href="/login">Log In</a>
-					{% else %}
-					<a href="/today">Today</a>
-					<a href="/me">Me</a>
-					<a href="/purchases">Purchases</a>
-					<a href="/stats">Stats</a>
-					<a href="/logout">Logout</a>
-					{% endif %}
-				</nav>
-			</div>
-        </header>
+		{% include "_header.html" %}
 		{% endblock header %}
-		<main >
-			{% block content %}
-			{% endblock content %}
+		<main>
+		{% block content %}{% endblock content %}
 		</main>
 	</body>
 </html>
