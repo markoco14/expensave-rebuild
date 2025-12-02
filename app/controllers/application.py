@@ -127,7 +127,6 @@ async def stats(request: Request):
                         "amount_remaining": None,
                         "amount_in_time_period": None,
                         "total_spent_in_period": None,
-                        "number_of_days": None,
                         "start_value": utc_start_of_month.strftime("%Y-%m-%d"),
                         "end_value": utc_end_of_month.strftime("%Y-%m-%d"),
                     }
@@ -166,20 +165,14 @@ async def stats(request: Request):
                 "amount_remaining": None,
                 "amount_in_time_period": None,
                 "total_spent_in_period": total_spent_in_period,
-                "number_of_days": None,
                 "start_value": utc_start_of_month.strftime("%Y-%m-%d"),
                 "end_value": utc_end_of_month.strftime("%Y-%m-%d"),
             }
         )
 
-    print('entering dates selected condition')
-
-    # month_number_of_days = monthrange(localized_month_start.year, localized_month_start.month)[1]
-
     time_period_start = datetime.strptime(start_date, "%Y-%m-%d")
     time_period_end = datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
 
-    
     # Convert strings to datetime objects
     number_of_days = None
     if start_date and end_date:
@@ -211,7 +204,6 @@ async def stats(request: Request):
                     "amount_remaining": None,
                     "amount_in_time_period": None,
                     "total_spent_in_period": None,
-                    "number_of_days": None,
                     "start_value": time_period_start.strftime("%Y-%m-%d"),
                     "end_value": time_period_end.strftime("%Y-%m-%d"),
                 }
@@ -252,9 +244,8 @@ async def stats(request: Request):
             "bucket": bucket,
             "purchases": purchases,
             "amount_remaining": amount_remaining,
-            "amount_in_time_period": num_days_bucket_amount,
+            "amount_in_time_period": None,
             "total_spent_in_period": total_spent_in_period,
-            "number_of_days": 100,
             "start_value": time_period_start.strftime("%Y-%m-%d"),
             "end_value": time_period_end.strftime("%Y-%m-%d"),
         }
