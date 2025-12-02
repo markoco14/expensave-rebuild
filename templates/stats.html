@@ -13,17 +13,17 @@
     <p>Select time period</p>
     <form action="/stats" method="GET">
         <label for="start">Start</label>
-        <input type="date" id="start"  name="start_date" value="{{ start_date }}"/>
+        <input type="date" id="start"  name="start_date" value="{{ start_value }}"/>
         <br>
         <label for="end">End</label>
-        <input type="date" id="end" name="end_date" value="{{ end_date }}"/>
+        <input type="date" id="end" name="end_date" value="{{ end_value }}"/>
         <br>
         <button type="submit">Go</button>
     </form>
     <br>
     <hr>
     <br>
-    <p>Remaining balance for time period: <span>${{"{:,}".format(amount_remaining)}} / ${{ "{:,}".format(amount_in_time_period) }}</span></p>
+    {# <p>Remaining balance for time period: <span>${{"{:,}".format(amount_remaining)}} / ${{ "{:,}".format(amount_in_time_period) }}</span></p> #}
     <p>You spent ${{"{:,}".format(total_spent_in_period)}}</p>
     <ul class="purchase-list">
         {% for purchase in purchases %}
