@@ -13,7 +13,6 @@ Me | The Money Game
     <h2>Spending Buckets</h2>
     <p>Create spending buckets as you need them.</p>
     <p>If you want to play the game, make a daily spending bucket. Choose the maximum amount you want to spend each day and we'll set up a bucket to help you track daily progress</p>
-    <p>For everything else, use a monthly budget. If you don't want to play the Daily Spending game, make a Disposable monthly bucket.</p>
     <a href="/me?bucket=daily">Make Daily Spending bucket</a>
     <a href="/me?bucket=monthly">Make monthly spending bucket</a>
     {% if request.query_params.get("bucket") %}
@@ -59,8 +58,7 @@ Me | The Money Game
     </ul>
     {% endif %}
 </section>
-<section>
-<div class="wrapper">
+<section class="wrapper">
     <p>Welcome to The Money Game: a game that challenges you to spend less and save more.</p>
     <p>How it works:</p>
     <ul class="how-to-list">
@@ -75,33 +73,5 @@ Me | The Money Game
     {% else %}
     <p>Your daily spending allowance is ${{ daily_spending_bucket.daily_amount }} (TWD)</p>
     {% endif %}
-</div>
 </section>
-
-{# <section class="wrapper">
-    <h2>Budget</h2>
-    <p>Set your daily spending allowance. Choose a daily number and every month we'll automatically calculate your monthly budget.</p>
-    <a href="/me?edit=budget">Change spending allowance</a>
-    {% if request.query_params.get("edit") and request.query_params.get("edit") == "budget" %}
-        <form action="/budgets" method="POST">
-            <div class="input-group">
-                <label for="amount">Set your new daily spending budget.</label>
-                <input id="amount" name="amount" type="text" />
-            </div>
-            <div class="input-group">
-                <label for="start_date">Starts at</label>
-                <input id="start_date" name="start_date" type="date" value="{{ today_date.strftime('%Y-%m-%d') }}"/>
-            </div>
-            <div class="button_group">
-                <a href="/me">Cancel change spending allowance</a>
-                <button type="submit">Change spending allowance</button>
-            </div>
-        </form>
-    {% endif %}
-    {% if not budget %}
-    <p>You haven't set a spending budget yet.</p>    
-    {% else %}
-    <p>Your daily spending allowance: ${{ budget.amount }}</p>
-    {% endif %}
-</section> #}
 {% endblock content %}
