@@ -103,6 +103,9 @@ async def stats(request: Request):
     if not start_date and not end_date:
         utc_date_today = datetime.now(timezone.utc)
         utc_start_of_month = utc_date_today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        utc_end_of_month = utc_date_today.replace(day=monthrange(utc_start_of_month.year, utc_start_of_month.month)[1], hour=23, minute=59, second=59, microsecond=99999)
+
         utc_start_of_next_month = utc_start_of_month.replace(day=monthrange(utc_start_of_month.year, utc_start_of_month.month)[1], hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
  
         with sqlite3.connect("db.sqlite3") as conn:
@@ -124,7 +127,9 @@ async def stats(request: Request):
                         "amount_remaining": None,
                         "amount_in_time_period": None,
                         "total_spent_in_period": None,
-                        "number_of_days": None
+                        "number_of_days": None,
+                        "start_value": utc_start_of_month.strftime("%Y-%m-%d"),
+                        "end_value": utc_end_of_month.strftime("%Y-%m-%d"),
                     }
                 )
             
@@ -161,30 +166,18 @@ async def stats(request: Request):
                 "amount_remaining": None,
                 "amount_in_time_period": None,
                 "total_spent_in_period": total_spent_in_period,
-                "number_of_days": None
+                "number_of_days": None,
+                "start_value": utc_start_of_month.strftime("%Y-%m-%d"),
+                "end_value": utc_end_of_month.strftime("%Y-%m-%d"),
             }
         )
 
     print('entering dates selected condition')
-    
 
-    utc_date_today = datetime.now(timezone.utc)
+    # month_number_of_days = monthrange(localized_month_start.year, localized_month_start.month)[1]
 
-    local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
-    # print('local date today', local_date_today)
-    
-    localized_month_start = local_date_today.date().replace(day=1)
-    # print('localized month start', localized_month_start)
-    # without any selected dates
-    # I need the start of this month
-    # and I need the end of the month OR start of next month
-
-    month_number_of_days = monthrange(localized_month_start.year, localized_month_start.month)[1]
-
-    localized_month_end = localized_month_start.replace(day=month_number_of_days)
-
-    time_period_start = start_date if start_date else localized_month_start
-    time_period_end = end_date if end_date else localized_month_end
+    time_period_start = datetime.strptime(start_date, "%Y-%m-%d")
+    time_period_end = datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
 
     
     # Convert strings to datetime objects
@@ -195,7 +188,7 @@ async def stats(request: Request):
         # Calculate the difference and get the number of days
         number_of_days = (end - start).days + 1
 
-    days_in_period = month_number_of_days
+    days_in_period = 100
     if number_of_days:
         days_in_period = number_of_days
 
@@ -218,7 +211,9 @@ async def stats(request: Request):
                     "amount_remaining": None,
                     "amount_in_time_period": None,
                     "total_spent_in_period": None,
-                    "number_of_days": None
+                    "number_of_days": None,
+                    "start_value": time_period_start.strftime("%Y-%m-%d"),
+                    "end_value": time_period_end.strftime("%Y-%m-%d"),
                 }
             )
         
@@ -234,7 +229,7 @@ async def stats(request: Request):
                     JOIN bucket USING (bucket_id)
                     WHERE purchase.user_id = ?
                     AND bucket.name = ?
-                    AND purchased_at >= ? AND purchased_at < ?
+                    AND purchased_at >= ? AND purchased_at <= ?
                     ORDER BY purchased_at DESC;""",
                     (request.state.user.user_id, bucket.name, time_period_start, time_period_end))
         
@@ -246,7 +241,7 @@ async def stats(request: Request):
     for purchase in purchases:
         total_spent_in_period += purchase.amount
 
-    num_days_bucket_amount = bucket.amount / month_number_of_days * days_in_period
+    num_days_bucket_amount = bucket.amount / 100 * days_in_period
     
     amount_remaining = num_days_bucket_amount - total_spent_in_period
     
@@ -259,6 +254,8 @@ async def stats(request: Request):
             "amount_remaining": amount_remaining,
             "amount_in_time_period": num_days_bucket_amount,
             "total_spent_in_period": total_spent_in_period,
-            "number_of_days": month_number_of_days
+            "number_of_days": 100,
+            "start_value": time_period_start.strftime("%Y-%m-%d"),
+            "end_value": time_period_end.strftime("%Y-%m-%d"),
         }
     )
