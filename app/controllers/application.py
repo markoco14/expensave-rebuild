@@ -68,7 +68,6 @@ async def today(request: Request):
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
     if daily_spending_bucket:
-        print(daily_spending_bucket)
         daily_spending_bucket.month = datetime.strptime(daily_spending_bucket.month_start, "%Y-%m-%d")
         daily_spending_bucket.daily_amount = daily_spending_bucket.amount / monthrange(month_start.year, month_start.month)[1]   
 
@@ -100,17 +99,105 @@ async def stats(request: Request):
     if query_params:
         start_date = query_params.get("start_date")
         end_date = query_params.get("end_date")
+        
+    if not start_date and not end_date:
+        utc_date_today = datetime.now(timezone.utc)
+        utc_start_of_month = utc_date_today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        utc_start_of_next_month = utc_start_of_month.replace(day=monthrange(utc_start_of_month.year, utc_start_of_month.month)[1], hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+ 
+        with sqlite3.connect("db.sqlite3") as conn:
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
 
-    current_datetime_utc = datetime.now(timezone.utc)
+            cursor = conn.cursor()
 
-    localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+            cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND name = ?;", (request.state.user.user_id, "Daily Spending"))
+
+            row = cursor.fetchone()
+            if not row:
+                return templates.TemplateResponse(
+                    request=request,
+                    name="stats.html",
+                    context={
+                        "bucket": None,
+                        "purchases": [],
+                        "amount_remaining": None,
+                        "amount_in_time_period": None,
+                        "total_spent_in_period": None,
+                        "number_of_days": None
+                    }
+                )
+            
+            bucket = SimpleNamespace(**row)
+
+            cursor.execute("""SELECT purchase.purchase_id,
+                            purchase.amount, purchase.currency,
+                            purchase.purchased_at, purchase.timezone,
+                            purchase.user_id,
+                            purchase.bucket_id as bucket_id,
+                            bucket.name as bucket_name, bucket.amount as bucket_amount  
+                        FROM purchase
+                        JOIN bucket USING (bucket_id)
+                        WHERE purchase.user_id = ?
+                        AND bucket.name = ?
+                        AND purchased_at >= ? AND purchased_at < ?
+                        ORDER BY purchased_at DESC;""",
+                        (request.state.user.user_id, bucket.name, utc_start_of_month, utc_start_of_next_month))
+            
+            rows = cursor.fetchall()
+
+        purchases = [SimpleNamespace(**row) for row in rows]
+
+        total_spent_in_period = 0
+        for purchase in purchases:
+            total_spent_in_period += purchase.amount
+
+        return templates.TemplateResponse(
+            request=request,
+            name="stats.html",
+            context={
+                "bucket": bucket,
+                "purchases": purchases,
+                "amount_remaining": None,
+                "amount_in_time_period": None,
+                "total_spent_in_period": total_spent_in_period,
+                "number_of_days": None
+            }
+        )
+
+    print('entering dates selected condition')
     
-    localized_month_start = localized_datetime.date().replace(day=1)
+
+    utc_date_today = datetime.now(timezone.utc)
+
+    local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
+    # print('local date today', local_date_today)
+    
+    localized_month_start = local_date_today.date().replace(day=1)
+    # print('localized month start', localized_month_start)
+    # without any selected dates
+    # I need the start of this month
+    # and I need the end of the month OR start of next month
+
     month_number_of_days = monthrange(localized_month_start.year, localized_month_start.month)[1]
+
     localized_month_end = localized_month_start.replace(day=month_number_of_days)
 
     time_period_start = start_date if start_date else localized_month_start
     time_period_end = end_date if end_date else localized_month_end
+
+    
+    # Convert strings to datetime objects
+    number_of_days = None
+    if start_date and end_date:
+        start = datetime.strptime(start_date, "%Y-%m-%d")
+        end = datetime.strptime(end_date, "%Y-%m-%d")
+        # Calculate the difference and get the number of days
+        number_of_days = (end - start).days + 1
+
+    days_in_period = month_number_of_days
+    if number_of_days:
+        days_in_period = number_of_days
 
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -158,18 +245,6 @@ async def stats(request: Request):
     total_spent_in_period = 0
     for purchase in purchases:
         total_spent_in_period += purchase.amount
-
-    # Convert strings to datetime objects
-    number_of_days = None
-    if start_date and end_date:
-        start = datetime.strptime(start_date, "%Y-%m-%d")
-        end = datetime.strptime(end_date, "%Y-%m-%d")
-        # Calculate the difference and get the number of days
-        number_of_days = (end - start).days + 1
-
-    days_in_period = month_number_of_days
-    if number_of_days:
-        days_in_period = number_of_days
 
     num_days_bucket_amount = bucket.amount / month_number_of_days * days_in_period
     
