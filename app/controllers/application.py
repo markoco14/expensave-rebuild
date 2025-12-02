@@ -33,7 +33,11 @@ async def today(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name, amount, month_start, is_daily FROM bucket WHERE month_start = ? AND is_daily = ?", (month_start, 1))
+        cursor.execute("""SELECT bucket_id, name, amount, month_start, is_daily 
+                       FROM bucket 
+                       WHERE month_start = ? 
+                       AND is_daily = ? 
+                       AND user_id is ?""", (month_start, 1, request.state.user.user_id))
        
         row = cursor.fetchone()
         if not row:
@@ -64,6 +68,7 @@ async def today(request: Request):
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
     if daily_spending_bucket:
+        print(daily_spending_bucket)
         daily_spending_bucket.month = datetime.strptime(daily_spending_bucket.month_start, "%Y-%m-%d")
         daily_spending_bucket.daily_amount = daily_spending_bucket.amount / monthrange(month_start.year, month_start.month)[1]   
 
