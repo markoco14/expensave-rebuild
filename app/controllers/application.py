@@ -15,13 +15,17 @@ async def today(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
-    month_start = date.today().replace(day=1)
-
     utc_date_today = datetime.now(timezone.utc)
+
     local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
+
+    # month_start = local_date_today.replace(month=12, day=1).date()
+    month_start = local_date_today.replace(day=1).date()
+
     local_start_of_day = local_date_today.replace(hour=0, minute=0, second=0)
-    local_start_of_tomorrow = local_start_of_day + timedelta(days=1)
     utc_start_of_day =  local_start_of_day.astimezone(timezone.utc)
+
+    local_start_of_tomorrow = local_start_of_day + timedelta(days=1)
     utc_start_of_tomorrow =  local_start_of_tomorrow.astimezone(timezone.utc)
     
     with sqlite3.connect("db.sqlite3") as conn:
@@ -29,9 +33,25 @@ async def today(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ?", (month_start, ))
-        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
-
+        cursor.execute("""SELECT bucket_id, name, amount, month_start, is_daily 
+                       FROM bucket 
+                       WHERE month_start = ? 
+                       AND is_daily = ? 
+                       AND user_id is ?""", (month_start, 1, request.state.user.user_id))
+       
+        row = cursor.fetchone()
+        if not row:
+            return templates.TemplateResponse(
+                request=request,
+                name="today.html",
+                context={
+                    "purchases": None,
+                    "total_spent": None,
+                    "daily_spending_bucket": None
+                }
+            )
+        daily_spending_bucket = SimpleNamespace(**row)
+        
         cursor.execute("""SELECT purchase.purchase_id,
                             purchase.amount, purchase.currency,
                             purchase.purchased_at, purchase.timezone,
@@ -41,11 +61,17 @@ async def today(request: Request):
                        FROM purchase
                        JOIN bucket USING (bucket_id)
                        WHERE purchase.user_id = ?
-                       AND bucket.name = ?
+                       AND bucket.is_daily = ?
                        AND purchased_at >= ? AND purchased_at < ?
-                       ORDER BY purchased_at DESC;""", (request.state.user.user_id, "Daily Spending", utc_start_of_day, utc_start_of_tomorrow))
-        purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
+                       ORDER BY purchased_at DESC;""", (request.state.user.user_id, 1, utc_start_of_day, utc_start_of_tomorrow))
         
+        purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
+    if daily_spending_bucket:
+        print(daily_spending_bucket)
+        daily_spending_bucket.month = datetime.strptime(daily_spending_bucket.month_start, "%Y-%m-%d")
+        daily_spending_bucket.daily_amount = daily_spending_bucket.amount / monthrange(month_start.year, month_start.month)[1]   
+
     total_spent = 0
     for purchase in purchases:
         naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
@@ -53,24 +79,13 @@ async def today(request: Request):
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
         total_spent += purchase.amount
 
-    daily_spending_bucket = None
-    other_buckets = []
-    for bucket in buckets:
-        if bucket.is_daily == True:
-            daily_spending_bucket = bucket
-            daily_spending_bucket.daily_amount = bucket.amount / monthrange(month_start.year, month_start.month)[1]   
-        else:
-            other_buckets.append(bucket)
-    
     return templates.TemplateResponse(
         request=request,
         name="today.html",
         context={
             "purchases": purchases,
             "total_spent": total_spent,
-            "buckets": buckets,
-            "daily_spending_bucket": daily_spending_bucket,
-            "other_buckets": other_buckets
+            "daily_spending_bucket": daily_spending_bucket
         }
     )
 
