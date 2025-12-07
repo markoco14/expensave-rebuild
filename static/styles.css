@@ -340,3 +340,18 @@ form {
     
     
 }
+
+{{/* edit purchase styles */}}
+
+.delete-btn {
+    cursor: pointer;
+    color: var(--color-red-600);
+}
+
+.delete-btn:hover {
+    color: var(--color-red-500);
+}
+
+.delete-btn:active {
+    color: var(--color-red-700);
+}
