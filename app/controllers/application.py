@@ -93,6 +93,8 @@ async def stats(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
+    month_start = date.today().replace(day=1)
+    
     query_params = request.query_params
     start_date = None
     end_date = None
@@ -114,7 +116,7 @@ async def stats(request: Request):
 
             cursor = conn.cursor()
 
-            cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND name = ?;", (request.state.user.user_id, "Daily Spending"))
+            cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND is_daily = ? AND month_start = ?;", (request.state.user.user_id, 1, month_start))
 
             row = cursor.fetchone()
             if not row:
@@ -191,7 +193,7 @@ async def stats(request: Request):
 
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND name = ?;", (request.state.user.user_id, "Daily Spending"))
+        cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND is_daily = ?;", (request.state.user.user_id, 1))
 
         row = cursor.fetchone()
         if not row:
