@@ -49,6 +49,7 @@ async def new(request: Request):
         return RedirectResponse(url="/login", status_code=303)
     
     month_start = date.today().replace(day=1)
+    
     current_datetime_utc = datetime.now(timezone.utc)
     localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
 
@@ -60,7 +61,7 @@ async def new(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ?", (month_start, ))
+        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
     daily_spending_bucket = None
@@ -225,12 +226,14 @@ async def edit(request: Request, purchase_id: int):
     if request.state.user.user_id != purchase.user_id:
         return RedirectResponse(url="/login", status_code=303)
     
+    month_start = date.today().replace(day=1)
+    
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id,))
+        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ? AND month_start = ?;", (request.state.user.user_id, month_start))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
     
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
