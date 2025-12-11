@@ -4,7 +4,7 @@ import sqlite3
 from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
-from fastapi import Request
+from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -252,3 +252,6 @@ async def stats(request: Request):
             "end_value": time_period_end.strftime("%Y-%m-%d"),
         }
     )
+
+async def delete_toast():
+    return Response(status_code=200)

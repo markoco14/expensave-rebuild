@@ -52,3 +52,18 @@ def is_user(request: Request):
     request.state.user = SimpleNamespace(**db_user)
     
     return
+
+def is_purchase_owner(request: Request, purchase_id: int):
+    request.state.purchase = None
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id FROM purchase WHERE purchase_id = ?;", (purchase_id, ))
+        row = cursor.fetchone()
+
+    if row:
+        request.state.purchase = SimpleNamespace(**row)
+
+    return
+    
