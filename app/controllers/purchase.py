@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
 from fastapi import Request, Response
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 templates = Jinja2Templates(directory="templates")
@@ -272,6 +272,12 @@ async def update(request: Request, purchase_id: int):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
+    if not request.state.purchase:
+        return Response(status_code=404, headers={"hx-refresh": "/true"})
+    
+    if request.state.purchase.user_id != request.state.user.user_id:
+        return Response(status_code=403, headers={"hx-refresh": "/true"})
+    
     form_data = await request.form()
 
     amount = form_data.get("amount")
@@ -302,30 +308,24 @@ async def update(request: Request, purchase_id: int):
         cursor.execute("SELECT * FROM purchase WHERE purchase_id = ?;", (purchase_id,))
         row = cursor.fetchone()
         purchase = SimpleNamespace(**row) if row else None
-
-    if not purchase:
-        return Response(status_code=404, headers={"hx-refresh": "/true"})
-
-    if request.state.user.user_id != purchase.user_id:
-        if request.headers.get("hx-request"):
-            return Response(status_code=404, headers={"hx-redirect": "/login"})
-        return RedirectResponse(url="/login", status_code=303)
     
     local_naive = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
     local_tz_aware = local_naive.replace(tzinfo=ZoneInfo(form_timezone))
     utc_time = local_tz_aware.astimezone(timezone.utc)
     utc_naive = utc_time.replace(tzinfo=None)
 
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
+    try:
+        with sqlite3.connect("db.sqlite3") as conn:
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("UPDATE purchase SET amount = ?, purchased_at = ?, bucket_id = ? WHERE purchase_id = ?;", (amount, utc_naive, bucket, purchase_id))
 
-        cursor = conn.cursor()
-        cursor.execute("UPDATE purchase SET amount = ?, purchased_at = ?, bucket_id = ? WHERE purchase_id = ?;", (amount, utc_naive, bucket, purchase_id))
-
-    response = Response(headers={"hx-refresh": "true"})
-    return response
-
+        html = "<div class='toast success' hx-delete='/toast/delete' hx-trigger='load delay:1.5s' hx-swap='outerHTML swap:300ms'><p>Purchase info updated</p></div>"
+        return HTMLResponse(status_code=200, content=html, headers={"hx-retarget": "body", "hx-reswap": "afterbegin"})
+    except Exception as e:
+        html = "<div class='toast failure' hx-delete='/toast/delete' hx-trigger='load delay:1.5s' hx-swap='outerHTML swap:300ms'><p>Something went wrong</p></div>"
+        return HTMLResponse(status_code=200, content=html, headers={"hx-retarget": "body", "hx-reswap": "afterbegin"})
 
 async def delete(request: Request, purchase_id: int):
     if not request.state.user:
