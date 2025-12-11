@@ -24,7 +24,7 @@ routes = [
     ("GET",     "/purchases/{purchase_id}",         purchase.show,      [Depends(is_user), Depends(is_purchase_owner)]),
     ("GET",     "/purchases/{purchase_id}/edit",    purchase.edit,      [Depends(is_user), Depends(is_purchase_owner)]),
     ("PUT",     "/purchases/{purchase_id}",         purchase.update,    [Depends(is_user), Depends(is_purchase_owner)]),
-    ("DELETE",  "/purchases/{purchase_id}",         purchase.delete,    [Depends(is_user)]),
+    ("DELETE",  "/purchases/{purchase_id}",         purchase.delete,    [Depends(is_user), Depends(is_purchase_owner)]),
 
     ("GET",     "/me",                              user.me,            [Depends(is_user)]),
 

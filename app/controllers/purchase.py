@@ -331,29 +331,22 @@ async def delete(request: Request, purchase_id: int):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
-
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM purchase WHERE purchase_id = ?;", (purchase_id,))
-        row = cursor.fetchone()
-        purchase = SimpleNamespace(**row) if row else None
-
-    if not purchase:
-        return Response(status_code=404, headers={"hx-redirect": "/purchases"})
+    if not request.state.purchase:
+        html = "<div class='toast failure' hx-delete='/toast/delete' hx-trigger='load delay:1.5s' hx-swap='outerHTML swap:300ms'><p>Purchase not found</p></div>"
+        return HTMLResponse(status_code=200, content=html, headers={"hx-retarget": "body", "hx-reswap": "afterbegin"})
     
-    if request.state.user.user_id != purchase.user_id:
-        if request.headers.get("hx-request"):
-            return Response(status_code=404, headers={"hx-redirect": "/purchases"})
-        return RedirectResponse(url="/login", status_code=303)
+    if request.state.purchase.user_id != request.state.user.user_id:
+        html = "<div class='toast failure' hx-delete='/toast/delete' hx-trigger='load delay:1.5s' hx-swap='outerHTML swap:300ms'><p>You don't have permission to delete this purchase</p></div>"
+        return HTMLResponse(status_code=200, content=html, headers={"hx-retarget": "body", "hx-reswap": "afterbegin"})
     
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
+    try:
+        with sqlite3.connect("db.sqlite3") as conn:
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
 
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM purchase WHERE purchase_id = ?;", (purchase_id, ))
-
-    response = Response(headers={"hx-redirect": "/purchases"})
-    return response
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM purchase WHERE purchase_id = ?;", (purchase_id, ))
+        return Response(headers={"hx-redirect": "/purchases"})
+    except Exception as e:
+        html = "<div class='toast failure' hx-delete='/toast/delete' hx-trigger='load delay:1.5s' hx-swap='outerHTML swap:300ms'><p>Something went wrong deleting the purchase</p></div>"
+        return HTMLResponse(status_code=200, content=html, headers={"hx-retarget": "body", "hx-reswap": "afterbegin"})
