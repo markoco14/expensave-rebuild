@@ -145,6 +145,33 @@ async def show(request: Request, purchase_id: int):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
+    if not request.state.purchase:
+        return templates.TemplateResponse(
+            request=request,
+            name="404.html",
+            context={
+                "heading": "Purchase Not Found",
+                "apology": "We are sorry, but we were unable to find your purchase.",
+                "link": "purchases",
+                "link_text": "Back to purchases"
+            },
+            status_code=404
+        )
+    
+    if request.state.purchase.user_id != request.state.user.user_id:
+        return templates.TemplateResponse(
+            request=request,
+            name="403.html",
+            context={
+                "heading": "Permission Denied",
+                "apology": "We are sorry, but this purchase belongs to someone else.",
+                "link": "purchases",
+                "link_text": "Back to purchases"
+            },
+            status_code=403
+        )
+    
+    
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
         conn.row_factory = sqlite3.Row
@@ -161,22 +188,6 @@ async def show(request: Request, purchase_id: int):
                     WHERE purchase.user_id = ? AND purchase.purchase_id = ?;""", (request.state.user.user_id, purchase_id))
         row = cursor.fetchone()
         purchase = SimpleNamespace(**row) if row else None
-
-    if not purchase:
-        return templates.TemplateResponse(
-            request=request,
-            name="404.html",
-            context={
-                "header": "Purchase Not Found",
-                "apology": "We are sorry, but we were unable to find your purchase.",
-                "link": "purchases",
-                "link_text": "Back to purchases"
-            },
-            status_code=404
-        )
-
-    if request.state.user.user_id != purchase.user_id:
-        return RedirectResponse(url="/login", status_code=303)
     
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
     utc_aware = naive.replace(tzinfo=timezone.utc)
