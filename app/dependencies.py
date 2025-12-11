@@ -53,9 +53,9 @@ def is_user(request: Request):
     
     return
 
-def is_owner(request: Request, purchase_id: int):
+def is_purchase_owner(request: Request, purchase_id: int):
     request.state.purchase = None
-    
+
     with sqlite3.connect("db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
