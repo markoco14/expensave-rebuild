@@ -7,44 +7,52 @@ New Purchase | The Money Game
 {% block content %}
 <div class="wrapper">
     <h1>Enter the data for your new purchase</h1>
-    {% if not daily_spending_bucket %}
+    {% if not buckets %}
     <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
     {% else %}
-    <p>Daily allowed spending: ${{ daily_spending_bucket.daily_amount }}</p>
-    <form action="/purchases" method="POST">
-        {% if request.query_params.get("bucket") %}
-            {% set bucket_id = request.query_params.get("bucket") %}
-        {% else %}
-            {% set bucket_id = daily_spending_bucket.bucket_id %}
-        {% endif %}
+    <form hx-post="/purchases" hx-swap="none" action="/purchases" method="POST">
         <div class="input-group">
             <label for="amount">Amount</label>
-            <input id="amount" name="amount" type="number" autofocus />
+            <input id="amount" name="amount" type="number" autofocus value='{{ previous_values.get("amount", "") if errors else ""}}'/>
+            <span class="error">{{ errors.get("amount", "") if errors else ''}}</span>
         </div>
         <div class="input-group">
             <label for="currency">Currency</label>
-            <input id="currency" name="currency" type="text" value="TWD"/>
+            <input id="currency" name="currency" type="text" value="TWD" readonly/>
+            <span class="error">{{ errors.get("currency", "") if errors else ''}}</span>
         </div>
         <div class="input-group">
             <label for="date">Date</label>
-            <input id="date" name="date" type="date"  value="{{ default_date }}" />
+            <input id="date" name="date" type="date" value='{{ previous_values.get("date", default_date) if errors else default_date}}' />
+            <span class="error">{{ errors.get("date", "") if errors else ''}}</span>
         </div>
         <div class="input-group">
             <label for="time">Time</label>
-            <input id="time" name="time" type="time" step="2" value="{{ default_time }}" />
+            <input id="time" name="time" type="time" value='{{ previous_values.get("time", default_time) if errors else default_time}}' />
+            <span class="error">{{ errors.get("time", "") if errors else ''}}</span>
         </div>
         <div class="input-group">
             <label for="timezone">Timezone</label>
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly/>
+            <span class="error">{{ errors.get("timezone", "") if errors else ''}}</span>
         </div>
+        <span>Spending Bucket</span>
         <fieldset class="radio-group">
             {% for bucket in buckets %}
                 <label class="radio">
-                    <input type="radio" name="bucket" value="{{ bucket.bucket_id }}"/>
+                    <input 
+                        type="radio"
+                        name="bucket"
+                        value="{{ bucket.bucket_id }}"
+                        {% if previous_values and previous_values.get("bucket")|string == bucket.bucket_id|string %}
+                            checked
+                        {% endif %}
+                        />
                     <span class="card">{{ bucket.name }}</span>
                 </label>
             {% endfor %}
         </fieldset>
+        <span class="error">{{ errors.get("bucket", "") if errors else ''}}</span>
         <button type="submit">Save</button>
     </form>
     {% endif%}

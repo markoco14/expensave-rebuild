@@ -79,9 +79,10 @@ async def new(request: Request):
         context={
             "buckets": buckets,
             "daily_spending_bucket": daily_spending_bucket,
-            "other_buckets": other_buckets,
             "default_date": default_date,
-            "default_time": default_time
+            "default_time": default_time,
+            "errors": {},
+            "previous_values": {}
         }
     )
 
@@ -89,40 +90,87 @@ async def new(request: Request):
 async def create(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
-    
+
     form_data = await request.form()
 
+    previous_values = {}
+    errors = {}
+    
     bucket_id = form_data.get("bucket")
+    previous_values["bucket"] = bucket_id
     if not bucket_id:
-        return "You need to choose a bucket."
-    
+        errors["bucket"] =  "You need to choose a bucket."
+
     amount = form_data.get("amount")
+    previous_values["amount"] = amount
     if not amount:
-        return "You need to choose an amount."
-    
-    if not amount.isdigit():
-        return "The amount needs to be a number."
-    
-    if int(amount) == 0:
-        return "The amount needs to be more than 0."
+        errors["amount"] = "You need to choose an amount."
+    else:
+        if not amount.isdigit():
+            errors["amount"] = "The amount needs to be a number."
+
+        elif int(amount) < 1:
+            errors["amount"] = "The amount needs to be more than 0."
     
     currency = form_data.get("currency")
+    previous_values["currency"] = currency
     if not currency:
-        return "You need to choose a currency."
+        errors["currency"] = "You need to choose a currency."
     
-    date = form_data.get("date")
-    if not date:
-        return "You need to choose a date."
+    form_date = form_data.get("date")
+    previous_values["date"] = form_date
+    if not form_date:
+        errors["date"] = "You need to choose a date."
     
-    time = form_data.get("time")
-    if not time:
-        return "You need to choose a time."
+    form_time = form_data.get("time")
+    previous_values["time"] = form_time
+    if not form_time:
+        errors["time"] = "You need to choose a time."
 
     form_timezone = form_data.get("timezone")
+    previous_values["form_timezone"] = form_timezone
     if not form_timezone:
-        return "You need to choose a timezone."
+        errors["timezone"] = "You need to choose a timezone."
+
+    if errors:
+        month_start = date.today().replace(day=1)
+        current_datetime_utc = datetime.now(timezone.utc)
+        localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+
+        default_date = localized_datetime.date()
+        default_time = localized_datetime.time().strftime("%H:%M:%S")
+        with sqlite3.connect("db.sqlite3") as conn:
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
+
+            cursor = conn.cursor()
+            cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
+            buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+            
+        daily_spending_bucket = None
+        other_buckets = []
+        for bucket in buckets:
+            if bucket.is_daily == True:
+                daily_spending_bucket = bucket
+                daily_spending_bucket.daily_amount = bucket.amount / monthrange(month_start.year, month_start.month)[1]   
+            else:
+                other_buckets.append(bucket)
+
+        return templates.TemplateResponse(
+            request=request,
+            name="purchases/new.html",
+            context={
+                "buckets": buckets,
+                "daily_spending_bucket": daily_spending_bucket,
+                "default_date": default_date,
+                "default_time": default_time,
+                "errors": errors,
+                "previous_values": previous_values
+            },
+            headers={"hx-retarget": "body", "hx-reswap": "outerHTML"}
+        )
     
-    local_naive = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+    local_naive = datetime.strptime(f"{form_date} {form_time}", "%Y-%m-%d %H:%M:%S")
     local_tz_aware = local_naive.replace(tzinfo=ZoneInfo(form_timezone))
     utc_time = local_tz_aware.astimezone(timezone.utc)
     utc_naive = utc_time.replace(tzinfo=None)
@@ -137,6 +185,9 @@ async def create(request: Request):
         except Exception as e:
             print(f"something went wrong storing the purchase: {e}")
             return "Something went wrong on our server."
+        
+    if request.headers.get("hx-request"):
+        return Response(status_code=200, headers={"hx-redirect": "/purchases"})
     
     return RedirectResponse(url="/purchases", status_code=303)
 

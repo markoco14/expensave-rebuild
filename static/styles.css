@@ -234,7 +234,6 @@ form {
     
     .input-group {
         display: grid;
-        margin-bottom: 1rem;
     }
 
     .fieldset {
@@ -272,7 +271,6 @@ form {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
-        margin-bottom: 1rem;
     }
 
     .radio {
@@ -316,6 +314,18 @@ form {
         border-color: rgb(1, 32, 8);
     }
 
+    .error {
+        height: 14px;
+        font-size: 14px;
+        line-height: 1;
+        color: red;
+        text-align: right;
+        margin-top: 0.25rem;
+    }
+
+    fieldset + .error {
+        margin-bottom: 1rem;
+    }
 
     button {
         cursor: pointer;
