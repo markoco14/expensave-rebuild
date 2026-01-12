@@ -94,8 +94,8 @@ async def create(request: Request):
 
     bucket_id = form_data.get("bucket")
     if not bucket_id:
-        return RedirectResponse(url="/app", status_code=303)
-
+        return "You need to choose a bucket."
+    
     amount = form_data.get("amount")
     if not amount:
         return "You need to choose an amount."

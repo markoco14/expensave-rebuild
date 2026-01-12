@@ -10,13 +10,6 @@ New Purchase | The Money Game
     {% if not daily_spending_bucket %}
     <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
     {% else %}
-    <nav>
-        <a href="/purchases/new?bucket={{ daily_spending_bucket.bucket_id }}">{{ daily_spending_bucket.name }}</a>
-
-        {% for bucket in other_buckets  %}
-        <a href="/purchases/new?bucket={{ bucket.bucket_id }}">{{ bucket.name }}</a>
-        {% endfor %}
-    </nav>
     <p>Daily allowed spending: ${{ daily_spending_bucket.daily_amount }}</p>
     <form action="/purchases" method="POST">
         {% if request.query_params.get("bucket") %}
@@ -24,7 +17,6 @@ New Purchase | The Money Game
         {% else %}
             {% set bucket_id = daily_spending_bucket.bucket_id %}
         {% endif %}
-        <input type="hidden" name="bucket" value="{{ bucket_id }}"/>
         <div class="input-group">
             <label for="amount">Amount</label>
             <input id="amount" name="amount" type="number" autofocus />
@@ -45,7 +37,15 @@ New Purchase | The Money Game
             <label for="timezone">Timezone</label>
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly/>
         </div>
-        <button type="submit">Save purchase</button>
+        <fieldset class="radio-group">
+            {% for bucket in buckets %}
+                <label class="radio">
+                    <input type="radio" name="bucket" value="{{ bucket.bucket_id }}"/>
+                    <span class="card">{{ bucket.name }}</span>
+                </label>
+            {% endfor %}
+        </fieldset>
+        <button type="submit">Save</button>
     </form>
     {% endif%}
 </div>
