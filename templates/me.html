@@ -5,73 +5,77 @@ Me | The Money Game
 {% endblock title %}
 
 {% block content %}
-<section class="wrapper">
-    <h2>Your account information</h2>
-    <p>Email: {{ current_user.email }}</p>
-</section>
-<section class="wrapper">
-    <h2>Spending Buckets</h2>
-    <p>Create spending buckets as you need them.</p>
-    <p>If you want to play the game, make a daily spending bucket. Choose the maximum amount you want to spend each day and we'll set up a bucket to help you track daily progress</p>
-    <a href="/me?bucket=daily">Make Daily Spending bucket</a>
-    <a href="/me?bucket=monthly">Make monthly spending bucket</a>
-    {% if request.query_params.get("bucket") %}
-        {% set bucket = request.query_params.get("bucket") %}
-        {% if bucket == "daily" %}
-        <form action="/buckets/daily" method="POST">
-            <div class="input-group">
-                <label for="amount">Give your bucket a <strong>daily</strong> spending amount</label>
-                <input id="amount" name="amount" type="text" autofocus/>
-            </div>
-            <div class="button_group">
-                <button type="submit">Create bucket</button>
-                <a href="/me">Cancel add bucket</a>
-            </div>
-        </form>
-        {% elif bucket == "monthly" %}
-        <form action="/buckets" method="POST">
-            <div class="input-group">
-                <label for="bucket">Give your monthly spending bucket a name</label>
-                <p>We recommend using these buckets for things where spending may vary, like "Groceries", but not for bills like "Cellphone" or "Rent".</p>
-                <input id="bucket" name="bucket" type="text" autofocus/>
-            </div>
-            <div class="input-group">
-                <label for="amount">Give your bucket a <strong>monthly</strong> spending amount</label>
-                <input id="amount" name="amount" type="text"/>
-            </div>
-            <div class="button_group">
-                <button type="submit">Create bucket</button>
-                <a href="/me">Cancel add bucket</a>
-            </div>
-        </form>
-        {% else %}
-        <p>We don't support {{ bucket }} buckets. Try monthly or daily.</p>
+<div class="wrapper app-page">
+    <h1>Your Profile</h1>
+    <section>
+        <h2 class="section-heading">Your account information</h2>
+        <p>Email: {{ current_user.email }}</p>
+    </section>
+    <section>
+        <h2 class="section-heading">Spending Buckets</h2>
+        <p>Create spending buckets as you need them.</p>
+        <p>If you want to play the game, make a daily spending bucket. Choose the maximum amount you want to spend each day and we'll set up a bucket to help you track daily progress</p>
+        <a href="/me?bucket=daily">Make Daily Spending bucket</a>
+        <a href="/me?bucket=monthly">Make monthly spending bucket</a>
+        {% if request.query_params.get("bucket") %}
+            {% set bucket = request.query_params.get("bucket") %}
+            {% if bucket == "daily" %}
+            <form action="/buckets/daily" method="POST">
+                <div class="input-group">
+                    <label for="amount">Give your bucket a <strong>daily</strong> spending amount</label>
+                    <input id="amount" name="amount" type="text" autofocus/>
+                </div>
+                <div class="button_group">
+                    <button type="submit">Create bucket</button>
+                    <a href="/me">Cancel add bucket</a>
+                </div>
+            </form>
+            {% elif bucket == "monthly" %}
+            <form action="/buckets" method="POST">
+                <div class="input-group">
+                    <label for="bucket">Give your monthly spending bucket a name</label>
+                    <p>We recommend using these buckets for things where spending may vary, like "Groceries", but not for bills like "Cellphone" or "Rent".</p>
+                    <input id="bucket" name="bucket" type="text" autofocus/>
+                </div>
+                <div class="input-group">
+                    <label for="amount">Give your bucket a <strong>monthly</strong> spending amount</label>
+                    <input id="amount" name="amount" type="text"/>
+                </div>
+                <div class="button_group">
+                    <button type="submit">Create bucket</button>
+                    <a href="/me">Cancel add bucket</a>
+                </div>
+            </form>
+            {% else %}
+            <p>We don't support {{ bucket }} buckets. Try monthly or daily.</p>
+            {% endif %}
         {% endif %}
-    {% endif %}
-    {% if not buckets %}
-    <p>You haven't made any spending buckets yet.</p>
-    {% else %}
-    <ul class="bucket_list">
-    {% for bucket in buckets %}
-        <li><span>{{ bucket.name }} {{bucket.amount}}</span><button class="delete-btn" hx-delete="/buckets/{{ bucket.bucket_id }}" hx-swap="none" hx-confirm="Are you sure you want to delete this bucket?">Delete</button></li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-</section>
-<section class="wrapper">
-    <p>Welcome to The Money Game: a game that challenges you to spend less and save more.</p>
-    <p>How it works:</p>
-    <ul class="how-to-list">
-        <li class="list-item">Choose a daily disposable spending amount.</li>
-        <li class="list-item">When you spend money, save it in this app <a href="/purchases/new">Save a new purchase</a>.</li>
-        <li class="list-item">The app will tell you how money you have spent each day.</li>
-        <li class="list-item">And it will tell you how much money you can spend.</li>
-        <li class="list-item">Every day, try to save some of your money.</li>
-    </ul>
-    {% if not daily_spending_bucket %}
-    <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
-    {% else %}
-    <p>Your daily spending allowance is ${{ daily_spending_bucket.daily_amount }} (TWD)</p>
-    {% endif %}
-</section>
+        {% if not buckets %}
+        <p>You haven't made any spending buckets yet.</p>
+        {% else %}
+        <ul class="bucket_list">
+        {% for bucket in buckets %}
+            <li><span>{{ bucket.name }} {{bucket.amount}}</span><button class="delete-btn" hx-delete="/buckets/{{ bucket.bucket_id }}" hx-swap="none" hx-confirm="Are you sure you want to delete this bucket?">Delete</button></li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </section>
+    <section>
+        <h2 class="section-heading">How to Play</h2>
+        <p>Welcome to The Money Game: a game that challenges you to spend less and save more.</p>
+        <p>How it works:</p>
+        <ul class="how-to-list">
+            <li class="list-item">Choose a daily disposable spending amount.</li>
+            <li class="list-item">When you spend money, save it in this app <a href="/purchases/new">Save a new purchase</a>.</li>
+            <li class="list-item">The app will tell you how money you have spent each day.</li>
+            <li class="list-item">And it will tell you how much money you can spend.</li>
+            <li class="list-item">Every day, try to save some of your money.</li>
+        </ul>
+        {% if not daily_spending_bucket %}
+        <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
+        {% else %}
+        <p>Your daily spending allowance is ${{ daily_spending_bucket.daily_amount }} (TWD)</p>
+        {% endif %}
+    </section>
+</div>
 {% endblock content %}

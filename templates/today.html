@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 {% block title %}The Money Game{% endblock title %}
 {% block content %}
-<div class="wrapper">
-    <h1>The Money Game</h1>
+<div class="wrapper app-page">
+    <h1>{{ today_date.strftime("%B %d, %Y") }}</h1>
+    <section>
     {% if not daily_spending_bucket %}
-    <p>You haven't set up your daily budget for this month.</p>
-    <a href="/me">Click here to set your budget</a>
+        <p>You haven't set up your daily budget for this month.</p>
+        <a href="/me">Click here to set your budget</a>
     {% else %}
-    <p>{{ daily_spending_bucket.month.strftime("%B, %Y") }}</p>
-    <p>You have spent ${{ total_spent }} / ${{ daily_spending_bucket.daily_amount }}</p>
-    <p>You can spend ${{ daily_spending_bucket.daily_amount - total_spent }}.</p>
-    <a href="/purchases/new" class="purchase-new">Add purchases</a>
-    {% if purchases %}
-    <ul class="purchase-list">
-        {% for purchase in purchases %}
-        <li class="list-item">
-            <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
-            <span>${{ purchase.amount }} in {{ purchase.bucket_name }}</span>
-            <a href="/purchases/{{ purchase.purchase_id }}">Details</a>
-        </li>
-        {% endfor %}
-    </ul>    
+        <p class="money-remaining">Money remaining: <span>${{ daily_spending_bucket.daily_amount - total_spent }} / ${{ daily_spending_bucket.daily_amount }}</span></p>
+        <a href="/purchases/new" class="purchase-new">Add purchase</a>
+        {% if purchases %}
+        <ul class="purchase-list">
+            {% for purchase in purchases %}
+            <li class="list-item">
+                <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
+                <span>${{ purchase.amount }} in {{ purchase.bucket_name }}</span>
+                <a href="/purchases/{{ purchase.purchase_id }}">Details</a>
+            </li>
+            {% endfor %}
+        </ul>    
+        {% endif %}
     {% endif %}
-    {% endif %}
+    </section>
 </div>
 {% endblock %}

@@ -67,6 +67,10 @@ p {
     margin-bottom: 1rem;
 }
 
+p:last-child {
+    margin-bottom: 0;
+}
+
 button {
     font: inherit;
     background: none;
@@ -84,9 +88,12 @@ button {
     margin-inline: auto;
 } */
 
+main {
+    padding-top: 48px;
+    padding-bottom: 2rem;
+}
+
 .wrapper {
-    margin-top: 48px;
-    margin-bottom: 2rem;
     max-width: 500px;
     margin-inline: auto;
 }
@@ -202,6 +209,35 @@ button {
         right: 0.5rem;
         z-index: 101;
     }
+}
+.app-page {
+    padding-top: 1rem;
+
+    h1 {
+        margin-bottom: 1rem;
+    }
+
+    section {
+        margin-block: 2rem; 
+    }
+
+    .section-heading {
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid black;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .app-page {
+        heading {
+            padding-top: 2rem;
+        }
+    }
+}
+
+.money-remaining {
+    display: flex;
+    justify-content: space-between;
 }
 
 .page-heading {
@@ -387,13 +423,19 @@ form {
 }
 
 .purchase-new {
-    display: inline-block;
-    padding: 0.5rem 1rem;
+    display: block;
+    padding-block: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
     text-decoration: none;
-    color: white;
-    background-color: rgba(18, 146, 67, 1);
-    border-radius: 0.25rem;
-    margin-bottom: 2rem;
+    color: rgb(45, 74, 56);
+    background-color: rgb(196, 245, 215);
+    border: 1px solid rgb(45, 74, 56);
+    border-radius: 0.25rem; 
+}
+
+.purchase-new:hover {
+    background-color: rgb(161, 241, 191);
 }
 
 .purchase-list {
@@ -406,7 +448,7 @@ form {
         align-items: baseline;
         border: 1px solid rgba(124, 124, 124, 1);
         padding: 1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         border-radius: 0.25rem;
     
     }

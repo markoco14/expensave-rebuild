@@ -3,31 +3,30 @@
 {% block title %}Stats | The Money Game{% endblock title %}
 
 {% block content %}
-<div class="wrapper">
-    {% if not bucket %}
-    <p>You need to set up your buckets before using this page. <a href="/me">Set up buckets.</a></p>
-    {% else %}
-    {% set start_date = "2025-11-01" if not request.query_params.get("start_date") else request.query_params.get("start_date")%}
-    {% set end_date = "2025-11-30" if not request.query_params.get("end_date") else request.query_params.get("end_date")%}
-    <h1>See your spending stats</h1>
-    <p>Select time period</p>
-    <form action="/stats" method="GET">
-        <label for="start">Start</label>
-        <input type="date" id="start"  name="start_date" value="{{ start_value }}"/>
-        <label for="end">End</label>
-        <input type="date" id="end" name="end_date" value="{{ end_value }}"/>
-        <button type="submit">Go</button>
-    </form>
-    <br>
-    <hr>
-    <br>
-    {# <p>Remaining balance for time period: <span>${{"{:,}".format(amount_remaining)}} / ${{ "{:,}".format(amount_in_time_period) }}</span></p> #}
-    <p>You spent ${{"{:,}".format(total_spent_in_period)}}</p>
-    <ul class="purchase-list">
-        {% for purchase in purchases %}
-            <li class="list-item">{{ purchase.purchased_at }} <span>${{ "{:,}".format(purchase.amount) }}</span></li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+<div class="wrapper app-page">
+    <h1>Spending Stats</h1>
+    <section>
+        {% if not bucket %}
+        <p>You need to set up your buckets before using this page. <a href="/me">Set up buckets.</a></p>
+        {% else %}
+        {% set start_date = "2025-11-01" if not request.query_params.get("start_date") else request.query_params.get("start_date")%}
+        {% set end_date = "2025-11-30" if not request.query_params.get("end_date") else request.query_params.get("end_date")%}
+        <form action="/stats" method="GET">
+            <label for="start">Start</label>
+            <input type="date" id="start"  name="start_date" value="{{ start_value }}"/>
+            <label for="end">End</label>
+            <input type="date" id="end" name="end_date" value="{{ end_value }}"/>
+            <button type="submit">Go</button>
+        </form>
+    </section>
+    <section>
+        <p>You spent ${{"{:,}".format(total_spent_in_period)}}</p>
+        <ul class="purchase-list">
+            {% for purchase in purchases %}
+                <li class="list-item">{{ purchase.purchased_at }} <span>${{ "{:,}".format(purchase.amount) }}</span></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </section>
 </div>
 {% endblock content %}

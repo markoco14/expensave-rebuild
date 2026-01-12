@@ -82,6 +82,7 @@ async def today(request: Request):
         request=request,
         name="today.html",
         context={
+            "today_date": local_date_today,
             "purchases": purchases,
             "total_spent": total_spent,
             "daily_spending_bucket": daily_spending_bucket
