@@ -5,24 +5,23 @@ Purchases | The Money Game
 {% endblock title %}
 
 {% block content %}
-<div class="wrapper">
-    <header class="purchase-header">
-        <h1>Your Purchases</h1>
-        {% if not purchases %}
-        <p>You haven't tracked any purchases yet.</p>
+<div class="wrapper app-page">
+    <h1>Purchases</h1>
+    <section>
+        {% if purchases %}
+        <ul class="purchase-list">
+            <li>
+            <a href="/purchases/new" class="purchase-new">Add purchases</a>
+            </li>
+            {% for purchase in purchases %}
+            <li class="list-item">
+                <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
+                <span>${{ purchase.amount }} in {{ purchase.bucket_name }}</span>
+                <a href="/purchases/{{ purchase.purchase_id }}">Details</a>
+            </li>
+            {% endfor %}
+        </ul>
         {% endif %}
-    </header>
-    <a href="/purchases/new" class="purchase-new">Add purchases</a>
-    {% if purchases %}
-    <ul class="purchase-list">
-        {% for purchase in purchases %}
-        <li class="list-item">
-            <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
-            <span>${{ purchase.amount }} in {{ purchase.bucket_name }}</span>
-            <a href="/purchases/{{ purchase.purchase_id }}">Details</a>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    </section>
 </div>
 {% endblock content %}
