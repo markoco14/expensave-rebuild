@@ -1,7 +1,30 @@
 {% extends "base.html" %}
-{% block title %}The Money Game{% endblock title %}
+{% block title %}My Save Money Life{% endblock title %}
 {% block content %}
-<div class="wrapper">
-    <h1>The Money Game</h1>
+<div class="wrapper public-page">
+    <section class="hero">
+        <h1>Turn you your life into a save money life.</h1>
+        <p>Know the ins and outs of your financial life; get ahead of the money game.</p>
+    </section>
+    <section>
+        <h2>It's as easy as 1, 2, 3 to play:</h2>
+        <ol>
+            <li>Every month, choose your Daily Spending amount.</li>
+            <li>Every month, create other buckets to label your spending (groceries, entertainment, travel...).</li>
+            <li>When you spend cash, don't forget to save that purchase here in the app.</li>
+        </ol>
+    </section>
+    <section>
+        <h2>Common questions</h2>
+        <details name="questions">
+            <summary>Why every month?</summary>
+            Because budgets can change. You might realize you didn't put enough in groceries one month.
+            You might want a smaller grocery budget in one month because you will travel alot.
+        </details>
+        <details name="questions">
+            <summary>Do I need a daily spending amount?</summary>
+            If you want to use this app, yes.
+        </details>
+    </section>
 </div>
 {% endblock %}

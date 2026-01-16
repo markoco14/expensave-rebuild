@@ -93,6 +93,54 @@ main {
     padding-bottom: 2rem;
 }
 
+ol, ul {
+    list-style: inside;
+
+    li {
+        margin-bottom: 0.25rem;
+    }
+}
+
+ol {
+    list-style-type: decimal;  
+}
+
+details {
+    margin-bottom: 1rem;
+
+    summary {
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+        font-size: 1.25rem;
+        border-bottom: 1px solid black;
+        margin-bottom: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+
+    
+    summary::after {
+        content: "▼";
+        display: inline-block;
+    }
+
+}
+
+details[open] {
+    border-bottom: 1px solid black;
+    padding-bottom: 1rem;
+    
+    summary {
+        margin-bottom: 1rem;
+        border-bottom: 1px solid gray;
+    }
+
+
+    summary::after {
+        transform: rotate(180deg)
+    }
+}
+
 .wrapper {
     max-width: 500px;
     margin-inline: auto;
@@ -210,6 +258,19 @@ main {
         z-index: 101;
     }
 }
+
+.public-page {
+    padding-top: 1rem;
+
+    section {
+        margin-bottom: 2rem;
+    }
+
+    h1, h2 {
+        margin-bottom: 1rem;
+    }
+}
+
 .app-page {
     padding-top: 1rem;
 
@@ -270,6 +331,7 @@ form {
     
     .input-group {
         display: grid;
+        margin-bottom: 1rem;
     }
 
     .fieldset {
