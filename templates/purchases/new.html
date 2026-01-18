@@ -6,19 +6,32 @@ New Purchase | The Money Game
 
 {% block content %}
 <div class="wrapper app-page">
-    <h1>Enter the data for your new purchase</h1>
+    <h1>New purchase</h1>
     {% if not buckets %}
     <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
     {% else %}
     <form hx-post="/purchases" hx-swap="none" action="/purchases" method="POST">
+        
         <div class="input-group">
             <label for="amount">Amount</label>
-            <input id="amount" name="amount" type="number" autofocus value='{{ previous_values.get("amount", "") if errors else ""}}'/>
+            <input
+                id="amount"
+                name="amount"
+                type="number"
+                autofocus
+                value='{{ previous_values.get("amount", "") if errors else ""}}'
+                />
             <span class="error">{{ errors.get("amount", "") if errors else ''}}</span>
         </div>
         <div class="input-group">
             <label for="currency">Currency</label>
-            <input id="currency" name="currency" type="text" value="TWD" readonly/>
+            <input
+                id="currency"
+                name="currency"
+                type="text"
+                value="TWD"
+                readonly
+                />
             <span class="error">{{ errors.get("currency", "") if errors else ''}}</span>
         </div>
         <div class="input-group">
@@ -28,7 +41,7 @@ New Purchase | The Money Game
         </div>
         <div class="input-group">
             <label for="time">Time</label>
-            <input id="time" name="time" type="time" value='{{ previous_values.get("time", default_time) if errors else default_time}}' />
+            <input id="time" name="time" type="time" step="1" value='{{ previous_values.get("time", default_time) if errors else default_time}}' />
             <span class="error">{{ errors.get("time", "") if errors else ''}}</span>
         </div>
         <div class="input-group">
@@ -36,23 +49,25 @@ New Purchase | The Money Game
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly/>
             <span class="error">{{ errors.get("timezone", "") if errors else ''}}</span>
         </div>
-        <span>Spending Bucket</span>
-        <fieldset class="radio-group">
-            {% for bucket in buckets %}
-                <label class="radio">
-                    <input 
-                        type="radio"
-                        name="bucket"
-                        value="{{ bucket.bucket_id }}"
-                        {% if previous_values and previous_values.get("bucket")|string == bucket.bucket_id|string %}
-                            checked
-                        {% endif %}
-                        />
-                    <span class="card">{{ bucket.name }}</span>
-                </label>
-            {% endfor %}
+        <fieldset>
+            <legend>Spending Bucket</legend>
+            <div class="radio-group">
+                {% for bucket in buckets %}
+                    <label>
+                        <input 
+                            type="radio"
+                            name="bucket"
+                            value="{{ bucket.bucket_id }}"
+                            {% if previous_values and previous_values.get("bucket")|string == bucket.bucket_id|string %}
+                                checked
+                            {% endif %}
+                            />
+                        <span class="card">{{ bucket.name }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+            <span class="error">{{ errors.get("bucket", "") if errors else ''}}</span>
         </fieldset>
-        <span class="error">{{ errors.get("bucket", "") if errors else ''}}</span>
         <button type="submit">Save</button>
     </form>
     {% endif%}
