@@ -21,7 +21,7 @@ async def index(request: Request):
 
 
 
-async def home(request: Request):
+async def today(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
     user_id = 1
@@ -91,7 +91,7 @@ async def home(request: Request):
     
     return templates.TemplateResponse(
         request=request,
-        name="hv/home.xml",
+        name="hv/today.xml",
         context={
             "today_date": local_date_today,
             "purchases": purchases,

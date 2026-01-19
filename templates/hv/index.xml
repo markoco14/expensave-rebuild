@@ -1,5 +1,5 @@
 <doc xmlns="https://hyperview.org/hyperview">
     <navigator id="root" type="tab">
-        <nav-route id="home" href="/hv/home.xml" />
+        <nav-route id="today" href="/hv/today.xml" />
     </navigator>
 </doc>

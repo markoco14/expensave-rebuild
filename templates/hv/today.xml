@@ -1,0 +1,118 @@
+<doc xmlns="https://hyperview.org/hyperview">
+    <screen>
+        {% set percent_spent = (total_spent  /  daily_spending_bucket.daily_amount * 100) %}
+        <styles>
+            <style id="body" minHeight="100%"/>
+            <style
+                id="container"
+                minHeight="100%"
+                paddingLeft="8"
+                paddingRight="8"
+                paddingTop="8"
+                backgroundColor="#f0f0f0"
+                />
+            <style id="heading" marginBottom="24" fontSize="32" color="#111827"/>
+            <style 
+                id="progress-track"
+                backgroundColor="#fff"
+                width="100%"
+                height="32"
+                borderRadius="4"
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                marginBottom="24"
+                />
+            <style 
+                id="progress-bar"
+                backgroundColor="rgb(54, 232, 122)"
+                height="100%"
+                borderTopLeftRadius="4"
+                borderBottomLeftRadius="4"
+                width="{{ percent_spent }}%"
+                display="flex"
+                flexDirection="row"
+                justifyContent="flex-end"
+                alignItems="center"
+                paddingRight="4"
+                marginRight="4"
+                />
+            <style 
+                id="remainder" 
+                color="#111827"
+                marginBottom="16" 
+                fontSize="18"
+                />
+            <style 
+                id="btn-primary"
+                backgroundColor="rgb(175, 242, 200)"
+                elevation="2"
+                borderRadius="4"
+                padding="16"
+                marginBottom="8"
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                >
+                <modifier pressed="true">
+                    <style backgroundColor="rgb(118, 236, 163)" elevation="0"/>
+                </modifier>    
+            </style>
+            <style 
+                id="btn-primary-text"
+                color="rgb(45, 74, 56)"
+                fontSize="18"
+                />
+            <style
+                id="list-item"
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+                color="#111827" 
+                backgroundColor="rgb(255, 255, 255)"
+                {# borderWidth="1" #}
+                {# borderColor="rgb(124, 124, 124)" #}
+                elevation="2"
+                borderRadius="4"
+                padding="16"
+                marginBottom="8"
+                />
+            <style 
+                id="list-item-text"
+                color="#111827"
+                fontSize="16"
+                />
+        </styles>
+        <body>
+            <view style="container">
+                <text style="heading">{{ today_date.strftime("%B %d, %Y") }}</text>
+                {% if not daily_spending_bucket %}
+                    <text>You haven't set up your daily budget for this month.</text>
+                    <text>Click here to set your budget</text>
+                {% else %}
+                    <view style="progress-track">
+                        <view style="progress-bar">{% if percent_spent >= 50 %}<text>${{total_spent}}</text>{% endif %}</view>
+                        {% if percent_spent <= 50 %}
+                        <text>${{total_spent}}</text>
+                        {% endif %}
+                    </view>
+                    {# <text style="remainder">${{ daily_spending_bucket.daily_amount - total_spent }} / ${{ daily_spending_bucket.daily_amount }}</text> #}
+                    <view style="btn-primary" action="press">
+                        <text style="btn-primary-text">Add purchase</text>
+                    </view>
+                    {% if purchases %}
+                        <list>
+                            {% for purchase in purchases %}
+                                <item key="{{ loop.index0 }}" style="list-item">
+                                    <text style="list-item-text">{{ purchase.purchased_at.strftime("%b %d") }}</text>
+                                    <text style="list-item-text">${{ purchase.amount }} in {{ purchase.bucket_name }}</text>
+                                    <text style="list-item-text">Details</text>
+                                </item>
+                            {% endfor %}
+                        </list>
+                    {% endif %}
+                {% endif %}
+            </view>
+        </body>
+  </screen>
+</doc>

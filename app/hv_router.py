@@ -7,8 +7,8 @@ hv_router = APIRouter()
 
 # ('HTTP method', 'URI path', 'handler function', 'dependencies')
 routes = [
-    ("GET",     "/hv/index.xml", application.index, []),   # None
-    ("GET",     "/hv/home.xml", application.home, [])
+    ("GET",     "/hv/index.xml", application.index, []),
+    ("GET",     "/hv/today.xml", application.today, []),
 
 ]
 
