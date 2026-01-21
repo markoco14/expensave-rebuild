@@ -1,0 +1,26 @@
+<form id="purchase-form" xmlns="https://hyperview.org/hyperview">
+    
+    {% if saved == True %}
+    <text style="text-dark">Saved!</text>
+    {% endif %}
+    <text style="text-dark">Amount</text>
+    <text-field name="amount" placeholder="Amount" style="text-field" value="0"/>
+    <text style="error">{{ errors.get("amount", "") if errors else ''}}</text>
+    
+    <text style="text-dark">Currency</text>
+    <text-field name="currency" placeholder="Currency" style="text-field" value="TWD"/>
+    <text style="error">{{ errors.get("currency", "") if errors else ''}}</text>
+    
+    <text style="text-dark">Timezone</text>
+    <text-field name="timezone" placeholder="Timezone" style="text-field" value="Asia/Taipei"/>
+    <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text>
+    
+    <text style="text-dark">Bucket</text>
+    <text-field name="bucket" placeholder="Bucket" style="text-field" value="9"/>
+    <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
+
+    <view verb="post" href="/hv/today" action="replace" target="purchase-form">
+        <text style="list-item-text">Save</text>
+    </view>
+</form>
+

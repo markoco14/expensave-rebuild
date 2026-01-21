@@ -100,3 +100,93 @@ async def today(request: Request):
             },
         headers={"Content-Type": content_type}
     )
+
+async def store(request: Request):
+    accept_header = request.headers.get("accept", "")
+    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    form_data = await request.form()
+
+    previous_values = {}
+    errors = {}
+    
+    bucket_id = form_data.get("bucket")
+    previous_values["bucket"] = bucket_id
+
+    if not bucket_id:
+        errors["bucket"] =  "You need to choose a bucket."
+
+    amount = form_data.get("amount")
+    previous_values["amount"] = amount
+
+    if not amount:
+        errors["amount"] = "You need to choose an amount."
+    else:
+        if not amount.isdigit():
+            errors["amount"] = "The amount needs to be a number."
+
+        elif int(amount) < 1:
+            errors["amount"] = "The amount needs to be more than 0."
+    
+    currency = form_data.get("currency")
+    previous_values["currency"] = currency
+    if not currency:
+        errors["currency"] = "You need to choose a currency."
+    
+    # form_date = form_data.get("date")
+    # previous_values["date"] = form_date
+    # if not form_date:
+    #     errors["date"] = "You need to choose a date."
+    
+    # form_time = form_data.get("time")
+    # previous_values["time"] = form_time
+    # if not form_time:
+    #     errors["time"] = "You need to choose a time."
+
+    form_timezone = form_data.get("timezone")
+    previous_values["form_timezone"] = form_timezone
+    if not form_timezone:
+        errors["timezone"] = "You need to choose a timezone."
+
+    purchased_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+    if errors:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/form.xml",
+            context={
+                "saved": False,
+                "previous_values": previous_values,
+                "errors": errors,
+                },
+            headers={"Content-Type": content_type}
+            )
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);",
+                       (amount, currency, purchased_at, form_timezone, 1, bucket_id))
+        conn.commit()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/form.xml",
+        context={
+            "saved": True,
+            "previous_values": {},
+            "errors": {},
+            },
+        headers={"Content-Type": content_type}
+        )
+
+
+async def new(request: Request):
+    accept_header = request.headers.get("accept", "")
+    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/new.xml",
+        context={},
+        headers={"Content-Type": content_type}
+        )
