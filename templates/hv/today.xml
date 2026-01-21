@@ -98,6 +98,7 @@
                     </view>
                     {# <text style="remainder">${{ daily_spending_bucket.daily_amount - total_spent }} / ${{ daily_spending_bucket.daily_amount }}</text> #}
                     <view style="btn-primary" action="press">
+                        <behavior trigger="press" href="/hv/today/new"/>
                         <text style="btn-primary-text">Add purchase</text>
                     </view>
                     {% if purchases %}
