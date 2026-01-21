@@ -1,16 +1,18 @@
 from fastapi import APIRouter, Depends
 
 from app.controllers.hv import application
+from app.dependencies import is_user
 
 
 hv_router = APIRouter()
 
 # ('HTTP method', 'URI path', 'handler function', 'dependencies')
 routes = [
-    ("GET",     "/hv/index", application.index, []),
-    ("GET",     "/hv/today", application.today, []),
-    ("POST",    "/hv/today", application.store, []),
-    ("GET",     "/hv/today/new",  application.new, []),
+    ("GET",     "/hv/index", application.index, [Depends(is_user)]),
+    ("GET",     "/hv/today", application.today, [Depends(is_user)]),
+    ("POST",    "/hv/today", application.store, [Depends(is_user)]),
+    ("GET",     "/hv/today/new",  application.new, [Depends(is_user)]),
+    ("POST",     "/hv/login", application.login, []),
 
 ]
 

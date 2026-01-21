@@ -5,9 +5,10 @@
             {% include "hv/styles/form.style.xml" %}
         </styles>
         <body>
+            <behavior trigger="refresh" action="reload" href="/hv/today"/>
             <view style="container">
-                <text style="heading">New purchase</text>
-                {% include "hv/form.xml"%}
+                <text style="heading">Login time</text>
+                {% include "hv/auth/form.xml" %}
             </view>
         </body>
   </screen>

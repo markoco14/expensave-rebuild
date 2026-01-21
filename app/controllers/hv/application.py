@@ -20,10 +20,63 @@ async def index(request: Request):
     )
 
 
+async def login(request: Request):
+    accept_header = request.headers.get("accept", "")
+    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    form_data = await request.form()
+
+    previous_values = {}
+    errors = {}
+
+    email = form_data.get("email")
+    previous_values["email"] = email
+    if not email:
+        errors["email"] =  "You need to enter your email."
+
+    password = form_data.get("password")
+    previous_values["password"] = password
+    if not password:
+        errors["password"] =  "You need to enter your password."
+
+    if errors:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/auth/form.xml",
+            context={
+                "previous_values": previous_values,
+                "errors": errors
+                },
+            headers={
+                "Content-Type": content_type
+                }
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/auth/form.xml",
+        context={
+            "previous_values": {},
+            "errors": {}
+            },
+        headers={
+            "Content-Type": content_type
+            }
+    )
+
 
 async def today(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+    
+    # request.state.user = 1
+    if not request.state.user:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/auth/login.xml",
+            context={}
+        )
+
     user_id = 1
     utc_date_today = datetime.now(timezone.utc)
 
@@ -112,13 +165,11 @@ async def store(request: Request):
     
     bucket_id = form_data.get("bucket")
     previous_values["bucket"] = bucket_id
-
     if not bucket_id:
         errors["bucket"] =  "You need to choose a bucket."
 
     amount = form_data.get("amount")
     previous_values["amount"] = amount
-
     if not amount:
         errors["amount"] = "You need to choose an amount."
     else:
@@ -153,7 +204,7 @@ async def store(request: Request):
     if errors:
         return templates.TemplateResponse(
             request=request,
-            name="hv/form.xml",
+            name="hv/purchases/form.xml",
             context={
                 "saved": False,
                 "previous_values": previous_values,
@@ -170,7 +221,7 @@ async def store(request: Request):
 
     return templates.TemplateResponse(
         request=request,
-        name="hv/form.xml",
+        name="hv/purchases/form.xml",
         context={
             "saved": True,
             "previous_values": {},
@@ -186,7 +237,7 @@ async def new(request: Request):
 
     return templates.TemplateResponse(
         request=request,
-        name="hv/new.xml",
+        name="hv/purchases/new.xml",
         context={},
         headers={"Content-Type": content_type}
         )
