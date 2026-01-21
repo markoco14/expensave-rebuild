@@ -1,10 +1,15 @@
 from calendar import monthrange
 from datetime import datetime, timedelta, timezone
 import sqlite3
+import time
 from types import SimpleNamespace
+import uuid
 from zoneinfo import ZoneInfo
+
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
+
+from app import cryptography
 
 
 templates = Jinja2Templates(directory="templates")
@@ -39,6 +44,17 @@ async def login(request: Request):
     if not password:
         errors["password"] =  "You need to enter your password."
 
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM user WHERE email = ?;", (email, ))
+        db_user = cursor.fetchone()
+
+    if not db_user:
+        errors["email"] =  "You need to enter your email."
+
+    if password and not cryptography.verify_password(plain_password=password, hashed_password=db_user[2]):
+        errors["password"] =  "You need to enter your password."
+
     if errors:
         return templates.TemplateResponse(
             request=request,
@@ -51,11 +67,19 @@ async def login(request: Request):
                 "Content-Type": content_type
                 }
         )
+    
+    token = str(uuid.uuid4())
+    expires_at = int(time.time()) + (60 * 60 * 24 * 3)
 
-    return templates.TemplateResponse(
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO session (token, user_id, expires_at) VALUES (?, ?, ?);", (token, db_user[0], expires_at))
+
+    response = templates.TemplateResponse(
         request=request,
         name="hv/auth/form.xml",
         context={
+            "saved": True,
             "previous_values": {},
             "errors": {}
             },
@@ -64,20 +88,26 @@ async def login(request: Request):
             }
     )
 
+    response.set_cookie(key="session-id", value=token)
+
+    return response
+
 
 async def today(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
     
-    # request.state.user = 1
     if not request.state.user:
-        return templates.TemplateResponse(
+        response = templates.TemplateResponse(
             request=request,
             name="hv/auth/login.xml",
             context={}
         )
 
-    user_id = 1
+        response.delete_cookie("session-id")
+        
+        return response
+    
     utc_date_today = datetime.now(timezone.utc)
 
     local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
@@ -100,7 +130,7 @@ async def today(request: Request):
                        FROM bucket 
                        WHERE month_start = ? 
                        AND is_daily = ? 
-                       AND user_id is ?""", (month_start, 1, user_id))
+                       AND user_id is ?""", (month_start, 1, request.state.user.user_id))
        
         row = cursor.fetchone()
         if not row:
@@ -127,7 +157,7 @@ async def today(request: Request):
                        WHERE purchase.user_id = ?
                        AND bucket.is_daily = ?
                        AND purchased_at >= ? AND purchased_at < ?
-                       ORDER BY purchased_at DESC;""", (user_id, 1, utc_start_of_day, utc_start_of_tomorrow))
+                       ORDER BY purchased_at DESC;""", (request.state.user.user_id, daily_spending_bucket.is_daily, utc_start_of_day, utc_start_of_tomorrow))
         
         purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
@@ -216,7 +246,7 @@ async def store(request: Request):
     with sqlite3.connect("db.sqlite3") as conn:
         cursor = conn.cursor()
         cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);",
-                       (amount, currency, purchased_at, form_timezone, 1, bucket_id))
+                       (amount, currency, purchased_at, form_timezone, request.state.user.user_id, bucket_id))
         conn.commit()
 
     return templates.TemplateResponse(
@@ -234,7 +264,7 @@ async def store(request: Request):
 async def new(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
-
+    
     return templates.TemplateResponse(
         request=request,
         name="hv/purchases/new.xml",
