@@ -1,7 +1,8 @@
 <form id="purchase-form" xmlns="https://hyperview.org/hyperview">
     
     {% if saved == True %}
-    <text style="text-dark">Saved!</text>
+    <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
+    <behavior trigger="load" action="back" />
     {% endif %}
     <text style="text-dark">Amount</text>
     <text-field name="amount" placeholder="Amount" style="text-field" value="0"/>

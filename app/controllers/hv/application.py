@@ -88,7 +88,7 @@ async def today(request: Request):
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
         total_spent += purchase.amount
-    
+
     return templates.TemplateResponse(
         request=request,
         name="hv/today.xml",

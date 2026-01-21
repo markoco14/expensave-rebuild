@@ -10,6 +10,7 @@
                 paddingRight="8"
                 paddingTop="8"
                 backgroundColor="#f0f0f0"
+                marginBottom="128"
                 />
             <style id="heading" marginBottom="24" fontSize="32" color="#111827"/>
             <style 
@@ -84,35 +85,36 @@
                 />
         </styles>
         <body>
+            <behavior trigger="refresh" action="reload" href="/hv/today"/>
             <view style="container">
-                <text style="heading">{{ today_date.strftime("%B %d, %Y") }}</text>
+                <behavior trigger="on-event" event-name="purchase-added" action="reload" href="/hv/today"/>
                 {% if not daily_spending_bucket %}
-                    <text>You haven't set up your daily budget for this month.</text>
-                    <text>Click here to set your budget</text>
+                <text>You haven't set up your daily budget for this month.</text>
+                <text>Click here to set your budget</text>
                 {% else %}
-                    <view style="progress-track">
-                        <view style="progress-bar">{% if percent_spent >= 50 %}<text>${{total_spent}}</text>{% endif %}</view>
-                        {% if percent_spent <= 50 %}
-                        <text>${{total_spent}}</text>
-                        {% endif %}
-                    </view>
-                    {# <text style="remainder">${{ daily_spending_bucket.daily_amount - total_spent }} / ${{ daily_spending_bucket.daily_amount }}</text> #}
-                    <view style="btn-primary" action="press">
-                        <behavior trigger="press" href="/hv/today/new"/>
-                        <text style="btn-primary-text">Add purchase</text>
-                    </view>
-                    {% if purchases %}
-                        <list>
-                            {% for purchase in purchases %}
-                                <item key="{{ loop.index0 }}" style="list-item">
-                                    <text style="list-item-text">{{ purchase.purchased_at.strftime("%b %d") }}</text>
-                                    <text style="list-item-text">${{ purchase.amount }} in {{ purchase.bucket_name }}</text>
-                                    <text style="list-item-text">Details</text>
-                                </item>
-                            {% endfor %}
-                        </list>
+                <text style="heading">{{ today_date.strftime("%B %d, %Y") }}</text>
+                <view style="progress-track">
+                    <view style="progress-bar">{% if percent_spent >= 50 %}<text>${{total_spent}}</text>{% endif %}</view>
+                    {% if percent_spent <= 50 %}
+                    <text>${{total_spent}}</text>
                     {% endif %}
+                </view>
                 {% endif %}
+                <list>
+                    <item>
+                        <view style="btn-primary" action="press">
+                            <behavior trigger="press" href="/hv/today/new"/>
+                            <text style="btn-primary-text">Add purchase</text>
+                        </view>
+                    </item>
+                    {% for purchase in purchases %}
+                    <item key="{{ loop.index0 }}" style="list-item">
+                        <text style="list-item-text">{{ purchase.purchased_at.strftime("%b %d") }}</text>
+                        <text style="list-item-text">${{ purchase.amount }} in {{ purchase.bucket_name }}</text>
+                        <text style="list-item-text">Details</text>
+                    </item>
+                    {% endfor %}
+                </list>
             </view>
         </body>
   </screen>
