@@ -22,19 +22,22 @@ def is_user(request: Request):
         return
     
     with sqlite3.connect("db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM session WHERE token = ?;", (session_token,))
-        db_session = cursor.fetchone()
+        session = cursor.fetchone()
 
-    if not db_session:
+    if not session:
         request.state.user = None
         return
     
-    if is_expired(expires_at=db_session[3]):
+    session = SimpleNamespace(**session)
+    
+    if is_expired(expires_at=session.expires_at):
         with sqlite3.connect("db.sqlite3") as conn:
             conn.execute("PRAGMA foreign_keys=ON;")
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM session WHERE token = ?;", (session_token))
+            cursor.execute("DELETE FROM session WHERE session_id = ?;", (session.session_id, ))
 
         request.state.user = None
         return
@@ -42,7 +45,14 @@ def is_user(request: Request):
     with sqlite3.connect("db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
-        cursor.execute("SELECT user.user_id, user.email, session.session_id FROM user JOIN session USING (user_id) WHERE user_id = ?;", (db_session[2],))
+        cursor.execute("""
+                        SELECT 
+                        user.user_id, user.email, session.session_id 
+                        FROM user 
+                        JOIN session 
+                        USING (user_id) 
+                        WHERE user_id = ?;
+                       """, (session.user_id,))
         db_user = cursor.fetchone()
 
     if not db_user:
