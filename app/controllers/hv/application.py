@@ -1,3 +1,4 @@
+import asyncio
 from calendar import monthrange
 from datetime import datetime, timedelta, timezone
 import sqlite3
@@ -174,6 +175,8 @@ async def login(request: Request):
 async def today(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    asyncio.sleep(0.2)
     
     if not request.state.user:
         response = templates.TemplateResponse(
@@ -275,6 +278,8 @@ async def store(request: Request):
 async def new(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    asyncio.sleep(0.2)
     
     return templates.TemplateResponse(
         request=request,
