@@ -1,0 +1,15 @@
+<doc xmlns="https://hyperview.org/hyperview">
+    <screen>
+        <styles>
+            {% include "hv/styles/base.style.xml" %}
+            {% include "hv/styles/form.style.xml" %}
+        </styles>
+        <body>
+            <behavior trigger="refresh" action="reload" href="/hv/today"/>
+            <view style="container">
+                <text style="heading">Login time</text>
+                {% include "hv/auth/form.xml" %}
+            </view>
+        </body>
+  </screen>
+</doc>

@@ -1,0 +1,31 @@
+<form id="login-form" xmlns="https://hyperview.org/hyperview">
+    {% if saved == True %}
+        <behavior trigger="load" action="reload" href="/hv/today"/>
+    {% endif %}
+
+    <view style="input-group">
+        <text style="text-dark">Email</text>
+        <text-field name="email" 
+            placeholder="Email"
+            style="text-field"
+            value="{{ previous_values.get('email', '') if errors else ''}}"
+            />
+        <text style="error">{{ errors.get("email", "") if errors else ''}}</text>
+    </view>
+
+    <view style="input-group">
+        <text style="text-dark">Password</text>
+        <text-field name="password" 
+            placeholder="Password"
+            secure-text="true"
+            style="text-field"
+            value="{{ previous_values.get('password', '') if errors else ''}}"
+            />
+        <text style="error">{{ errors.get("password", "") if errors else ''}}</text>
+    </view>
+
+    <view verb="post" href="/hv/login" action="replace" target="login-form">
+        <text style="btn-primary text-dark">Save</text>
+    </view>
+
+</form>

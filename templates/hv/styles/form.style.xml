@@ -1,0 +1,24 @@
+<style id="input-group"
+    marginBottom="16"
+    />
+
+<style id="text-field"
+    color="#111827"
+    backgroundColor="white"
+    padding="4"
+    borderWidth="1"
+    borderColor="#111827"
+    borderRadius="4"
+    />
+
+<style id="input"
+    backgroundColor="white"
+    padding="4"
+    borderWidth="1"
+    borderColor="#111827"
+    borderRadius="4"
+    />
+
+<style id="error"
+    color="red"
+    />

@@ -1,0 +1,46 @@
+<style id="body"
+    minHeight="100%"
+    />
+
+<style
+    id="container"
+    minHeight="100%"
+    paddingLeft="8"
+    paddingRight="8"
+    paddingTop="8"
+    backgroundColor="#f0f0f0"
+    marginBottom="128"
+    />
+
+<style id="heading"
+    marginBottom="24"
+    fontSize="32"
+    color="#111827"
+    />
+
+<style 
+    id="btn-primary"
+    backgroundColor="rgb(175, 242, 200)"
+    elevation="2"
+    borderRadius="4"
+    padding="16"
+    marginBottom="8"
+    display="flex"
+    flexDirection="row"
+    justifyContent="center"
+    >
+    <modifier pressed="true">
+        <style backgroundColor="rgb(118, 236, 163)" elevation="0"/>
+    </modifier>    
+</style>
+
+<style 
+    id="btn-primary-text"
+    color="rgb(45, 74, 56)"
+    fontSize="18"
+    />
+
+<style id="text-dark"
+    color="#111827"
+    fontSize="16"
+    />

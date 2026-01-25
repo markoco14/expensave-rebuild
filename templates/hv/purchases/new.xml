@@ -1,0 +1,14 @@
+<doc xmlns="https://hyperview.org/hyperview">
+    <screen>
+        <styles>
+            {% include "hv/styles/base.style.xml" %}
+            {% include "hv/styles/form.style.xml" %}
+        </styles>
+        <body>
+            <view style="container">
+                <text style="heading">New purchase</text>
+                {% include "hv/purchases/form.xml"%}
+            </view>
+        </body>
+  </screen>
+</doc>
