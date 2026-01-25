@@ -17,10 +17,15 @@
     <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text>
     
     <text style="text-dark">Bucket</text>
-    <text-field name="bucket" placeholder="Bucket" style="text-field" value="9"/>
+    <select-single style="select-single" name="bucket">
+        {% for bucket in buckets %}
+        <option style="option" value="{{ bucket.bucket_id }}">
+            <text>{{ bucket.name }}</text>
+        </option>
+        {% endfor %}
+    </select-single>
     <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
-
-    <view verb="post" href="/hv/today" action="replace" target="purchase-form">
+    <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="submit-button">
         <text style="list-item-text">Save</text>
     </view>
     

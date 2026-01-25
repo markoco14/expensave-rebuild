@@ -22,3 +22,31 @@
 <style id="error"
     color="red"
     />
+
+<style id="select-single" 
+    display="flex"
+    flexDirection="row"
+    gap="8"
+    />
+
+<style id="option"
+    borderWidth="1"
+    borderColor="black"
+    padding="4"
+    paddingLeft="8"
+    paddingRight="8"
+    borderRadius="4"
+    >
+    <modifier selected="true">
+        <style backgroundColor="#2ee246" />
+    </modifier>    
+</style>
+
+<style id="submit-button" 
+    backgroundColor="#2ee246"
+    padding="8"
+    display="flex"
+    flexDirection="row"
+    justifyContent="center"
+    width="100%"
+    />

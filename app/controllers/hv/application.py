@@ -1,6 +1,6 @@
 import asyncio
 from calendar import monthrange
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 import sqlite3
 import time
 from types import SimpleNamespace
@@ -198,6 +198,42 @@ async def today(request: Request):
         headers={"Content-Type": content_type}
     )
 
+
+async def new(request: Request):
+    accept_header = request.headers.get("accept", "")
+    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    month_start = date.today().replace(day=1)
+    
+    current_datetime_utc = datetime.now(timezone.utc)
+    localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+
+    # default_date = localized_datetime.date()
+    # default_time = localized_datetime.time().strftime("%H:%M:%S")
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
+        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
+    asyncio.sleep(0.2)
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/purchases/new.xml",
+        context={
+            "saved": False,
+            "previous_values": {},
+            "errors": {},
+            "buckets": buckets
+            },
+        headers={"Content-Type": content_type}
+        )
+
+
 async def store(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
@@ -245,6 +281,19 @@ async def store(request: Request):
 
     purchased_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
+    month_start = date.today().replace(day=1)
+    
+    current_datetime_utc = datetime.now(timezone.utc)
+    localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
+        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
     if errors:
         return templates.TemplateResponse(
             request=request,
@@ -253,6 +302,7 @@ async def store(request: Request):
                 "saved": False,
                 "previous_values": previous_values,
                 "errors": errors,
+                "buckets": buckets
                 },
             headers={"Content-Type": content_type}
             )
@@ -270,20 +320,7 @@ async def store(request: Request):
             "saved": True,
             "previous_values": {},
             "errors": {},
+            "buckets": buckets
             },
-        headers={"Content-Type": content_type}
-        )
-
-
-async def new(request: Request):
-    accept_header = request.headers.get("accept", "")
-    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
-
-    asyncio.sleep(0.2)
-    
-    return templates.TemplateResponse(
-        request=request,
-        name="hv/purchases/new.xml",
-        context={},
         headers={"Content-Type": content_type}
         )
