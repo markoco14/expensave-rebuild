@@ -24,13 +24,15 @@
                 <list>
                     <item>
                         <text style="text-dark text-large label">Add purchase in:</text>
-                        <view style="bucket-bar">
-                            {% for bucket in buckets %}
-                            <view style="bucket-bar-item">
-                                <behavior trigger="press" href="/hv/today/new?bucket={{ bucket.bucket_id }}" action="new"/>
-                                <text style="text-dark text-large">{{ bucket.name }}</text>
+                        <view scroll="true" scroll-orientation="horizontal" shows-scroll-indicator="false">
+                            <view style="bucket-bar">
+                                {% for bucket in buckets %}
+                                <view style="bucket-bar-item">
+                                    <behavior trigger="press" href="/hv/today/new?bucket={{ bucket.bucket_id }}" action="new"/>
+                                    <text style="text-dark text-large">{{ bucket.name }}</text>
+                                </view>
+                                {% endfor %}
                             </view>
-                            {% endfor %}
                         </view>
                     </item>
                     {% for purchase in purchases %}
