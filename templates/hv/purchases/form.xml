@@ -8,18 +8,22 @@
     <text-field name="amount" placeholder="Amount" style="text-field" value="0"/>
     <text style="error">{{ errors.get("amount", "") if errors else ''}}</text>
     
-    <text style="text-dark">Currency</text>
+    {# <text style="text-dark">Currency</text>
     <text-field name="currency" placeholder="Currency" style="text-field" value="TWD"/>
-    <text style="error">{{ errors.get("currency", "") if errors else ''}}</text>
+    <text style="error">{{ errors.get("currency", "") if errors else ''}}</text> #}
     
-    <text style="text-dark">Timezone</text>
+    {# <text style="text-dark">Timezone</text>
     <text-field name="timezone" placeholder="Timezone" style="text-field" value="Asia/Taipei"/>
-    <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text>
+    <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text> #}
     
     <text style="text-dark">Bucket</text>
     <select-single style="select-single" name="bucket">
         {% for bucket in buckets %}
-        <option style="option" value="{{ bucket.bucket_id }}">
+        <option 
+            style="option" 
+            value="{{ bucket.bucket_id }}" 
+            {% if selected_bucket_id|int == bucket.bucket_id %}selected="true"{% endif %}
+            >
             <text>{{ bucket.name }}</text>
         </option>
         {% endfor %}

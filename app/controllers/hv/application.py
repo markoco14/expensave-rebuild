@@ -80,11 +80,21 @@ async def get_today_context(user_id: int):
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
         total_spent += purchase.amount
 
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, user_id))
+        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+
+
     context = {
             "today_date": local_date_today,
             "purchases": purchases,
             "total_spent": total_spent,
-            "daily_spending_bucket": daily_spending_bucket
+            "daily_spending_bucket": daily_spending_bucket,
+            "buckets": buckets
             }
     
     return context
@@ -176,7 +186,6 @@ async def today(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
-    asyncio.sleep(0.2)
     
     if not request.state.user:
         response = templates.TemplateResponse(
@@ -190,6 +199,8 @@ async def today(request: Request):
         return response
     
     context = await get_today_context(user_id=request.state.user.user_id)
+
+    
     
     return templates.TemplateResponse(
         request=request,
@@ -202,6 +213,8 @@ async def today(request: Request):
 async def new(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    selected_bucket_id = request.query_params.get("bucket")
 
     month_start = date.today().replace(day=1)
     
@@ -219,13 +232,13 @@ async def new(request: Request):
         cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
-    asyncio.sleep(0.2)
     
     return templates.TemplateResponse(
         request=request,
         name="hv/purchases/new.xml",
         context={
             "saved": False,
+            "selected_bucket_id": selected_bucket_id,
             "previous_values": {},
             "errors": {},
             "buckets": buckets
@@ -245,6 +258,7 @@ async def store(request: Request):
     
     bucket_id = form_data.get("bucket")
     previous_values["bucket"] = bucket_id
+    selected_bucket_id = bucket_id
     if not bucket_id:
         errors["bucket"] =  "You need to choose a bucket."
 
@@ -259,10 +273,10 @@ async def store(request: Request):
         elif int(amount) < 1:
             errors["amount"] = "The amount needs to be more than 0."
     
-    currency = form_data.get("currency")
-    previous_values["currency"] = currency
-    if not currency:
-        errors["currency"] = "You need to choose a currency."
+    # currency = form_data.get("currency")
+    # previous_values["currency"] = currency
+    # if not currency:
+    #     errors["currency"] = "You need to choose a currency."
     
     # form_date = form_data.get("date")
     # previous_values["date"] = form_date
@@ -274,10 +288,10 @@ async def store(request: Request):
     # if not form_time:
     #     errors["time"] = "You need to choose a time."
 
-    form_timezone = form_data.get("timezone")
-    previous_values["form_timezone"] = form_timezone
-    if not form_timezone:
-        errors["timezone"] = "You need to choose a timezone."
+    # form_timezone = form_data.get("timezone")
+    # previous_values["form_timezone"] = form_timezone
+    # if not form_timezone:
+    #     errors["timezone"] = "You need to choose a timezone."
 
     purchased_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
@@ -302,7 +316,8 @@ async def store(request: Request):
                 "saved": False,
                 "previous_values": previous_values,
                 "errors": errors,
-                "buckets": buckets
+                "buckets": buckets,
+                "selected_bucket_id": selected_bucket_id
                 },
             headers={"Content-Type": content_type}
             )
@@ -310,7 +325,7 @@ async def store(request: Request):
     with sqlite3.connect("db.sqlite3") as conn:
         cursor = conn.cursor()
         cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);",
-                       (amount, currency, purchased_at, form_timezone, request.state.user.user_id, bucket_id))
+                       (amount, "TWD", purchased_at, "Asia/Taipei", request.state.user.user_id, bucket_id))
         conn.commit()
 
     return templates.TemplateResponse(
@@ -320,7 +335,8 @@ async def store(request: Request):
             "saved": True,
             "previous_values": {},
             "errors": {},
-            "buckets": buckets
+            "buckets": buckets,
+            "selected_bucket_id": selected_bucket_id
             },
         headers={"Content-Type": content_type}
         )

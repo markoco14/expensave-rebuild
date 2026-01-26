@@ -23,9 +23,14 @@
                 {% endif %}
                 <list>
                     <item>
-                        <view style="btn-primary" action="press">
-                            <behavior trigger="press" href="/hv/today/new"/>
-                            <text style="btn-primary-text">Add purchase</text>
+                        <text style="text-dark text-large label">Add purchase in:</text>
+                        <view style="bucket-bar">
+                            {% for bucket in buckets %}
+                            <view style="bucket-bar-item">
+                                <behavior trigger="press" href="/hv/today/new?bucket={{ bucket.bucket_id }}" action="new"/>
+                                <text style="text-dark text-large">{{ bucket.name }}</text>
+                            </view>
+                            {% endfor %}
                         </view>
                     </item>
                     {% for purchase in purchases %}
