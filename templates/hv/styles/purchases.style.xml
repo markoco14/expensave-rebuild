@@ -32,6 +32,22 @@
     fontSize="18"
     />
 
+<style id="bucket-bar"
+    display="flex"
+    flexDirection="row"
+    gap="4"
+    overflow="scroll"
+    marginBottom="32"
+    />
+
+<style id="bucket-bar-item"
+    backgroundColor="rgb(175, 242, 200)"
+    padding="2"
+    paddingLeft="8"
+    paddingRight="8"
+    borderRadius="8"
+    />
+
 <style
     id="list-item"
     display="flex"

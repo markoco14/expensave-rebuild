@@ -44,3 +44,11 @@
     color="#111827"
     fontSize="16"
     />
+
+<style id="text-large"
+    fontSize="18"
+    />
+
+<style id="label"
+    marginBottom="8"
+    />
