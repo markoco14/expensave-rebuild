@@ -11,6 +11,7 @@ from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
 from app import cryptography
+from app.models.bucket import Bucket
 
 
 templates = Jinja2Templates(directory="templates")
@@ -30,6 +31,8 @@ async def get_today_context(user_id: int):
     local_start_of_tomorrow = local_start_of_day + timedelta(days=1)
     utc_start_of_tomorrow =  local_start_of_tomorrow.astimezone(timezone.utc)
 
+    buckets = Bucket.list_for_month(month_start=month_start, user_id=user_id)
+
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
         conn.row_factory = sqlite3.Row
@@ -47,7 +50,8 @@ async def get_today_context(user_id: int):
                 "today_date": local_date_today,
                 "purchases": None,
                 "total_spent": None,
-                "daily_spending_bucket": None
+                "daily_spending_bucket": None,
+                "buckets": buckets
             }
             
             return context
@@ -79,15 +83,6 @@ async def get_today_context(user_id: int):
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
         total_spent += purchase.amount
-
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
-
-        cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, user_id))
-        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
-
 
     context = {
             "today_date": local_date_today,
