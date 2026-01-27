@@ -12,6 +12,11 @@
     marginBottom="128"
     />
 
+<style id="header" 
+    paddingLeft="8"
+    paddingRight="8"
+    />
+
 <style id="heading"
     marginBottom="24"
     fontSize="32"

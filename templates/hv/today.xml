@@ -1,49 +1,17 @@
-<doc xmlns="https://hyperview.org/hyperview">
-    <screen>
-        {% set percent_spent = (total_spent  /  daily_spending_bucket.daily_amount * 100) %}
-        <styles>
-            {% include "hv/styles/base.style.xml" %}
-            {% include "hv/styles/purchases.style.xml" %}
-        </styles>
-        <body>
-            <behavior trigger="refresh" action="reload" href="/hv/today"/>
-            <view style="container">
-                <behavior trigger="on-event" event-name="purchase-added" action="reload" href="/hv/today"/>
-                {% if not daily_spending_bucket %}
-                <text>You haven't set up your daily budget for this month.</text>
-                <text>Click here to set your budget</text>
-                {% else %}
-                <text style="heading">{{ today_date.strftime("%B %d, %Y") }}</text>
-                <view style="progress-track">
-                    <view style="progress-bar">{% if percent_spent >= 50 %}<text>${{total_spent}}</text>{% endif %}</view>
-                    {% if percent_spent <= 50 %}
-                    <text>${{total_spent}}</text>
-                    {% endif %}
-                </view>
-                {% endif %}
-                <list>
-                    <item>
-                        <text style="text-dark text-large label">Add purchase in:</text>
-                        <view scroll="true" scroll-orientation="horizontal" shows-scroll-indicator="false">
-                            <view style="bucket-bar">
-                                {% for bucket in buckets %}
-                                <view style="bucket-bar-item">
-                                    <behavior trigger="press" href="/hv/today/new?bucket={{ bucket.bucket_id }}" action="new"/>
-                                    <text style="text-dark text-large">{{ bucket.name }}</text>
-                                </view>
-                                {% endfor %}
-                            </view>
-                        </view>
-                    </item>
-                    {% for purchase in purchases %}
-                    <item key="{{ loop.index0 }}" style="list-item">
-                        <text style="list-item-text">{{ purchase.purchased_at.strftime("%b %d") }}</text>
-                        <text style="list-item-text">${{ purchase.amount }} in {{ purchase.bucket_name }}</text>
-                        <text style="list-item-text">Details</text>
-                    </item>
-                    {% endfor %}
-                </list>
-            </view>
-        </body>
-  </screen>
-</doc>
+{% extends "hv/layout.xml" %}
+
+{% block header %}<text style="heading">{{ today_date.strftime("%B %d, %Y") }}</text>{% endblock header%}
+
+{% block content %}
+
+    <behavior trigger="on-event" event-name="purchase-added" action="reload" href="/hv/today"/>
+    {% if not daily_spending_bucket %}
+        <text>You haven't set up your daily budget for this month.</text>
+        <text>Click here to set your budget</text>
+    {% else %}
+        <list id="purchase-list" trigger="refresh" action="replace-inner" target="purchase-list" href="/hv/today?rows_only=true">
+            {% include "hv/_rows.xml"%}
+        </list>
+    {% endif %}
+ 
+{% endblock content%}

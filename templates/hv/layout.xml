@@ -1,0 +1,20 @@
+<doc xmlns="https://hyperview.org/hyperview">
+    <screen>
+        <styles>
+            {% include "hv/styles/base.style.xml" %}
+            {% include "hv/styles/form.style.xml" %}
+            {% include "hv/styles/purchases.style.xml" %}
+        </styles>
+        <body>
+
+            <header style="header">
+                {% block header %}<text>MySaveMoneyLife</text>{% endblock header %}
+            </header>
+
+            <view style="container">
+                {% block content %}{% endblock %}
+            </view>
+
+        </body>
+  </screen>
+</doc>
