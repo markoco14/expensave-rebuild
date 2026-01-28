@@ -3,7 +3,7 @@
 {% block header %}<text style="heading">{{ today_date.strftime("%B %d, %Y") }}</text>{% endblock header%}
 
 {% block content %}
-
+<view style="container">
     <behavior trigger="on-event" event-name="purchase-added" action="reload" href="/hv/today"/>
     {% if not daily_spending_bucket %}
         <text>You haven't set up your daily budget for this month.</text>
@@ -13,5 +13,5 @@
             {% include "hv/_rows.xml"%}
         </list>
     {% endif %}
- 
+</view>
 {% endblock content%}

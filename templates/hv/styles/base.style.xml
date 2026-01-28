@@ -2,8 +2,7 @@
     minHeight="100%"
     />
 
-<style
-    id="container"
+<style id="container"
     minHeight="100%"
     paddingLeft="8"
     paddingRight="8"
@@ -12,7 +11,8 @@
     marginBottom="128"
     />
 
-<style id="header" 
+<style id="header"
+    marginTop="32"
     paddingLeft="8"
     paddingRight="8"
     />
@@ -23,8 +23,14 @@
     color="#111827"
     />
 
-<style 
-    id="btn-primary"
+
+<style id="card"
+    backgroundColor="white"
+    padding="16"
+    borderRadius="8"
+    />
+
+<style id="btn-primary"
     backgroundColor="rgb(175, 242, 200)"
     elevation="2"
     borderRadius="4"
@@ -39,21 +45,23 @@
     </modifier>    
 </style>
 
-<style 
-    id="btn-primary-text"
+<style id="btn-primary-text"
     color="rgb(45, 74, 56)"
     fontSize="18"
     />
 
 <style id="text-dark"
     color="#111827"
-    fontSize="16"
     />
 
 <style id="text-large"
     fontSize="18"
     />
 
-<style id="label"
+<style id="input-group" 
     marginBottom="8"
+    />
+
+<style id="label"
+    marginBottom="4"
     />

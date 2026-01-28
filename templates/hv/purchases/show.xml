@@ -3,13 +3,26 @@
 {% block header %}<text style="heading">Purchase {{ purchase.purchase_id }}</text>{% endblock header%}
 
 {% block content %}
-{% if not purchase %}
-    <text>No purchase found</text>
-{% else %}
-    <text>{{ purchase.amount }}</text>
-    <text>{{ purchase.currency }}</text>
-    <text>{{ purchase.purchased_at }}</text>
-    <text>{{ purchase.timezone }}</text>
-    <text>{{ purchase.bucket_name }}</text>
-{% endif %}
+<view style="container">
+    {# for development #}
+    {# <behavior trigger="refresh" action="reload"/> #}
+    <view style="card">
+        {% if not purchase %}
+        <text>No purchase found</text>
+        {% else %}
+        <view style="input-group">
+            <text style="label text-large">Amount</text>
+            <text style="text-large text-dark">${{ purchase.amount }} {{ purchase.currency }}</text>
+        </view>
+        <view style="input-group">
+            <text style="label text-large">Time</text>
+            <text style="text-large text-dark">{{ purchase.purchased_at.strftime("%B %d at %H:%M:%S") }} ({{ purchase.timezone }})</text>
+        </view>
+        <view style="input-group">
+            <text style="label text-large">Bucket</text>
+            <text style="text-large text-dark">{{ purchase.bucket_name }}</text>
+        </view>
+        {% endif %}
+    </view>
+</view>
 {% endblock content %}

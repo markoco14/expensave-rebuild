@@ -21,7 +21,7 @@
     {% for purchase in purchases %}
     <item key="{{ loop.index0 }}" style="list-item">
         <behavior action="push" href="/hv/purchases/{{ purchase.purchase_id }}"/>
-        <text style="list-item-text">${{ purchase.amount }} in {{ purchase.bucket_name }}</text>
+        <text style="list-item-text text-large">${{ purchase.amount }} ({{ purchase.currency }})</text>
        
     </item>
     {% endfor %}

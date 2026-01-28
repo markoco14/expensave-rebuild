@@ -11,9 +11,7 @@
                 {% block header %}<text>MySaveMoneyLife</text>{% endblock header %}
             </header>
 
-            <view style="container">
-                {% block content %}{% endblock %}
-            </view>
+            {% block content %}{% endblock %}   
 
         </body>
   </screen>

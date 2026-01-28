@@ -36,6 +36,12 @@ async def show(request: Request, purchase_id: int):
                        (purchase_id, ))
         purchase = cursor.fetchone()
 
+    if purchase:
+        purchase = SimpleNamespace(**purchase)
+        naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+        utc_aware = naive.replace(tzinfo=timezone.utc)
+        purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
+
     return templates.TemplateResponse(
         request=request,
         name="hv/purchases/show.xml",
