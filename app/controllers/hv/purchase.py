@@ -1,20 +1,13 @@
-import asyncio
-from calendar import monthrange
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timezone
 import sqlite3
-import time
 from types import SimpleNamespace
-import uuid
 from zoneinfo import ZoneInfo
 
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from app import cryptography
-from app.models.bucket import Bucket
-
-
 templates = Jinja2Templates(directory="templates")
+
 
 async def show(request: Request, purchase_id: int):
     accept_header = request.headers.get("accept", "")
@@ -46,5 +39,29 @@ async def show(request: Request, purchase_id: int):
         request=request,
         name="hv/purchases/show.xml",
         context={"purchase": purchase},
+        headers={"Content-Type": content_type}
+    )
+
+async def delete(request: Request, purchase_id: int):
+    accept_header = request.headers.get("accept", "")
+    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    if not request.state.user:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/purchases/_unauthorized.xml",
+            context={},
+            headers={"Content-Type": content_type}
+        )
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys=ON;")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM purchase WHERE purchase_id = ?;", (purchase_id, ))
+
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/purchases/_deleted.xml",
+        context={},
         headers={"Content-Type": content_type}
     )
