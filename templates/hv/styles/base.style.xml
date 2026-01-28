@@ -28,6 +28,7 @@
     backgroundColor="white"
     padding="16"
     borderRadius="8"
+    marginBottom="32"
     />
 
 <style id="btn-primary"
@@ -48,6 +49,16 @@
 <style id="btn-primary-text"
     color="rgb(45, 74, 56)"
     fontSize="18"
+    />
+
+<style id="btn-delete" 
+    backgroundColor="red"
+    padding="8"
+    borderRadius="4"
+    />
+
+<style id="btn-text" 
+    textAlign="center"
     />
 
 <style id="text-dark"
