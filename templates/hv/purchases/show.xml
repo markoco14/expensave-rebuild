@@ -1,0 +1,15 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}<text style="heading">Purchase {{ purchase.purchase_id }}</text>{% endblock header%}
+
+{% block content %}
+{% if not purchase %}
+    <text>No purchase found</text>
+{% else %}
+    <text>{{ purchase.amount }}</text>
+    <text>{{ purchase.currency }}</text>
+    <text>{{ purchase.purchased_at }}</text>
+    <text>{{ purchase.timezone }}</text>
+    <text>{{ purchase.bucket_name }}</text>
+{% endif %}
+{% endblock content %}
