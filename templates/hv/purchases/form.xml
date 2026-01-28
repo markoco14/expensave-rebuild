@@ -5,7 +5,13 @@
     <behavior trigger="load" action="back" />
     {% endif %}
     <text style="text-dark">Amount</text>
-    <text-field name="amount" placeholder="Amount" style="text-field" value="0"/>
+    <text-field 
+        name="amount" 
+        placeholder="Amount" 
+        keyboard-type="number-pad"
+        style="text-field" 
+        value="0"
+        />
     <text style="error">{{ errors.get("amount", "") if errors else ''}}</text>
     
     {# <text style="text-dark">Currency</text>

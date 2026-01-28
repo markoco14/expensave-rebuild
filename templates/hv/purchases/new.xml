@@ -1,14 +1,11 @@
-<doc xmlns="https://hyperview.org/hyperview">
-    <screen>
-        <styles>
-            {% include "hv/styles/base.style.xml" %}
-            {% include "hv/styles/form.style.xml" %}
-        </styles>
-        <body>
-            <view style="container">
-                <text style="heading">New purchase</text>
-                {% include "hv/purchases/form.xml"%}
-            </view>
-        </body>
-  </screen>
-</doc>
+{% extends "hv/layout.xml"%}
+
+{% block header %}<text style="heading">New purchase</text>{% endblock header %}
+
+{% block content %}
+<view style="container">
+    {% include "hv/purchases/form.xml"%}
+</view>
+{% endblock content %}
+
+
