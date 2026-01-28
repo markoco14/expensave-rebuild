@@ -1,0 +1,28 @@
+<items xmlns="https://hyperview.org/hyperview">
+    <item key="progress" style="progress-track">
+        <view style="progress-bar">{% if percent_spent >= 50 %}<text>${{total_spent}}</text>{% endif %}</view>
+        {% if percent_spent <= 50 %}
+        <text>${{total_spent}}</text>
+        {% endif %}
+    </item>
+    <item key="buckets">
+        <text style="text-dark text-large label">Add purchase in:</text>
+        <view scroll="true" scroll-orientation="horizontal" shows-scroll-indicator="false">
+            <view style="bucket-bar">
+                {% for bucket in buckets %}
+                <view style="bucket-bar-item">
+                    <behavior trigger="press" href="/hv/today/new?bucket={{ bucket.bucket_id }}" action="new"/>
+                    <text style="text-dark text-large">{{ bucket.name }}</text>
+                </view>
+                {% endfor %}
+            </view>
+        </view>
+    </item>
+    {% for purchase in purchases %}
+    <item key="{{ loop.index0 }}" style="list-item">
+        <behavior action="push" href="/hv/purchases/{{ purchase.purchase_id }}"/>
+        <text style="list-item-text text-large">${{ purchase.amount }} ({{ purchase.currency }})</text>
+       
+    </item>
+    {% endfor %}
+</items>

@@ -1,0 +1,5 @@
+<view xmlns="https://hyperview.org/hyperview">
+  <behavior trigger="load" action="dispatch-event"
+    event-name="purchase-deleted" />
+  <behavior trigger="load" action="back" />
+</view>
