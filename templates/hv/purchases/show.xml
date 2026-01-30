@@ -9,21 +9,21 @@
     <view style="card">
         <view>
             <behavior trigger="press" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}/edit"/>
-            <text>Edit</text>
+            <text style="text-large text-dark">Edit</text>
         </view>
         {% if not purchase %}
         <text>No purchase found</text>
         {% else %}
         <view style="input-group">
-            <text style="label text-large">Amount</text>
+            <text style="label text-large text-dark">Amount</text>
             <text style="text-large text-dark">${{ purchase.amount }} {{ purchase.currency }}</text>
         </view>
         <view style="input-group">
-            <text style="label text-large">Time</text>
+            <text style="label text-large text-dark">Time</text>
             <text style="text-large text-dark">{{ purchase.purchased_at.strftime("%B %d at %H:%M:%S") }} ({{ purchase.timezone }})</text>
         </view>
         <view style="input-group">
-            <text style="label text-large">Bucket</text>
+            <text style="label text-large text-dark">Bucket</text>
             <text style="text-large text-dark">{{ purchase.bucket_name }}</text>
         </view>
         {% endif %}

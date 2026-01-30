@@ -7,7 +7,7 @@
     <view style="card">
         <view>
             <behavior trigger="press" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
-            <text>Cancel</text>
+            <text style="text-large text-dark">Cancel</text>
         </view>
 
         <form id="purchase-form">
