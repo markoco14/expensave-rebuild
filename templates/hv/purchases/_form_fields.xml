@@ -29,7 +29,7 @@
             value="{{ bucket.bucket_id }}" 
             {% if selected_bucket_id|int == bucket.bucket_id %}selected="true"{% endif %}
             >
-            <text>{{ bucket.name }}</text>
+            <text style="text-dark">{{ bucket.name }}</text>
         </option>
         {% endfor %}
     </select-single>
