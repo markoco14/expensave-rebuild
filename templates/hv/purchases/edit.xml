@@ -1,0 +1,66 @@
+{% extends "hv/layout.xml" %}
+{% block header %}<text style="heading">Edit Purchase {{ purchase.purchase_id }}</text>{% endblock header%}
+{% block content %}
+<view style="container">
+    {# for development #}
+    <behavior trigger="refresh" action="reload"/>
+    <view style="card">
+        <view>
+            <behavior trigger="press" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
+            <text>Cancel</text>
+        </view>
+
+        <form id="purchase-form">
+            {% if saved == True %}
+            <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
+            <behavior trigger="load" action="back" />
+            {% endif %}
+            <text style="text-dark">Amount</text>
+            <text-field 
+                name="amount" 
+                placeholder="Amount" 
+                keyboard-type="number-pad"
+                style="text-field" 
+                value="{{ purchase.amount }}"
+                />
+            <text style="error">{{ errors.get("amount", "") if errors else ''}}</text>
+            
+            {# <text style="text-dark">Currency</text>
+            <text-field name="currency" placeholder="Currency" style="text-field" value="TWD"/>
+            <text style="error">{{ errors.get("currency", "") if errors else ''}}</text> #}
+            
+            {# <text style="text-dark">Timezone</text>
+            <text-field name="timezone" placeholder="Timezone" style="text-field" value="Asia/Taipei"/>
+            <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text> #}
+            
+            <text style="text-dark">Bucket</text>
+            <select-single style="select-single" name="bucket">
+                {% for bucket in buckets %}
+                <option 
+                    style="option" 
+                    value="{{ bucket.bucket_id }}" 
+                    {% if selected_bucket_id|int == bucket.bucket_id %}selected="true"{% endif %}
+                    >
+                    <text>{{ bucket.name }}</text>
+                </option>
+                {% endfor %}
+            </select-single>
+            <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
+            <view verb="post" href="/hv/purchases/{{ purchase.purchase_id }}" action="reload" style="submit-button">
+                <text style="list-item-text">Save</text>
+            </view>
+            
+        </form>
+    </view>
+        <view style="btn-delete">
+        <behavior 
+            trigger="press" 
+            action="append" 
+            target="purchase-info"
+            href="/hv/purchases/{{ purchase.purchase_id }}/delete" 
+            verb="post"
+            />
+        <text style="btn-text text-large text-dark">Delete</text>
+    </view>
+</view>
+{% endblock content%}
