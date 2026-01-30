@@ -1,14 +1,15 @@
-<form id="purchase-form" xmlns="https://hyperview.org/hyperview">
-    
+<view id="form-fields" xmlns="https://hyperview.org/hyperview">
     {% if saved == True %}
-    <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
-    <behavior trigger="load" action="back" />
+        <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
+        <behavior trigger="load" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
     {% endif %}
     <text style="text-dark">Amount</text>
     <text-field 
-        name="amount"
+        name="amount" 
+        placeholder="Amount" 
         keyboard-type="number-pad"
-        style="text-field"
+        style="text-field" 
+        value="{{ purchase.amount }}"
         />
     <text style="error">{{ errors.get("amount", "") if errors else ''}}</text>
     
@@ -33,9 +34,4 @@
         {% endfor %}
     </select-single>
     <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
-    <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="submit-button">
-        <text style="list-item-text">Save</text>
-    </view>
-    
-</form>
-
+</view>
