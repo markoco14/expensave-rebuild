@@ -31,18 +31,25 @@ async def get_today_context(user_id: int):
     local_start_of_tomorrow = local_start_of_day + timedelta(days=1)
     utc_start_of_tomorrow =  local_start_of_tomorrow.astimezone(timezone.utc)
 
-    buckets = Bucket.list_for_month(month_start=month_start, user_id=user_id, fields=["bucket_id", "name", "amount", "is_daily"])
+    buckets = Bucket.list_for_month(user_id=user_id, fields=["bucket_id", "name", "is_daily"])
 
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("""SELECT bucket_id, name, amount, month_start, is_daily 
-                       FROM bucket 
-                       WHERE month_start = ? 
-                       AND is_daily = ? 
-                       AND user_id is ?""", (month_start, 1, user_id))
+        cursor.execute("""
+                       SELECT b.bucket_id,
+                            b.name,
+                            b.is_daily,
+                            b.user_id,
+                            btu.month_start,
+                            btu.start_amount
+                        FROM bucket b
+                        JOIN bucket_month_top_up btu ON b.bucket_id = btu.bucket_id
+                        WHERE btu.month_start = ? 
+                        AND b.is_daily = 1 
+                        AND user_id is ?""", (month_start, user_id))
        
         row = cursor.fetchone()
         if not row:

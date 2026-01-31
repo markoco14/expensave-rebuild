@@ -15,9 +15,9 @@ class Bucket:
     user_id: int = None
 
     @classmethod
-    def list_for_month(cls, month_start: str, user_id: int, fields: List[str]):
+    def list_for_month(cls, user_id: int, fields: List[str]):
         if not fields:
-            columns = "bucket_id, name, amount, is_daily"
+            columns = "bucket_id, name, is_daily"
         else:
             columns = ", ".join(fields).rstrip(", ")
         
@@ -26,7 +26,7 @@ class Bucket:
             conn.row_factory = sqlite3.Row
 
             cursor = conn.cursor()
-            cursor.execute(f"SELECT {columns} FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, user_id))
+            cursor.execute(f"SELECT {columns} FROM bucket WHERE user_id = ?;", (user_id, ))
             return [Bucket(**row) for row in cursor.fetchall()]
 
 
