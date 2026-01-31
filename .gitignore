@@ -5,3 +5,5 @@ requirements_*
 __pycache__
 temp
 db.sqlite3
+*.sqlite3
+*.sqlite3.txt
