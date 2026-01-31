@@ -33,13 +33,22 @@ async def today(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("""SELECT bucket_id, name, amount, month_start, is_daily 
-                       FROM bucket 
-                       WHERE month_start = ? 
-                       AND is_daily = ? 
-                       AND user_id is ?""", (month_start, 1, request.state.user.user_id))
+
+        cursor.execute("""
+                       SELECT b.bucket_id,
+                            b.name,
+                            b.is_daily,
+                            b.user_id,
+                            btu.month_start,
+                            btu.start_amount
+                        FROM bucket b
+                        JOIN bucket_month_top_up btu ON b.bucket_id = btu.bucket_id
+                        WHERE btu.month_start = ? 
+                        AND b.is_daily = 1 
+                        AND user_id is ?""", (month_start, request.state.user.user_id))
        
         row = cursor.fetchone()
+
         if not row:
             return templates.TemplateResponse(
                 request=request,
@@ -51,6 +60,7 @@ async def today(request: Request):
                     "daily_spending_bucket": None
                 }
             )
+        
         daily_spending_bucket = SimpleNamespace(**row)
         
         cursor.execute("""SELECT purchase.purchase_id,
@@ -70,7 +80,8 @@ async def today(request: Request):
 
     if daily_spending_bucket:
         daily_spending_bucket.month = datetime.strptime(daily_spending_bucket.month_start, "%Y-%m-%d")
-        daily_spending_bucket.daily_amount = daily_spending_bucket.amount / monthrange(month_start.year, month_start.month)[1]   
+        daily_spending_bucket.daily_amount = daily_spending_bucket.start_amount / monthrange(month_start.year, month_start.month)[1]   
+
 
     total_spent = 0
     for purchase in purchases:

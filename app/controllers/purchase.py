@@ -48,8 +48,6 @@ async def new(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
-    month_start = date.today().replace(day=1)
-    
     current_datetime_utc = datetime.now(timezone.utc)
     localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
 
@@ -61,24 +59,14 @@ async def new(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
+        cursor.execute("SELECT bucket_id, is_daily, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
-    daily_spending_bucket = None
-    other_buckets = []
-    for bucket in buckets:
-        if bucket.is_daily == True:
-            daily_spending_bucket = bucket
-            daily_spending_bucket.daily_amount = bucket.amount / monthrange(month_start.year, month_start.month)[1]   
-        else:
-            other_buckets.append(bucket)
-    
     return templates.TemplateResponse(
         request=request,
         name="purchases/new.html",
         context={
             "buckets": buckets,
-            "daily_spending_bucket": daily_spending_bucket,
             "default_date": default_date,
             "default_time": default_time,
             "errors": {},
@@ -95,6 +83,8 @@ async def create(request: Request):
 
     previous_values = {}
     errors = {}
+    currency = "TWD"
+    form_timezone = "Asia/Taipei"
     
     bucket_id = form_data.get("bucket")
     previous_values["bucket"] = bucket_id
@@ -112,10 +102,10 @@ async def create(request: Request):
         elif int(amount) < 1:
             errors["amount"] = "The amount needs to be more than 0."
     
-    currency = form_data.get("currency")
-    previous_values["currency"] = currency
-    if not currency:
-        errors["currency"] = "You need to choose a currency."
+    # currency = form_data.get("currency")
+    # previous_values["currency"] = currency
+    # if not currency:
+    #     errors["currency"] = "You need to choose a currency."
     
     form_date = form_data.get("date")
     previous_values["date"] = form_date
@@ -127,10 +117,10 @@ async def create(request: Request):
     if not form_time:
         errors["time"] = "You need to choose a time."
 
-    form_timezone = form_data.get("timezone")
-    previous_values["form_timezone"] = form_timezone
-    if not form_timezone:
-        errors["timezone"] = "You need to choose a timezone."
+    # form_timezone = form_data.get("timezone")
+    # previous_values["form_timezone"] = form_timezone
+    # if not form_timezone:
+    #     errors["timezone"] = "You need to choose a timezone."
 
     if errors:
         month_start = date.today().replace(day=1)
@@ -144,24 +134,16 @@ async def create(request: Request):
             conn.row_factory = sqlite3.Row
 
             cursor = conn.cursor()
-            cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
+            cursor.execute("SELECT bucket_id, is_daily, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
             buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
             
-        daily_spending_bucket = None
-        other_buckets = []
-        for bucket in buckets:
-            if bucket.is_daily == True:
-                daily_spending_bucket = bucket
-                daily_spending_bucket.daily_amount = bucket.amount / monthrange(month_start.year, month_start.month)[1]   
-            else:
-                other_buckets.append(bucket)
+      
 
         return templates.TemplateResponse(
             request=request,
             name="purchases/new.html",
             context={
                 "buckets": buckets,
-                "daily_spending_bucket": daily_spending_bucket,
                 "default_date": default_date,
                 "default_time": default_time,
                 "errors": errors,
