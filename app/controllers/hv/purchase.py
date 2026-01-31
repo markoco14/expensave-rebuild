@@ -72,7 +72,7 @@ async def edit(request: Request, purchase_id: int):
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
     month_start = date.today().replace(day=1)
-    buckets = Bucket.list_for_month(month_start=month_start, user_id=request.state.user.user_id, fields=["bucket_id", "name", "amount", "is_daily"])
+    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
 
     selected_bucket_id = purchase.bucket_id
 
@@ -137,7 +137,7 @@ async def update(request: Request, purchase_id: int):
 
 
     month_start = date.today().replace(day=1)
-    buckets = Bucket.list_for_month(month_start=month_start, user_id=request.state.user.user_id, fields=["bucket_id", "name", "amount", "is_daily"])
+    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
 
     selected_bucket_id = purchase.bucket_id
 
