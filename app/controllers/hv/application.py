@@ -82,7 +82,7 @@ async def get_today_context(user_id: int):
 
     if daily_spending_bucket:
         daily_spending_bucket.month = datetime.strptime(daily_spending_bucket.month_start, "%Y-%m-%d")
-        daily_spending_bucket.daily_amount = daily_spending_bucket.amount / monthrange(month_start.year, month_start.month)[1]   
+        daily_spending_bucket.daily_amount = daily_spending_bucket.start_amount / monthrange(month_start.year, month_start.month)[1]   
 
     total_spent = 0
     for purchase in purchases:
