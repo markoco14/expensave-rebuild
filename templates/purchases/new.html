@@ -23,7 +23,7 @@ New Purchase | The Money Game
                 />
             <span class="error">{{ errors.get("amount", "") if errors else ''}}</span>
         </div>
-        <div class="input-group">
+        {# <div class="input-group">
             <label for="currency">Currency</label>
             <input
                 id="currency"
@@ -33,7 +33,7 @@ New Purchase | The Money Game
                 readonly
                 />
             <span class="error">{{ errors.get("currency", "") if errors else ''}}</span>
-        </div>
+        </div> #}
         <div class="input-group">
             <label for="date">Date</label>
             <input id="date" name="date" type="date" value='{{ previous_values.get("date", default_date) if errors else default_date}}' />
@@ -44,11 +44,11 @@ New Purchase | The Money Game
             <input id="time" name="time" type="time" step="1" value='{{ previous_values.get("time", default_time) if errors else default_time}}' />
             <span class="error">{{ errors.get("time", "") if errors else ''}}</span>
         </div>
-        <div class="input-group">
+        {# <div class="input-group">
             <label for="timezone">Timezone</label>
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly/>
             <span class="error">{{ errors.get("timezone", "") if errors else ''}}</span>
-        </div>
+        </div> #}
         <fieldset>
             <legend>Spending Bucket</legend>
             <div class="radio-group">
