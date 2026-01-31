@@ -48,8 +48,6 @@ async def new(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
-    month_start = date.today().replace(day=1)
-    
     current_datetime_utc = datetime.now(timezone.utc)
     localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
 
@@ -61,24 +59,14 @@ async def new(request: Request):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name, amount, is_daily FROM bucket WHERE month_start = ? AND user_id = ?;", (month_start, request.state.user.user_id))
+        cursor.execute("SELECT bucket_id, is_daily, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
-    daily_spending_bucket = None
-    other_buckets = []
-    for bucket in buckets:
-        if bucket.is_daily == True:
-            daily_spending_bucket = bucket
-            daily_spending_bucket.daily_amount = bucket.amount / monthrange(month_start.year, month_start.month)[1]   
-        else:
-            other_buckets.append(bucket)
-    
     return templates.TemplateResponse(
         request=request,
         name="purchases/new.html",
         context={
             "buckets": buckets,
-            "daily_spending_bucket": daily_spending_bucket,
             "default_date": default_date,
             "default_time": default_time,
             "errors": {},
