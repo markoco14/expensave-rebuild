@@ -15,9 +15,9 @@ Me | The Money Game
         <h2 class="section-heading">Spending Buckets</h2>
         <p>Create spending buckets as you need them.</p>
         <p>If you want to play the game, make a daily spending bucket. Choose the maximum amount you want to spend each day and we'll set up a bucket to help you track daily progress</p>
-        <a href="/me?bucket=daily">Make Daily Spending bucket</a>
-        <a href="/me?bucket=monthly">Make monthly spending bucket</a>
-        {% if request.query_params.get("bucket") %}
+        {# <a href="/me?bucket=daily">Make Daily Spending bucket</a>
+        <a href="/me?bucket=monthly">Make monthly spending bucket</a> #}
+        {# {% if request.query_params.get("bucket") %}
             {% set bucket = request.query_params.get("bucket") %}
             {% if bucket == "daily" %}
             <form action="/buckets/daily" method="POST">
@@ -49,13 +49,13 @@ Me | The Money Game
             {% else %}
             <p>We don't support {{ bucket }} buckets. Try monthly or daily.</p>
             {% endif %}
-        {% endif %}
+        {% endif %} #}
         {% if not buckets %}
         <p>You haven't made any spending buckets yet.</p>
         {% else %}
         <ul class="bucket_list">
         {% for bucket in buckets %}
-            <li><span>{{ bucket.name }} {{bucket.amount}}</span><button class="delete-btn" hx-delete="/buckets/{{ bucket.bucket_id }}" hx-swap="none" hx-confirm="Are you sure you want to delete this bucket?">Delete</button></li>
+            <li><span>{{ bucket.name }} {{bucket.amount}}</span></li>
         {% endfor %}
         </ul>
         {% endif %}
