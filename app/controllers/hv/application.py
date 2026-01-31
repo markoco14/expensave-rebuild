@@ -236,7 +236,7 @@ async def new(request: Request):
     # default_date = localized_datetime.date()
     # default_time = localized_datetime.time().strftime("%H:%M:%S")
 
-    buckets = Bucket.list_for_month(month_start=month_start, user_id=request.state.user.user_id, fields=["bucket_id", "name", "amount", "is_daily"])
+    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
 
     return templates.TemplateResponse(
         request=request,
@@ -305,7 +305,7 @@ async def store(request: Request):
     current_datetime_utc = datetime.now(timezone.utc)
     localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
 
-    buckets = Bucket.list_for_month(month_start=month_start, user_id=request.state.user.user_id, fields=["bucket_id", "name", "amount", "is_daily"])
+    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
 
     if errors:
         return templates.TemplateResponse(
