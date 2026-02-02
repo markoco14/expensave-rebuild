@@ -63,6 +63,18 @@ body.no-scroll {
     overflow-y: hidden;
 }
 
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0; 
+}
+
 p {
     margin-bottom: 1rem;
 }
@@ -483,8 +495,9 @@ form {
 
 .bucket_list {
     li {
-        display: flex;
-        justify-content: space-between;
+        list-style: none;
+        /* display: flex; */
+        /* justify-content: space-between; */
         margin-bottom: 0.5rem;
     }
 }
@@ -585,4 +598,26 @@ form {
 
 .toast p {
     margin-bottom: 0;
+}
+
+
+/* me page styles */
+
+.top-up-form {
+
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+
+    input {
+        flex-grow: 1;
+        text-align: end;
+        padding-inline: 0.5rem;
+    }
+
+    button {
+        margin-top: 0;
+        padding-block: 0.25rem;
+        padding-inline: 0.5rem;
+    }
 }
