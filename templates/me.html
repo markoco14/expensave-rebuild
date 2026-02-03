@@ -37,7 +37,7 @@ Me | The Money Game
                         <span>{{ bucket.name }} {{bucket.amount}}</span>
                         {% if bucket.top_up %}
                             <div class="bucket">
-                                <p class="like-input">${{ bucket.top_up.start_amount }}</p>
+                                <input type="text" name="start_amount" readonly value="${{ bucket.top_up.start_amount }}"/>
                                 <button 
                                     class="bucket-delete-btn top-up-btn"
                                     hx-delete="/top-up/{{ bucket.top_up.top_up_id }}"

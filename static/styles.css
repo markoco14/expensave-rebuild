@@ -350,6 +350,21 @@ details[open] {
     gap: 0.5rem;    
 }
 
+.bucket > input {
+    flex-grow: 1;
+    text-align: right;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    border: 1px solid black;
+    border-radius: 0.125rem;
+}
+
+.bucket > input:read-only {
+    background-color: var(--color-gray-200);
+    border-color: var(--color-gray-300);
+    cursor: not-allowed;
+}
+
 .top-up-btn {
     min-width: 75px;
 }
