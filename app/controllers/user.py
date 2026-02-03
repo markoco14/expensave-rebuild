@@ -51,12 +51,17 @@ async def me(request: Request):
         print(f"something went wrong retrieving data: {e}")
         return "Internal server error"
     
+    for bucket in buckets:
+        for top_up in top_ups:
+            if top_up.bucket_id == bucket.bucket_id:
+                bucket.top_up = top_up
+    
     return templates.TemplateResponse(
         request=request,
         name="me.html",
         context={
             "current_user": request.state.user,
             "buckets": buckets,
-            "top_ups": top_ups,
+            "month_start": month_start
         }
     )

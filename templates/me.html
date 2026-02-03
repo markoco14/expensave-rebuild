@@ -29,19 +29,21 @@ Me | The Money Game
             <ul class="bucket_list">
                 {% for bucket in buckets %}
                     <li>
-                    <span>{{ bucket.name }} {{bucket.amount}}</span>
-                    {% for top_up in top_ups %}
-                    {% if top_up.bucket_id == bucket.bucket_id %}
-                    <span>{{ top_up.start_amount }}</span>       
-                    {% else %}
-                    <form class="top-up-form" hx-post="/buckets/{{ bucket.bucket_id }}/top-up" hx-swap="none">
-                        <input type="hidden" value="month_start" />
-                        <label class="sr-only" for="start_amount">Amount</label>
-                        <input type="text" id="start_amount" name="start_amount"/>
-                        <button type="submit">Top up</button>     
-                    </form>
-                    {% endif %}
-                    {% endfor %}
+                        <span>{{ bucket.name }} {{bucket.amount}}</span>
+                        {% if bucket.top_up %}
+                            <p class="like-input">${{ bucket.top_up.start_amount }}</p>
+                        {% else %}
+                            <form 
+                                class="top-up-form"
+                                hx-post="/buckets/{{ bucket.bucket_id }}/top-up"
+                                hx-swap="outerHTML"
+                                >
+                                <input type="hidden" name="month_start" value="{{ month_start }}" />
+                                <label class="sr-only" for="start_amount">Amount</label>
+                                <input type="text" id="start_amount" name="start_amount"/>
+                                <button type="submit">Top up</button>     
+                            </form>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>

@@ -111,6 +111,10 @@ ol, ul {
     li {
         margin-bottom: 0.25rem;
     }
+
+    li:last-child {
+        margin-bottom: 0;
+    }
 }
 
 ol {
@@ -338,6 +342,15 @@ details[open] {
     }
 }
 
+
+.like-input {
+    border: 1px solid black;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.125rem;
+    text-align: right;
+}
+
 form {
     display: grid;
     
@@ -362,7 +375,7 @@ form {
     }
 
     .input-group > input {
-        border: 1px solid rgba(124, 124, 124, 1);
+        border: 1px solid rgb(124, 124, 124);
         border-radius: 0.25rem;
         padding:0.5rem;
     }
@@ -613,6 +626,8 @@ form {
         flex-grow: 1;
         text-align: end;
         padding-inline: 0.5rem;
+        border: 1px solid black;
+        border-radius: 0.125rem;
     }
 
     button {
