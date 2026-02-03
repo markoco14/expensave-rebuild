@@ -91,6 +91,11 @@ async def delete(request: Request, top_up_id: int):
         logger.error("Unauthorized access to top_up.delete", top_up_id)
         html = f"<p>You don't have permission to do that. Please check your log in. You may need to <a href='/logout'>Log out</a></p>"
         return HTMLResponse(status_code=200, content=html)
+
+    if not request.state.top_up:
+        logger.error("Unauthorized access to top_up.delete", top_up_id)
+        html = f"<p>You don't have permission to do that. Please check your log in. You may need to <a href='/logout'>Log out</a></p>"
+        return HTMLResponse(status_code=200, content=html)
     
     with sqlite3.connect("db.sqlite3") as conn:
             conn.execute("PRAGMA foreign_keys = ON;")
