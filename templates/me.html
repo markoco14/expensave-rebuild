@@ -21,6 +21,11 @@ Me | The Money Game
         Choose the maximum amount you want to spend each day and 
         we'll set up a bucket to help you track daily progress
         </p>
+        <p>
+        Top up each bucket for the month. 
+        If you don't need a bucket this month, leave it blank.
+        If you need to change a bucket amount, delete the top up and make a new one.
+        </p>
         {% if not buckets %}
             <p>
             You haven't made any spending buckets yet.
@@ -31,7 +36,17 @@ Me | The Money Game
                     <li>
                         <span>{{ bucket.name }} {{bucket.amount}}</span>
                         {% if bucket.top_up %}
-                            <p class="like-input">${{ bucket.top_up.start_amount }}</p>
+                            <div class="bucket">
+                                <p class="like-input">${{ bucket.top_up.start_amount }}</p>
+                                <button 
+                                    class="bucket-delete-btn top-up-btn"
+                                    hx-delete="/top-up/{{ bucket.top_up.top_up_id }}"
+                                    hx-swap="outerHTML"
+                                    hx-target="closest div"
+                                    >
+                                    Delete
+                                </button>
+                            </div>
                         {% else %}
                             <form 
                                 class="top-up-form"
@@ -41,7 +56,7 @@ Me | The Money Game
                                 <input type="hidden" name="month_start" value="{{ month_start }}" />
                                 <label class="sr-only" for="start_amount">Amount</label>
                                 <input type="text" id="start_amount" name="start_amount"/>
-                                <button type="submit">Top up</button>     
+                                <button type="submit" class="top-up-btn">Top up</button>     
                             </form>
                         {% endif %}
                     </li>

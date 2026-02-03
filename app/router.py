@@ -34,6 +34,8 @@ routes = [
 
     ("POST",    "/buckets/{bucket_id}/top-up",      top_up.store,       [Depends(is_user)]),
 
+    ("DELETE",  "/top-up/{top_up_id}",              top_up.delete,      [Depends(is_user)]),
+
     ("DELETE",  "/toast/delete",                    application.delete_toast,   [])
 ]
 

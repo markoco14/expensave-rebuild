@@ -162,6 +162,8 @@ details[open] {
     margin-inline: auto;
 }
 
+
+
 @media screen  and (width <= 500px){
     .wrapper {
         padding-inline: 0.5rem;
@@ -342,6 +344,15 @@ details[open] {
     }
 }
 
+.bucket {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 0.5rem;    
+}
+
+.top-up-btn {
+    min-width: 75px;
+}
 
 .like-input {
     border: 1px solid black;
@@ -349,6 +360,24 @@ details[open] {
     padding-inline: 0.5rem;
     border-radius: 0.125rem;
     text-align: right;
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+
+.bucket-delete-btn {
+    background-color: var(--color-red-500);
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.125rem;
+    cursor: pointer;
+}
+
+.bucket-delete-btn:hover {
+    background-color: var(--color-red-400);
+}
+
+.bucket-delete-btn:active {
+    background-color: var(--color-red-600);
 }
 
 form {

@@ -82,7 +82,39 @@ async def store(request: Request, bucket_id: int):
         logger.error("error inserting top up", e)
         html = f"<p>Something went wrong adding your top up. No balance has been added, please try again.</p>"
         return HTMLResponse(status_code=200, content=html)
-    
-    html = f'<p class="like-input">${ start_amount }</p>'
 
-    return HTMLResponse(status_code=200, content=html)
+    return Response(status_code=200, headers={"hx-reswap": "none", "hx-refresh": "true"})
+
+
+async def delete(request: Request, top_up_id: int):
+    if not request.state.user:
+        logger.error("Unauthorized access to top_up.delete", top_up_id)
+        html = f"<p>You don't have permission to do that. Please check your log in. You may need to <a href='/logout'>Log out</a></p>"
+        return HTMLResponse(status_code=200, content=html)
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
+
+            cursor = conn.cursor()
+            cursor.execute("SELECT top_up_id FROM bucket_month_top_up WHERE top_up_id = ?;", (top_up_id, ))
+            top_up = cursor.fetchone()
+
+    if not top_up:
+        logger.error("top up not found", top_up_id)
+        html = f"<p>We couldn't find the top up. Please try again.</p>"
+        return HTMLResponse(status_code=200, content=html)
+    
+    try:
+        with sqlite3.connect("db.sqlite3") as conn:
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
+
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM bucket_month_top_up WHERE top_up_id = ?;", (top_up_id, ))
+    except Exception as e:
+        logger.error("unable to delete", e)
+        html = f"<p>Something went wrong deleting your top up. Please try again.</p>"
+        return HTMLResponse(status_code=200, content=html)
+        
+    return Response(status_code=200, headers={"hx-reswap": "none", "hx-refresh": "true"})
