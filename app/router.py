@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers import application, auth, bucket, public, purchase, user
-from app.dependencies import is_purchase_owner, is_user
+from app.controllers import application, auth, bucket, public, purchase, top_up, user
+from app.dependencies import is_purchase_owner, is_top_up_owner, is_user
 
 router = APIRouter()
 
@@ -31,6 +31,10 @@ routes = [
     ("POST",    "/buckets",                         bucket.create,      [Depends(is_user)]),
     ("POST",    "/buckets/daily",                   bucket.create,      [Depends(is_user)]),
     ("DELETE",  "/buckets/{bucket_id}",             bucket.delete,      [Depends(is_user)]),
+
+    ("POST",    "/buckets/{bucket_id}/top-up",      top_up.store,       [Depends(is_user)]),
+
+    ("DELETE",  "/top-up/{top_up_id}",              top_up.delete,      [Depends(is_user), Depends(is_top_up_owner)]),
 
     ("DELETE",  "/toast/delete",                    application.delete_toast,   [])
 ]

@@ -63,6 +63,18 @@ body.no-scroll {
     overflow-y: hidden;
 }
 
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0; 
+}
+
 p {
     margin-bottom: 1rem;
 }
@@ -98,6 +110,10 @@ ol, ul {
 
     li {
         margin-bottom: 0.25rem;
+    }
+
+    li:last-child {
+        margin-bottom: 0;
     }
 }
 
@@ -145,6 +161,8 @@ details[open] {
     max-width: 500px;
     margin-inline: auto;
 }
+
+
 
 @media screen  and (width <= 500px){
     .wrapper {
@@ -326,6 +344,57 @@ details[open] {
     }
 }
 
+.bucket {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 0.5rem;    
+}
+
+.bucket > input {
+    flex-grow: 1;
+    text-align: right;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    border: 1px solid black;
+    border-radius: 0.125rem;
+}
+
+.bucket > input:read-only {
+    background-color: var(--color-gray-200);
+    border-color: var(--color-gray-300);
+    cursor: not-allowed;
+}
+
+.top-up-btn {
+    min-width: 75px;
+}
+
+.like-input {
+    border: 1px solid black;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.125rem;
+    text-align: right;
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+
+.bucket-delete-btn {
+    background-color: var(--color-red-500);
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.125rem;
+    cursor: pointer;
+}
+
+.bucket-delete-btn:hover {
+    background-color: var(--color-red-400);
+}
+
+.bucket-delete-btn:active {
+    background-color: var(--color-red-600);
+}
+
 form {
     display: grid;
     
@@ -350,7 +419,7 @@ form {
     }
 
     .input-group > input {
-        border: 1px solid rgba(124, 124, 124, 1);
+        border: 1px solid rgb(124, 124, 124);
         border-radius: 0.25rem;
         padding:0.5rem;
     }
@@ -483,8 +552,9 @@ form {
 
 .bucket_list {
     li {
-        display: flex;
-        justify-content: space-between;
+        list-style: none;
+        /* display: flex; */
+        /* justify-content: space-between; */
         margin-bottom: 0.5rem;
     }
 }
@@ -585,4 +655,28 @@ form {
 
 .toast p {
     margin-bottom: 0;
+}
+
+
+/* me page styles */
+
+.top-up-form {
+
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+
+    input {
+        flex-grow: 1;
+        text-align: end;
+        padding-inline: 0.5rem;
+        border: 1px solid black;
+        border-radius: 0.125rem;
+    }
+
+    button {
+        margin-top: 0;
+        padding-block: 0.25rem;
+        padding-inline: 0.5rem;
+    }
 }
