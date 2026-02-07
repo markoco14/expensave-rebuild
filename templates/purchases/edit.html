@@ -26,20 +26,26 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
             <label for="timezone">Timezone</label>
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly />
         </div>
-        <fieldset class="fieldset">
-            <legend class="legend">Bucket</legend>
-            <div class="fieldset-group">
-            {% for bucket in buckets  %}
-
-            <label for="{{ bucket.bucket_id }}">{{ bucket.name }}</label>
-            <input 
-                id="{{ bucket.bucket_id }}"
-                name="bucket"
-                type="radio"
-                value="{{ bucket.bucket_id }}"
-                {% if bucket.bucket_id == purchase.bucket_id %}checked{% endif %}/>
-            {% endfor %}
+         <fieldset>
+            <legend>Spending Bucket</legend>
+            <div class="radio-group">
+                {% for bucket in buckets %}
+                    <label>
+                        <input 
+                            type="radio"
+                            name="bucket"
+                            value="{{ bucket.bucket_id }}"
+                            {% if previous_values and previous_values.get("bucket")|string == bucket.bucket_id|string %}
+                                checked
+                            {% elif purchase.bucket_id == bucket.bucket_id %}
+                                checked
+                            {% endif %}
+                            />
+                        <span class="card">{{ bucket.name }}</span>
+                    </label>
+                {% endfor %}
             </div>
+            <span class="error">{{ errors.get("bucket", "") if errors else ''}}</span>
         </fieldset>
         <button type="submit">Update purchase</button>
     </form>
