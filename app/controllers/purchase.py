@@ -8,6 +8,8 @@ from fastapi import Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from app.models.bucket import Bucket
+
 templates = Jinja2Templates(directory="templates")
 
 
@@ -53,14 +55,8 @@ async def new(request: Request):
 
     default_date = localized_datetime.date()
     default_time = localized_datetime.time().strftime("%H:%M:%S")
-    
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
 
-        cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, is_daily, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
-        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id, name, is_daily"])
 
     return templates.TemplateResponse(
         request=request,
@@ -287,7 +283,7 @@ async def edit(request: Request, purchase_id: int):
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ? AND month_start = ?;", (request.state.user.user_id, month_start))
+        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
     
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
