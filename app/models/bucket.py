@@ -27,6 +27,23 @@ class Bucket:
 
             cursor = conn.cursor()
             cursor.execute(f"SELECT {columns} FROM bucket WHERE user_id = ?;", (user_id, ))
+            
             return [Bucket(**row) for row in cursor.fetchall()]
 
 
+    @classmethod
+    def get_user_daily_bucket(cls, user_id: int, columns: List[str] = []) :
+        if not columns:
+            columns = "*"
+        else:
+            columns = ", ".join(columns).rstrip(",")
+
+        with sqlite3.connect("db.sqlite3") as conn:
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
+
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT {columns} FROM bucket WHERE user_id = ? AND is_daily = 1;", (user_id, ))
+            row = cursor.fetchone()
+
+            return Bucket(**row) if row else None

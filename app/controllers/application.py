@@ -8,6 +8,8 @@ from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from app.models.bucket import Bucket
+
 templates = Jinja2Templates(directory="templates")
 
 
@@ -122,39 +124,36 @@ async def stats(request: Request):
         utc_end_of_month = utc_date_today.replace(day=monthrange(utc_start_of_month.year, utc_start_of_month.month)[1], hour=23, minute=59, second=59, microsecond=99999)
 
         utc_start_of_next_month = utc_start_of_month.replace(day=monthrange(utc_start_of_month.year, utc_start_of_month.month)[1], hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
- 
+
+        bucket = Bucket.get_user_daily_bucket(user_id=request.state.user.user_id)
+        
+        if not bucket:
+            return templates.TemplateResponse(
+                request=request,
+                name="stats.html",
+                context={
+                    "bucket": None,
+                    "purchases": [],
+                    "amount_remaining": None,
+                    "amount_in_time_period": None,
+                    "total_spent_in_period": None,
+                    "start_value": utc_start_of_month.strftime("%Y-%m-%d"),
+                    "end_value": utc_end_of_month.strftime("%Y-%m-%d"),
+                }
+            )
+            
         with sqlite3.connect("db.sqlite3") as conn:
             conn.execute("PRAGMA foreign_keys = ON;")
             conn.row_factory = sqlite3.Row
 
             cursor = conn.cursor()
 
-            cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND is_daily = ? AND month_start = ?;", (request.state.user.user_id, 1, month_start))
-
-            row = cursor.fetchone()
-            if not row:
-                return templates.TemplateResponse(
-                    request=request,
-                    name="stats.html",
-                    context={
-                        "bucket": None,
-                        "purchases": [],
-                        "amount_remaining": None,
-                        "amount_in_time_period": None,
-                        "total_spent_in_period": None,
-                        "start_value": utc_start_of_month.strftime("%Y-%m-%d"),
-                        "end_value": utc_end_of_month.strftime("%Y-%m-%d"),
-                    }
-                )
-            
-            bucket = SimpleNamespace(**row)
-
             cursor.execute("""SELECT purchase.purchase_id,
                             purchase.amount, purchase.currency,
                             purchase.purchased_at, purchase.timezone,
                             purchase.user_id,
                             purchase.bucket_id as bucket_id,
-                            bucket.name as bucket_name, bucket.amount as bucket_amount  
+                            bucket.name as bucket_name
                         FROM purchase
                         JOIN bucket USING (bucket_id)
                         WHERE purchase.user_id = ?
@@ -200,38 +199,35 @@ async def stats(request: Request):
     if number_of_days:
         days_in_period = number_of_days
 
+    bucket = Bucket.get_user_daily_bucket(user_id=request.state.user.user_id)
+
+    if not bucket:
+        return templates.TemplateResponse(
+            request=request,
+            name="stats.html",
+            context={
+                "bucket": None,
+                "purchases": [],
+                "amount_remaining": None,
+                "amount_in_time_period": None,
+                "total_spent_in_period": None,
+                "start_value": time_period_start.strftime("%Y-%m-%d"),
+                "end_value": time_period_end.strftime("%Y-%m-%d"),
+            }
+        )
+    
+
     with sqlite3.connect("db.sqlite3") as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
         conn.row_factory = sqlite3.Row
 
         cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND is_daily = ?;", (request.state.user.user_id, 1))
-
-        row = cursor.fetchone()
-        if not row:
-            return templates.TemplateResponse(
-                request=request,
-                name="stats.html",
-                context={
-                    "bucket": None,
-                    "purchases": [],
-                    "amount_remaining": None,
-                    "amount_in_time_period": None,
-                    "total_spent_in_period": None,
-                    "start_value": time_period_start.strftime("%Y-%m-%d"),
-                    "end_value": time_period_end.strftime("%Y-%m-%d"),
-                }
-            )
-        
-        bucket = SimpleNamespace(**row)
-
         cursor.execute("""SELECT purchase.purchase_id,
                         purchase.amount, purchase.currency,
                         purchase.purchased_at, purchase.timezone,
                         purchase.user_id,
                         purchase.bucket_id as bucket_id,
-                        bucket.name as bucket_name, bucket.amount as bucket_amount  
+                        bucket.name as bucket_name
                     FROM purchase
                     JOIN bucket USING (bucket_id)
                     WHERE purchase.user_id = ?
@@ -247,10 +243,6 @@ async def stats(request: Request):
     total_spent_in_period = 0
     for purchase in purchases:
         total_spent_in_period += purchase.amount
-
-    num_days_bucket_amount = bucket.amount / 100 * days_in_period
-    
-    amount_remaining = num_days_bucket_amount - total_spent_in_period
     
     return templates.TemplateResponse(
         request=request,
@@ -258,7 +250,6 @@ async def stats(request: Request):
         context={
             "bucket": bucket,
             "purchases": purchases,
-            "amount_remaining": amount_remaining,
             "amount_in_time_period": None,
             "total_spent_in_period": total_spent_in_period,
             "start_value": time_period_start.strftime("%Y-%m-%d"),
