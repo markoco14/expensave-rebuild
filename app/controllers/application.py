@@ -129,7 +129,7 @@ async def stats(request: Request):
 
             cursor = conn.cursor()
 
-            cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND is_daily = ? AND month_start = ?;", (request.state.user.user_id, 1, month_start))
+            cursor.execute("SELECT * FROM bucket WHERE user_id = ? AND is_daily = ?;", (request.state.user.user_id, 1))
 
             row = cursor.fetchone()
             if not row:
@@ -154,7 +154,7 @@ async def stats(request: Request):
                             purchase.purchased_at, purchase.timezone,
                             purchase.user_id,
                             purchase.bucket_id as bucket_id,
-                            bucket.name as bucket_name, bucket.amount as bucket_amount  
+                            bucket.name as bucket_name
                         FROM purchase
                         JOIN bucket USING (bucket_id)
                         WHERE purchase.user_id = ?
@@ -231,7 +231,7 @@ async def stats(request: Request):
                         purchase.purchased_at, purchase.timezone,
                         purchase.user_id,
                         purchase.bucket_id as bucket_id,
-                        bucket.name as bucket_name, bucket.amount as bucket_amount  
+                        bucket.name as bucket_name
                     FROM purchase
                     JOIN bucket USING (bucket_id)
                     WHERE purchase.user_id = ?
@@ -247,10 +247,6 @@ async def stats(request: Request):
     total_spent_in_period = 0
     for purchase in purchases:
         total_spent_in_period += purchase.amount
-
-    num_days_bucket_amount = bucket.amount / 100 * days_in_period
-    
-    amount_remaining = num_days_bucket_amount - total_spent_in_period
     
     return templates.TemplateResponse(
         request=request,
@@ -258,7 +254,6 @@ async def stats(request: Request):
         context={
             "bucket": bucket,
             "purchases": purchases,
-            "amount_remaining": amount_remaining,
             "amount_in_time_period": None,
             "total_spent_in_period": total_spent_in_period,
             "start_value": time_period_start.strftime("%Y-%m-%d"),
