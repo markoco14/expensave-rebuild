@@ -188,24 +188,9 @@ async def show(request: Request, purchase_id: int):
             status_code=403
         )
     
-    
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
+    with get_db() as conn:
+        purchase = Purchase.get(conn=conn, purchase_id=purchase_id)
 
-        cursor = conn.cursor()
-        cursor.execute("""
-                    SELECT purchase.purchase_id, purchase.amount,
-                        purchase.currency, purchase.purchased_at,
-                        purchase.timezone, purchase.user_id,
-                        purchase.bucket_id as bucket_id,
-                        bucket.name as bucket_name 
-                    FROM purchase 
-                    JOIN bucket USING (bucket_id) 
-                    WHERE purchase.user_id = ? AND purchase.purchase_id = ?;""", (request.state.user.user_id, purchase_id))
-        row = cursor.fetchone()
-        purchase = SimpleNamespace(**row) if row else None
-    
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
     utc_aware = naive.replace(tzinfo=timezone.utc)
     purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
