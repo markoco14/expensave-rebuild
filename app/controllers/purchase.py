@@ -190,6 +190,7 @@ async def show(request: Request, purchase_id: int):
     
     with get_db() as conn:
         purchase = Purchase.get(conn=conn, purchase_id=purchase_id)
+        bucket = Bucket.get(conn=conn, bucket_id=purchase.bucket_id)
 
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
     utc_aware = naive.replace(tzinfo=timezone.utc)
@@ -198,7 +199,7 @@ async def show(request: Request, purchase_id: int):
     return templates.TemplateResponse(
         request=request,
         name="purchases/show.html",
-        context={"purchase": purchase}
+        context={"purchase": purchase, "bucket": bucket}
     )
 
 

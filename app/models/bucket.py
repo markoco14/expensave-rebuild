@@ -1,18 +1,19 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 import sqlite3
-from typing import List
+from typing import List, Optional
+
 
 @dataclass
 class Bucket:
     bucket_id: int
-    name: str = None
-    amount: int = None
-    is_daily: bool = None
-    month_start: date = None
-    created_at: datetime = None
-    updated_at: datetime = None
-    user_id: int = None
+    name: Optional[str] = None
+    amount: Optional[int] = None
+    is_daily: Optional[bool] = None
+    month_start: Optional[date] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    user_id: Optional[int] = None
 
     @classmethod
     def list_for_month(cls, user_id: int, fields: List[str]):
@@ -47,3 +48,10 @@ class Bucket:
             row = cursor.fetchone()
 
             return Bucket(**row) if row else None
+
+    @classmethod
+    def get(cls, conn: sqlite3.Connection, bucket_id: int):
+        cursor = conn.cursor()
+        cursor.execute("SELECT bucket_id, name FROM bucket WHERE bucket_id = ?;", (bucket_id, ))
+        row = cursor.fetchone()
+        return Bucket(**row) if row else None

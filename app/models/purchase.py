@@ -37,15 +37,19 @@ class Purchase:
     @classmethod
     def get(cls, conn: sqlite3.Connection, purchase_id: int):
         cursor = conn.cursor()
-        cursor.execute("""
-                    SELECT purchase.purchase_id, purchase.amount,
-                        purchase.currency, purchase.purchased_at,
-                        purchase.timezone, purchase.user_id,
-                        purchase.bucket_id as bucket_id,
-                        bucket.name as bucket_name 
-                    FROM purchase 
-                    JOIN bucket USING (bucket_id) 
-                    WHERE purchase.purchase_id = ?;""", (purchase_id, ))
+        cursor.execute(
+            """
+            SELECT 
+                purchase_id,
+                amount,
+                currency,
+                purchased_at,
+                timezone, 
+                user_id,
+                bucket_id
+            FROM purchase 
+            WHERE purchase.purchase_id = ?;
+            """, (purchase_id, ))
         
         row = cursor.fetchone()
         return Purchase(**row) if row else None
