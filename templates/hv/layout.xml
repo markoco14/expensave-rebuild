@@ -4,6 +4,7 @@
             {% include "hv/styles/base.style.xml" %}
             {% include "hv/styles/form.style.xml" %}
             {% include "hv/styles/purchases.style.xml" %}
+            {% include "hv/styles/bucket.style.xml" %}
         </styles>
         <body>
 
