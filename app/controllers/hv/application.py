@@ -91,15 +91,14 @@ async def get_today_context(user_id: int):
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
         total_spent += purchase.amount
 
-    percent_spent = (total_spent  /  daily_spending_bucket.daily_amount * 100)
-
+    percent_remaining = 100 - (total_spent  /  daily_spending_bucket.daily_amount * 100)
     context = {
             "today_date": local_date_today,
             "purchases": purchases,
             "total_spent": total_spent,
             "daily_spending_bucket": daily_spending_bucket,
             "buckets": buckets,
-            "percent_spent": percent_spent
+            "percent_remaining": percent_remaining
             }
     
     return context

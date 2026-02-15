@@ -8,7 +8,9 @@ from fastapi import Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from app.config import get_db
 from app.models.bucket import Bucket
+from app.models.purchase import Purchase
 
 templates = Jinja2Templates(directory="templates")
 
@@ -17,22 +19,8 @@ async def list(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
-
-        cursor = conn.cursor()
-        cursor.execute("""SELECT purchase.purchase_id,
-                            purchase.amount, purchase.currency,
-                            purchase.purchased_at, purchase.timezone,
-                            purchase.user_id,
-                            purchase.bucket_id as bucket_id,
-                            bucket.name as bucket_name
-                        FROM purchase
-                        JOIN bucket USING (bucket_id)
-                        WHERE purchase.user_id = ?
-                        ORDER BY purchased_at DESC;""", (request.state.user.user_id, ))
-        purchases = [SimpleNamespace(**row) for row in cursor.fetchall()]
+    with get_db() as conn:
+        purchases = Purchase.get_user_purchases(conn=conn, user_id=request.state.user.user_id)
 
     for purchase in purchases:
         naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
@@ -200,24 +188,10 @@ async def show(request: Request, purchase_id: int):
             status_code=403
         )
     
-    
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
+    with get_db() as conn:
+        purchase = Purchase.get(conn=conn, purchase_id=purchase_id)
+        bucket = Bucket.get(conn=conn, bucket_id=purchase.bucket_id)
 
-        cursor = conn.cursor()
-        cursor.execute("""
-                    SELECT purchase.purchase_id, purchase.amount,
-                        purchase.currency, purchase.purchased_at,
-                        purchase.timezone, purchase.user_id,
-                        purchase.bucket_id as bucket_id,
-                        bucket.name as bucket_name 
-                    FROM purchase 
-                    JOIN bucket USING (bucket_id) 
-                    WHERE purchase.user_id = ? AND purchase.purchase_id = ?;""", (request.state.user.user_id, purchase_id))
-        row = cursor.fetchone()
-        purchase = SimpleNamespace(**row) if row else None
-    
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
     utc_aware = naive.replace(tzinfo=timezone.utc)
     purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
@@ -225,7 +199,7 @@ async def show(request: Request, purchase_id: int):
     return templates.TemplateResponse(
         request=request,
         name="purchases/show.html",
-        context={"purchase": purchase}
+        context={"purchase": purchase, "bucket": bucket}
     )
 
 
