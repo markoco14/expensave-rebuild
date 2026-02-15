@@ -1,0 +1,15 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}<text style="heading">Buckets</text>{% endblock header %}
+
+{% block content %}
+<view style="container">
+	<text style="text-dark text-large">Welcome to the buckets page!</text>
+<view>
+	<behavior trigger="press" action="reload" href="/hv/today" />
+	<text style="text-dark text-large">Today</text>
+</view>
+</view>
+
+
+{% endblock content %}

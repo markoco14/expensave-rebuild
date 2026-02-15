@@ -18,7 +18,7 @@
             </view>
         </view>
     </item>
-    <item>
+    <item key="total">
         <view style="total">
             <text style="total-text text-dark text-large">Total spent:</text>
             <text style="total-text text-dark text-large">${{ total_spent }}</text>
@@ -31,4 +31,10 @@
         <text style="list-item-text text-large text-dark">${{ purchase.amount }}</text>
     </item>
     {% endfor %}
+    <item key="links">
+        <view id="bucket-link">
+            <behavior trigger="press" action="reload" target="container" href="/hv/buckets"/>
+            <text style="text-dark text-large">Buckets</text>
+        </view>
+    </item>
 </items>
