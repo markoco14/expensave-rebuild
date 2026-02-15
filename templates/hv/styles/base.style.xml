@@ -95,3 +95,9 @@
 <style id="total-text" 
     textAlign="right" 
     />
+
+<style id="bucket-link" 
+    display="flex"
+    flexDirection="column"
+    backgroundColor="#111827"
+    />
