@@ -23,7 +23,6 @@
     color="#111827"
     />
 
-
 <style id="card"
     backgroundColor="white"
     padding="16"
@@ -61,6 +60,10 @@
     textAlign="center"
     />
 
+<style id="text-light" 
+    color="#ffffff"
+    />
+
 <style id="text-dark"
     color="#111827"
     />
@@ -75,4 +78,20 @@
 
 <style id="label"
     marginBottom="4"
+    />
+
+<style id="total" 
+    display="flex"
+    flexDirection="row"
+    justifyContent="space-between"
+    color="#111827" 
+    backgroundColor="rgb(255, 255, 255)"
+    elevation="2"
+    borderRadius="4"
+    padding="16"
+    marginBottom="8"
+    />
+
+<style id="total-text" 
+    textAlign="right" 
     />

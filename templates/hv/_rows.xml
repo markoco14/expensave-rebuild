@@ -1,8 +1,8 @@
 <items xmlns="https://hyperview.org/hyperview">
     <item key="progress" style="progress-track">
-        <view style="progress-bar">{% if percent_spent >= 50 %}<text>${{total_spent}}</text>{% endif %}</view>
+        <view style="progress-bar">{% if percent_spent >= 50 %}<text style="text-dark text-large">${{total_spent}}</text>{% endif %}</view>
         {% if percent_spent <= 50 %}
-        <text>${{total_spent}}</text>
+        <text style="text-dark text-large">${{total_spent}}</text>
         {% endif %}
     </item>
     <item key="buckets">
@@ -16,6 +16,12 @@
                 </view>
                 {% endfor %}
             </view>
+        </view>
+    </item>
+    <item>
+        <view style="total">
+            <text style="total-text text-dark text-large">Total spent:</text>
+            <text style="total-text text-dark text-large">${{ total_spent }}</text>
         </view>
     </item>
     {% for purchase in purchases %}
