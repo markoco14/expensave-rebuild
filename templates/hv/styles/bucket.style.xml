@@ -1,0 +1,7 @@
+<style id="bucket" 
+    backgroundColor="white"
+    paddingVertical="8"
+    paddingHorizontal="8"
+    marginBottom="16"
+    borderRadius="4"
+    />
