@@ -1,6 +1,6 @@
 <style 
     id="progress-track"
-    backgroundColor="#fff"
+    backgroundColor="#f14f4f"
     width="100%"
     height="32"
     borderRadius="4"
@@ -16,7 +16,7 @@
     height="100%"
     borderTopLeftRadius="4"
     borderBottomLeftRadius="4"
-    width="{{ percent_spent }}%"
+    width="{{ percent_remaining }}%"
     display="flex"
     flexDirection="row"
     justifyContent="flex-end"
