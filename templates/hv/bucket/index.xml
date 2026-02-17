@@ -7,9 +7,9 @@
 {% endblock header %}
 
 {% block content %}
-<view style="container">
+<view style="container column">
 	{% for top_up in top_ups %}
-	<view style="bucket">
+	<view style="card">
 		<view style="card-header">
 		<text style="text-dark text-large">{{ top_up.bucket_name }}</text>
 		<text style="text-dark text-large">

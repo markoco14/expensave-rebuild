@@ -43,11 +43,16 @@
     width="40"
     />
 
+<style id="column"
+    display="flex"
+    flexDirection="column"
+    gap="16"
+    />
+
 <style id="card"
     backgroundColor="white"
     padding="16"
     borderRadius="8"
-    marginBottom="32"
     />
 
 <style id="btn-primary"

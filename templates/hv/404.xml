@@ -1,0 +1,14 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}
+<header style="header flex-header">
+    <text style="heading">Content Not Found</text>
+</header>
+{% endblock header%}
+
+{% block content %}
+<view style="container">
+    <text>Sorry, this page could not be found.</text>
+    <text action="back">Go Back</text>
+</view>
+{% endblock content%}
