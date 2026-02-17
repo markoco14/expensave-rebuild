@@ -1,3 +1,5 @@
+{% set green_dark = "#2ee246" %}
+
 <style id="input-group"
     marginBottom="16"
     />
@@ -38,12 +40,12 @@
     borderRadius="4"
     >
     <modifier selected="true">
-        <style backgroundColor="#2ee246" />
+        <style backgroundColor="{{ green_dark }}" />
     </modifier>    
 </style>
 
 <style id="submit-button" 
-    backgroundColor="#2ee246"
+    backgroundColor="{{ green_dark }}"
     padding="8"
     display="flex"
     flexDirection="row"

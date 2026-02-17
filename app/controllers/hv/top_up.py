@@ -1,0 +1,161 @@
+import sqlite3
+from fastapi import Request
+from fastapi.templating import Jinja2Templates
+
+from app.models.bucket_month_top_up import BucketMonthTopUp
+
+templates = Jinja2Templates(directory="templates")
+
+
+async def show(request: Request, top_up_id: int):
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("""
+                        SELECT 
+                            btu.top_up_id, 
+                            btu.month_start, 
+                            btu.start_amount, 
+                            btu.end_amount,
+                            b.name as bucket_name 
+                        FROM bucket_month_top_up as btu
+                        JOIN bucket as b
+                        USING (bucket_id)
+                        WHERE top_up_id = ?;
+                       """, (top_up_id, ))
+        top_up = cursor.fetchone()
+
+    if not top_up:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/404.xml",
+            context={}
+        )
+    
+    top_up = BucketMonthTopUp(**top_up)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/top-up/show.xml",
+        context={
+            "top_up": top_up
+            }
+    )
+
+async def edit(request: Request, top_up_id: int):
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("""
+                        SELECT 
+                            btu.top_up_id, 
+                            btu.month_start, 
+                            btu.start_amount, 
+                            btu.end_amount,
+                            b.name as bucket_name 
+                        FROM bucket_month_top_up as btu
+                        JOIN bucket as b
+                        USING (bucket_id)
+                        WHERE top_up_id = ?;
+                       """, (top_up_id, ))
+        top_up = cursor.fetchone()
+
+    if not top_up:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/404.xml",
+            context={}
+        )
+    top_up = BucketMonthTopUp(**top_up)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/top-up/edit.xml",
+        context={
+            "top_up": top_up
+            }
+    )
+
+async def update(request: Request, top_up_id: int):
+    
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("""
+                        SELECT 
+                            btu.top_up_id, 
+                            btu.month_start, 
+                            btu.start_amount, 
+                            btu.end_amount,
+                            b.name as bucket_name 
+                        FROM bucket_month_top_up as btu
+                        JOIN bucket as b
+                        USING (bucket_id)
+                        WHERE top_up_id = ?;
+                       """, (top_up_id, ))
+        top_up = cursor.fetchone()
+
+    if not top_up:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/404.xml",
+            context={}
+        )
+    
+    form_data = await request.form()
+    start_amount = form_data.get("start_amount", None)
+    end_amount = form_data.get("end_amount", None)
+    
+    if not start_amount or not end_amount:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/top-up/_form_fields.xml",
+            context={
+                "top_up": top_up
+                }
+        )
+    
+    try:
+        int(start_amount)
+    except Exception as e:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/top-up/_form_fields.xml",
+            context={
+                "top_up": top_up
+                }
+        )
+    
+    try:
+        int(end_amount)
+    except Exception as e:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/top-up/_form_fields.xml",
+            context={
+                "top_up": top_up
+                }
+        )
+    
+
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("UPDATE bucket_month_top_up SET start_amount = ?, end_amount = ? WHERE top_up_id = ?;", (start_amount, end_amount, top_up_id))
+
+    top_up = BucketMonthTopUp(**top_up)
+    top_up.start_amount = start_amount
+    top_up.end_amount = end_amount
+
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/top-up/_form_fields.xml",
+        context={
+            "saved": True,
+            "top_up": top_up
+            }
+    )

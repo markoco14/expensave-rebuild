@@ -1,0 +1,22 @@
+<view id="form-fields" xmlns="https://hyperview.org/hyperview">
+    {% if saved == True %}
+        <behavior trigger="load" action="dispatch-event" event-name="top-up-updated" />
+        <behavior trigger="load" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}"/>
+    {% endif %}
+    <text style="text-dark text-large">Start amount</text>
+    <text-field 
+        style="text-field"
+        name="start_amount"
+        value="{{ top_up.start_amount }}"
+        >
+        Amount available: {{ top_up.start_amount }}
+    </text-field>
+    <text style="text-dark text-large">Remaining amount</text>
+    <text-field 
+        style="text-field"
+        name="end_amount"
+        value="{{ top_up.end_amount if top_up.end_amount else 0 }}"
+        >
+        Amount spent: {{ top_up.end_amount if top_up.end_amount else 0 }}
+    </text-field>
+</view>
