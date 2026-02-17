@@ -1,0 +1,13 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}
+<header style="header flex-header">
+    <view style="header-back-btn" action="back"><text style="text-dark text-large">B</text></view>
+    <text style="heading">Top Up</text>
+    <view style="header-placeholder"></view>
+</header>
+{% endblock header %}
+
+{% block content %}
+<text style="text-dark text-large">Yess</text>
+{% endblock content%}

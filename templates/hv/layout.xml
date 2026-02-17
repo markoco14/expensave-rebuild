@@ -8,9 +8,11 @@
         </styles>
         <body>
 
-            <header style="header">
-                {% block header %}<text>MySaveMoneyLife</text>{% endblock header %}
+            {% block header %}
+            <header style="header flex-header">
+                <text>MySaveMoneyLife</text>
             </header>
+            {% endblock header %}
 
             {% block content %}{% endblock %}   
 

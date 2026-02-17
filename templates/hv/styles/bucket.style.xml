@@ -5,3 +5,10 @@
     marginBottom="16"
     borderRadius="4"
     />
+
+<style id="card-header" 
+    display="flex"
+    flexDirection="row"
+    justifyContent="space-between"
+    alignItems="center"
+    />

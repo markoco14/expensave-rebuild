@@ -12,15 +12,35 @@
     />
 
 <style id="header"
-    marginTop="32"
+    marginTop="12"
+    marginBottom="24"
     paddingLeft="8"
     paddingRight="8"
     />
 
+<style id="flex-header" 
+    display="flex"
+    flexDirection="row"
+    justifyContent="space-between"
+    alignItems="center"
+    />
+
 <style id="heading"
-    marginBottom="24"
     fontSize="32"
     color="#111827"
+    />
+
+<style id="header-back-btn" 
+    width="40"
+    height="40"
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    borderRadius="100%"
+    />
+
+<style id="header-placeholder"
+    width="40"
     />
 
 <style id="card"
@@ -101,3 +121,5 @@
     flexDirection="column"
     backgroundColor="#111827"
     />
+
+
