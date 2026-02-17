@@ -1,23 +1,21 @@
-{% set green_dark = "#2ee246" %}
-
 <style id="input-group"
     marginBottom="16"
     />
 
 <style id="text-field"
-    color="#111827"
-    backgroundColor="white"
+    color="{{ gray_900 }}"
+    backgroundColor="{{ white }}"
     padding="4"
     borderWidth="1"
-    borderColor="#111827"
+    borderColor="{{ gray_900 }}"
     borderRadius="4"
     />
 
 <style id="input"
-    backgroundColor="white"
+    backgroundColor="{{ white }}"
     padding="4"
     borderWidth="1"
-    borderColor="#111827"
+    borderColor="{{ gray_900 }}"
     borderRadius="4"
     />
 
@@ -33,19 +31,19 @@
 
 <style id="option"
     borderWidth="1"
-    borderColor="black"
-    padding="4"
-    paddingLeft="8"
-    paddingRight="8"
+    borderColor="{{ gray_900 }}"
+    paddingVertical="6"
+    paddingHorizontal="12"
     borderRadius="4"
     >
     <modifier selected="true">
-        <style backgroundColor="{{ green_dark }}" />
+        <style borderColor="{{ green_500 }}" backgroundColor="{{ green_100 }}" />
     </modifier>    
 </style>
 
 <style id="submit-button" 
-    backgroundColor="{{ green_dark }}"
+    color="{{ white }}"
+    backgroundColor="{{ gray_600 }}"
     padding="8"
     display="flex"
     flexDirection="row"

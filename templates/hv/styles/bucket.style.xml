@@ -1,5 +1,5 @@
 <style id="bucket" 
-    backgroundColor="white"
+    backgroundColor="{{ white }}"
     paddingVertical="8"
     paddingHorizontal="8"
     marginBottom="16"
