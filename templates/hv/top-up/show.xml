@@ -16,5 +16,6 @@
         <text style="text-dark text-large">Amount available: {{ top_up.start_amount }}</text>
         <text style="text-dark text-large">Amount spent: {{ top_up.end_amount if top_up.end_amount else 0 }}</text>
     </view>
+    <text style="text-dark text-large" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}/edit">Edit</text>
 </view>
 {% endblock content%}

@@ -1,0 +1,30 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}
+<header style="header flex-header">
+    <view style="header-back-btn" action="back"><text style="text-dark text-large">B</text></view>
+    <text style="heading">Top Up</text>
+    <view style="header-placeholder"></view>
+</header>
+{% endblock header %}
+
+{% block content %}
+<view style="container" id="top-up-form">
+    <form style="card">
+    
+        {% include "hv/top-up/_form_fields.xml" %}
+
+        <text 
+        verb="post"
+        href="/hv/top-up/{{ top_up.top_up_id }}"
+        target="form-fields"
+        action="replace" 
+        style="submit-button"
+        >
+            Save
+        </text>
+
+    </form>
+    <view action="reload" href="/hv/top-up/{{ top_up.top_up_id }}"><text style="text-dark text-large">Cancel</text></view>
+</view>
+{% endblock content%}
