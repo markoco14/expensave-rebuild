@@ -8,6 +8,7 @@
 
 {% block content %}
 <view style="container column">
+	<behavior trigger="on-event" event-name="top-up-updated" action="reload" href="/hv/buckets"/>
 	{% for top_up in top_ups %}
 	<view style="card">
 		<view style="card-header">

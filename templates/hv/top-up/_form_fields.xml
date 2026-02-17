@@ -1,5 +1,6 @@
 <view id="form-fields" xmlns="https://hyperview.org/hyperview">
     {% if saved == True %}
+        <behavior trigger="load" action="dispatch-event" event-name="top-up-updated" />
         <behavior trigger="load" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}"/>
     {% endif %}
     <text style="text-dark text-large">Start amount</text>
