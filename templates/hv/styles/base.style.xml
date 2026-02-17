@@ -64,8 +64,17 @@
     backgroundColor="{{ gray_600 }}"
     />
 
+<style id="btn-secondary" 
+    borderWidth="1"
+    borderColor="{{ gray_600 }}"
+    />
+
 <style id="btn-delete" 
     backgroundColor="{{ red_500 }}"
+    />
+
+<style id="btn-gap"
+    marginBottom="12"
     />
 
 <style id="text-center" 

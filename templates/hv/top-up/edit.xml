@@ -19,12 +19,20 @@
             href="/hv/top-up/{{ top_up.top_up_id }}"
             target="form-fields"
             action="replace" 
-            style="btn btn-primary"
+            style="btn btn-primary btn-gap"
             >
             <text style="text-center text-light text-large">Save</text>
         </view>
 
+        <view 
+            action="reload"
+            href="/hv/top-up/{{ top_up.top_up_id }}"
+            style="btn btn-secondary"
+            >
+            <text style="text-dark text-large">Cancel</text>
+        </view>
+        
     </form>
-    <view action="reload" href="/hv/top-up/{{ top_up.top_up_id }}"><text style="text-dark text-large">Cancel</text></view>
+    
 </view>
 {% endblock content%}
