@@ -24,8 +24,8 @@
         <text style="error">{{ errors.get("password", "") if errors else ''}}</text>
     </view>
 
-    <view verb="post" href="/hv/login" action="replace" target="login-form">
-        <text style="btn-primary text-dark">Save</text>
+    <view verb="post" href="/hv/login" action="replace" target="login-form" style="btn btn-primary">
+        <text style="text-center text-large text-dark">Save</text>
     </view>
 
 </form>

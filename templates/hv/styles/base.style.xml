@@ -7,7 +7,7 @@
     paddingLeft="8"
     paddingRight="8"
     paddingTop="8"
-    backgroundColor="#f0f0f0"
+    backgroundColor="{{ gray_50 }}"
     marginBottom="128"
     />
 
@@ -27,7 +27,7 @@
 
 <style id="heading"
     fontSize="32"
-    color="#111827"
+    color="{{ gray_900 }}"
     />
 
 <style id="header-back-btn" 
@@ -50,52 +50,50 @@
     />
 
 <style id="card"
-    backgroundColor="white"
+    backgroundColor="{{ white }}"
     padding="16"
     borderRadius="8"
     />
 
-<style id="btn-primary"
-    backgroundColor="rgb(175, 242, 200)"
-    elevation="2"
-    borderRadius="4"
-    padding="16"
-    marginBottom="8"
-    display="flex"
-    flexDirection="row"
-    justifyContent="center"
-    >
-    <modifier pressed="true">
-        <style backgroundColor="rgb(118, 236, 163)" elevation="0"/>
-    </modifier>    
-</style>
-
-<style id="btn-primary-text"
-    color="rgb(45, 74, 56)"
-    fontSize="18"
-    />
-
-<style id="btn-delete" 
-    backgroundColor="red"
+<style id="btn" 
     padding="8"
     borderRadius="4"
     />
 
-<style id="btn-text" 
+<style id="btn-primary" 
+    backgroundColor="{{ gray_600 }}"
+    />
+
+<style id="btn-secondary" 
+    borderWidth="1"
+    borderColor="{{ gray_600 }}"
+    />
+
+<style id="btn-delete" 
+    backgroundColor="{{ red_500 }}"
+    />
+
+<style id="btn-gap"
+    marginBottom="12"
+    />
+
+<style id="text-center" 
     textAlign="center"
     />
 
 <style id="text-light" 
-    color="#ffffff"
+    color="{{ white }}"
     />
 
 <style id="text-dark"
-    color="#111827"
+    color="{{ gray_900 }}"
     />
 
 <style id="text-large"
     fontSize="18"
     />
+
+    <style id="text-medium" fontSize="16" />
 
 <style id="input-group" 
     marginBottom="8"
@@ -109,8 +107,8 @@
     display="flex"
     flexDirection="row"
     justifyContent="space-between"
-    color="#111827" 
-    backgroundColor="rgb(255, 255, 255)"
+    color="{{ gray_900 }}" 
+    backgroundColor="{{ white }}"
     elevation="2"
     borderRadius="4"
     padding="16"
@@ -124,7 +122,5 @@
 <style id="bucket-link" 
     display="flex"
     flexDirection="column"
-    backgroundColor="#111827"
+    backgroundColor="{{ gray_900 }}"
     />
-
-

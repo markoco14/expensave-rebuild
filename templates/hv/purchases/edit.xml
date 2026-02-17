@@ -5,10 +5,6 @@
     {# for development #}
     <behavior trigger="refresh" action="reload"/>
     <view style="card">
-        <view>
-            <behavior trigger="press" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
-            <text style="text-large text-dark">Cancel</text>
-        </view>
 
         <form id="purchase-form">
             
@@ -19,14 +15,19 @@
                 href="/hv/purchases/{{ purchase.purchase_id }}/edit"
                 target="form-fields"
                 action="replace-inner"
-                style="submit-button"
+                style="btn btn-primary btn-gap"
                 >
-                <text style="list-item-text">Save</text>
+                <text style="text-center text-light text-large">Save</text>
+            </view>
+
+            <view style="btn btn-secondary">
+                <behavior trigger="press" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
+                <text style="text-center text-large text-dark">Cancel</text>
             </view>
             
         </form>
     </view>
-    <view style="btn-delete">
+    <view style="btn btn-delete">
         <behavior 
             trigger="press" 
             action="append" 
@@ -34,7 +35,7 @@
             href="/hv/purchases/{{ purchase.purchase_id }}/delete" 
             verb="post"
             />
-        <text style="btn-text text-large text-dark">Delete</text>
+        <text style="text-center text-large text-dark">Delete</text>
     </view>
 </view>
 {% endblock content%}

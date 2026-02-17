@@ -15,7 +15,7 @@
 		<text style="text-dark text-large">{{ top_up.bucket_name }}</text>
 		<text style="text-dark text-large">
 			<behavior action="push" href="/hv/top-up/{{ top_up.top_up_id }}"/>
-			Edit</text>
+			Details</text>
 		</view>
 		<text style="text-dark text-large">{{ top_up.month_start }}</text>
 		<text style="text-dark text-large">{{ top_up.end_amount if top_up.end_amount else 0 }} / {{ top_up.start_amount }}</text>

@@ -1,0 +1,20 @@
+
+{% set gray_50 = "#f0f0f0" %}
+{% set gray_100 = "#f3f4f6" %}
+{% set gray_200 = "#e5e7eb" %}
+{% set gray_400 = "#9ca3af" %}
+{% set gray_600 = "#4b5563" %}
+{% set gray_900 = "#111827" %}
+
+{% set white = "#ffffff" %}
+{% set black = "#000000" %}
+
+{% set red_500 = "#f14f4f" %}
+
+{% set green_100 = "#91f7a5" %}
+{% set green_500 = "#2ee246" %}
+
+{% include "hv/styles/base.style.xml" %}
+{% include "hv/styles/bucket.style.xml" %}
+{% include "hv/styles/form.style.xml" %}
+{% include "hv/styles/purchases.style.xml" %}

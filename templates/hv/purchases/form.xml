@@ -28,13 +28,13 @@
             value="{{ bucket.bucket_id }}" 
             {% if selected_bucket_id|int == bucket.bucket_id %}selected="true"{% endif %}
             >
-            <text style="text-dark">{{ bucket.name }}</text>
+            <text style="text-dark text-medium">{{ bucket.name }}</text>
         </option>
         {% endfor %}
     </select-single>
     <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
-    <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="submit-button">
-        <text style="list-item-text">Save</text>
+    <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="btn btn-primary">
+        <text style="text-center text-large text-light">Save</text>
     </view>
     
 </form>
