@@ -9,16 +9,12 @@
 {% block content %}
 <view style="container column">
 	<behavior trigger="on-event" event-name="top-up-updated" action="reload" href="/hv/buckets"/>
+	<text style="heading text-dark text-center">{{ current_month.strftime("%B %Y") }}</text>
 	{% for top_up in top_ups %}
 	<view style="card">
-		<view style="card-header">
-		<text style="text-dark text-large">{{ top_up.bucket_name }}</text>
-		<text style="text-dark text-large">
-			<behavior action="push" href="/hv/top-up/{{ top_up.top_up_id }}"/>
-			Details</text>
-		</view>
-		<text style="text-dark text-large">{{ top_up.month_start }}</text>
-		<text style="text-dark text-large">{{ top_up.end_amount if top_up.end_amount else 0 }} / {{ top_up.start_amount }}</text>
+		<behavior action="push" href="/hv/top-up/{{ top_up.top_up_id }}"/>
+		<text style="text-dark text-large text-center">{{ top_up.bucket_name }}</text>
+		<text style="text-dark balance text-center">Balance: ${{ top_up.end_amount if top_up.end_amount else 0 }}</text>
 	</view>
 	{% endfor %}
 	<view style="bottom-btn-bar">

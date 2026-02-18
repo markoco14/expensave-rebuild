@@ -43,5 +43,8 @@ async def list(request: Request):
         return templates.TemplateResponse(
         request=request,
         name="hv/bucket/index.xml",
-        context={"top_ups": top_ups}
+        context={
+            "top_ups": top_ups,
+            "current_month": month_start
+            }
     )
