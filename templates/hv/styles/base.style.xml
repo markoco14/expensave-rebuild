@@ -70,7 +70,7 @@
 <style id="btn-tab" 
     borderWidth="1"
     borderColor="{{ gray_600 }}"
-    width="25%"
+    {# width="25%" #}
 />
 
 <style id="btn-delete" 
@@ -81,7 +81,12 @@
     marginBottom="12"
     />
 
-<style id="bottom-btn-bar" marginTop="32"/>
+<style id="bottom-btn-bar"
+    display="flex"
+    flexDirection="row"
+    gap="8"
+    marginTop="32"
+    />
 
 <style id="text-center" 
     textAlign="center"

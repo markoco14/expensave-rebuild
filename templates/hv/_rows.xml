@@ -36,6 +36,10 @@
     {% endfor %}
     <item key="links" style="bottom-btn-bar">
         <view style="btn btn-tab">
+			<behavior trigger="press" action="reload" href="/hv/today" />
+			<text style="text-dark text-large text-center">Today</text>
+		</view>
+        <view style="btn btn-tab">
             <behavior trigger="press" action="reload" target="container" href="/hv/buckets"/>
             <text style="text-dark text-large text-center">Buckets</text>
         </view>
