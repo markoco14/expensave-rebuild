@@ -14,8 +14,7 @@
 <style id="header"
     marginTop="12"
     marginBottom="24"
-    paddingLeft="8"
-    paddingRight="8"
+    paddingHorizontal="8"
     />
 
 <style id="flex-header" 
@@ -27,7 +26,6 @@
 
 <style id="heading"
     fontSize="32"
-    color="{{ gray_900 }}"
     />
 
 <style id="header-back-btn" 
