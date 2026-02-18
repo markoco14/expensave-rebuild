@@ -105,12 +105,10 @@
     display="flex"
     flexDirection="row"
     justifyContent="space-between"
-    color="{{ gray_900 }}" 
-    backgroundColor="{{ white }}"
-    elevation="2"
-    borderRadius="4"
-    padding="16"
+    borderBottomWidth="1"
+    borderColor="gray"
     marginBottom="8"
+    paddingHorizontal="8"
     />
 
 <style id="total-text" 
