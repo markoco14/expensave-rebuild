@@ -67,6 +67,12 @@
     borderColor="{{ gray_600 }}"
     />
 
+<style id="btn-tab" 
+    borderWidth="1"
+    borderColor="{{ gray_600 }}"
+    width="25%"
+/>
+
 <style id="btn-delete" 
     backgroundColor="{{ red_500 }}"
     />
@@ -74,6 +80,8 @@
 <style id="btn-gap"
     marginBottom="12"
     />
+
+<style id="bottom-btn-bar" marginTop="32"/>
 
 <style id="text-center" 
     textAlign="center"
