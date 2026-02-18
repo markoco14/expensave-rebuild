@@ -1,6 +1,7 @@
 {% extends "hv/layout.xml"%}
 
-{% block header %}<text style="heading">New purchase</text>{% endblock header %}
+{% block header %}
+<header style="header"><text style="heading text-center text-dark">New purchase</text></header>{% endblock header %}
 
 {% block content %}
 <view style="container">

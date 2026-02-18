@@ -10,7 +10,7 @@
 
 {% block content %}
 <view style="container" id="top-up-form">
-    <form style="card">
+    <form style="card form-column">
     
         {% include "hv/top-up/_form_fields.xml" %}
 
@@ -19,7 +19,7 @@
             href="/hv/top-up/{{ top_up.top_up_id }}"
             target="form-fields"
             action="replace" 
-            style="btn btn-primary btn-gap"
+            style="btn btn-primary"
             >
             <text style="text-center text-light text-large">Save</text>
         </view>
@@ -29,7 +29,7 @@
             href="/hv/top-up/{{ top_up.top_up_id }}"
             style="btn btn-secondary"
             >
-            <text style="text-dark text-large">Cancel</text>
+            <text style="text-dark text-large text-center">Cancel</text>
         </view>
         
     </form>
