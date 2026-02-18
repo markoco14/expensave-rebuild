@@ -12,3 +12,7 @@
     justifyContent="space-between"
     alignItems="center"
     />
+
+<style id="balance"
+    fontSize="32"
+    />
