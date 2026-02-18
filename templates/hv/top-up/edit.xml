@@ -2,9 +2,13 @@
 
 {% block header %}
 <header style="header flex-header">
-    <view style="header-back-btn" action="back"><text style="text-dark text-large">B</text></view>
+    <view style="header-placeholder" action="back">
+        {% include "hv/svg/back.xml" %}
+    </view>
     <text style="heading text-dark text-center">Edit Top Up</text>
-    <view style="header-placeholder"></view>
+    <view style="header-placeholder" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}/edit">
+        {% include "hv/svg/edit.xml" %}
+    </view>
 </header>
 {% endblock header %}
 
