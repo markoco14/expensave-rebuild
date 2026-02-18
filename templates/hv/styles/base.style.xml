@@ -14,8 +14,7 @@
 <style id="header"
     marginTop="12"
     marginBottom="24"
-    paddingLeft="8"
-    paddingRight="8"
+    paddingHorizontal="8"
     />
 
 <style id="flex-header" 
@@ -27,7 +26,6 @@
 
 <style id="heading"
     fontSize="32"
-    color="{{ gray_900 }}"
     />
 
 <style id="header-back-btn" 
@@ -69,12 +67,25 @@
     borderColor="{{ gray_600 }}"
     />
 
+<style id="btn-tab" 
+    borderWidth="1"
+    borderColor="{{ gray_600 }}"
+    {# width="25%" #}
+/>
+
 <style id="btn-delete" 
     backgroundColor="{{ red_500 }}"
     />
 
 <style id="btn-gap"
     marginBottom="12"
+    />
+
+<style id="bottom-btn-bar"
+    display="flex"
+    flexDirection="row"
+    gap="8"
+    marginTop="32"
     />
 
 <style id="text-center" 
@@ -107,12 +118,10 @@
     display="flex"
     flexDirection="row"
     justifyContent="space-between"
-    color="{{ gray_900 }}" 
-    backgroundColor="{{ white }}"
-    elevation="2"
-    borderRadius="4"
-    padding="16"
+    borderBottomWidth="1"
+    borderColor="gray"
     marginBottom="8"
+    paddingHorizontal="8"
     />
 
 <style id="total-text" 

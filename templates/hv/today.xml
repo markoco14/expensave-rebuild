@@ -1,8 +1,8 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<header style="header flex-header">
-    <text style="heading">{{ today_date.strftime("%B %d, %Y") }}</text>
+<header style="header">
+    <text style="heading text-dark text-center">{{ today_date.strftime("%B %d, %Y") }}</text>
 </header>
 {% endblock header%}
 

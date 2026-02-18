@@ -18,12 +18,15 @@
             </view>
         </view>
     </item>
-    <item key="total">
-        <view style="total">
-            <text style="total-text text-dark text-large">Total spent:</text>
-            <text style="total-text text-dark text-large">${{ total_spent }}</text>
-        </view>
+    <item key="total" style="total">
+        <text style="total-text text-dark text-large">Total spent:</text>
+        <text style="total-text text-dark text-large">${{ total_spent }}</text>
     </item>
+    {% if not purchases %}
+    <item key="no-purchases" style="list-item">
+        <text style="list-item-text text-large text-dark text-center">You have tracked any purchases today</text>
+    </item>
+    {% endif %}
     {% for purchase in purchases %}
     <item key="{{ loop.index0 }}" style="list-item">
         <behavior action="push" href="/hv/purchases/{{ purchase.purchase_id }}"/>
@@ -31,10 +34,14 @@
         <text style="list-item-text text-large text-dark">${{ purchase.amount }}</text>
     </item>
     {% endfor %}
-    <item key="links">
-        <view id="bucket-link">
+    <item key="links" style="bottom-btn-bar">
+        <view style="btn btn-tab">
+			<behavior trigger="press" action="reload" href="/hv/today" />
+			<text style="text-dark text-large text-center">Today</text>
+		</view>
+        <view style="btn btn-tab">
             <behavior trigger="press" action="reload" target="container" href="/hv/buckets"/>
-            <text style="text-dark text-large">Buckets</text>
+            <text style="text-dark text-large text-center">Buckets</text>
         </view>
     </item>
 </items>
