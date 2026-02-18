@@ -1,5 +1,11 @@
 {% extends "hv/layout.xml" %}
-{% block header %}<text style="heading">Edit Purchase {{ purchase.purchase_id }}</text>{% endblock header%}
+{% block header %}
+<header style="header flex-header">
+    <view style="header-back-btn" action="back"><text style="text-dark text-large">B</text></view>
+    <text style="heading text-dark">Edit Purchase</text>
+    <view style="header-placeholder"></view>
+</header>
+{% endblock header%}
 {% block content %}
 <view style="container">
     {# for development #}
