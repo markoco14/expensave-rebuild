@@ -3,7 +3,7 @@
 {% block header %}
 <header style="header flex-header">
     <view style="header-back-btn" action="back"><text style="text-dark text-large">B</text></view>
-    <text style="heading">Top Up</text>
+    <text style="heading text-dark text-center">Top Up</text>
     <view style="header-placeholder"></view>
 </header>
 {% endblock header %}

@@ -2,7 +2,7 @@
 
 {% block header %}
 <header style="header flex-header">
-	<text style="heading">Buckets</text>
+	<text style="heading text-dark text-center">Buckets</text>
 </header>
 {% endblock header %}
 
