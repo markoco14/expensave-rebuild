@@ -7,7 +7,8 @@
         <text style="text-dark">Email</text>
         <text-field name="email" 
             placeholder="Email"
-            style="text-field"
+            placeholderTextColor="#111827"
+            style="text-field text-dark"
             value="{{ previous_values.get('email', '') if errors else ''}}"
             />
         <text style="error">{{ errors.get("email", "") if errors else ''}}</text>
@@ -17,8 +18,9 @@
         <text style="text-dark">Password</text>
         <text-field name="password" 
             placeholder="Password"
+            placeholderTextColor="#111827"
             secure-text="true"
-            style="text-field"
+            style="text-field text-dark"
             value="{{ previous_values.get('password', '') if errors else ''}}"
             />
         <text style="error">{{ errors.get("password", "") if errors else ''}}</text>

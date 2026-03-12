@@ -143,10 +143,10 @@ async def login(request: Request):
     if not db_user:
         errors["email"] =  "You need to enter your email."
 
-    db_user = SimpleNamespace(**db_user)
 
-    if password and not cryptography.verify_password(plain_password=password, hashed_password=db_user.hashed_password):
-        errors["password"] =  "You need to enter your password."
+    if db_user:
+        if password and not cryptography.verify_password(plain_password=password, hashed_password=db_user["hashed_password"]):
+            errors["password"] =  "You need to enter your password."
 
     if errors:
         return templates.TemplateResponse(
@@ -160,6 +160,7 @@ async def login(request: Request):
                 "Content-Type": content_type
                 }
         )
+    db_user = SimpleNamespace(**db_user)
     
     token = str(uuid.uuid4())
     expires_at = int(time.time()) + (60 * 60 * 24 * 3)
