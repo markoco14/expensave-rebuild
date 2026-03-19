@@ -27,7 +27,7 @@
     </view>
 
     <view verb="post" href="/hv/login" action="replace" target="login-form" style="btn btn-primary">
-        <text style="text-center text-large text-dark">Save</text>
+        <text style="text-center text-large text-dark">Login</text>
     </view>
 
 </form>
