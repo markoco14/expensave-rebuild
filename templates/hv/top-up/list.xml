@@ -1,0 +1,14 @@
+{% if not purchases %}
+<view xmlns="https://hyperview.org/hyperview" style="card">
+    <text style="text-large text-dark">No spending in this bucket this month.</text>
+</view>
+{% else %}
+<list xmlns="https://hyperview.org/hyperview" style="column">
+    {% for purchase in purchases %}
+    <item key="{{ purchase.purchase_id }}" style="card margin-bottom">
+        <text style="text-large text-dark">{{ purchase.purchased_at }}</text>
+        <text style="text-large text-dark">{{ purchase.amount }}</text>
+    </item>
+    {% endfor %}
+</list>
+{% endif %}
