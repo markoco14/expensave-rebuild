@@ -38,6 +38,8 @@
     borderRadius="100%"
     />
 
+<style id="margin-bottom" marginBottom="16"/>
+
 <style id="column"
     display="flex"
     flexDirection="column"
