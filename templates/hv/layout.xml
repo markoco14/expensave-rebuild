@@ -19,17 +19,19 @@
             <navigation:bottom-tab-bar
                 navigation:navigator="tabs-navigator"
             >
-                <navigation:bottom-tab-bar-item navigation:route="today">
-                    <view style="btn btn-tab">
-                        <text style="text-dark text-large text-center">Today</text>
-                    </view>
-                </navigation:bottom-tab-bar-item>
+                <view style="bottom-nav">
+                    <navigation:bottom-tab-bar-item navigation:route="today" style="tab-item" selected="true">
+                        <view>
+                            <text style="tab-label">Today</text>
+                        </view>
+                    </navigation:bottom-tab-bar-item>
 
-                <navigation:bottom-tab-bar-item navigation:route="buckets">
-                    <view style="btn btn-tab">
-                        <text style="text-dark text-large text-center">Buckets</text>
-                    </view>
-                </navigation:bottom-tab-bar-item>
+                    <navigation:bottom-tab-bar-item navigation:route="buckets" style="tab-item">
+                        <view>
+                            <text style="tab-label">Buckets</text>
+                        </view>
+                    </navigation:bottom-tab-bar-item>
+                </view>
 
             </navigation:bottom-tab-bar>
 

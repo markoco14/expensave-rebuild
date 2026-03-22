@@ -2,6 +2,37 @@
     minHeight="100%"
     />
 
+
+<style id="bottom-nav"
+    display="flex"
+    flexDirection="row"
+    height="56"
+    backgroundColor="{{ white }}"
+    />
+
+<style id="tab-item"
+    flex="1"
+    {# width="25%" #}
+    alignItems="center"
+    justifyContent="center"
+    paddingTop="8"
+    paddingBottom="8"
+>
+    <modifier selected="true">
+        <style backgroundColor="{{ gray_900 }}" color="{{ white }}"/>
+    </modifier>
+</style>
+
+<style id="tab-label"
+    color="{{ gray_900 }}"
+    fontSize="18"
+    textAlign="center"
+    >
+    <modifier selected="true">
+        <style color="{{ white }}" />
+    </modifier>
+</style>
+
 <style id="container"
     minHeight="100%"
     paddingLeft="8"
