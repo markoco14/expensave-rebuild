@@ -34,4 +34,10 @@
         <text style="list-item-text text-large text-dark">${{ purchase.amount }}</text>
     </item>
     {% endfor %}
+    <item key="logout-btn">
+        <view id="logout-btn" style="btn btn-tab">
+			<behavior trigger="press" target="logout-btn" action="replace" href="/hv/logout" />
+			<text style="text-dark text-large text-center">Logout</text>
+		</view>
+    </item>
 </items>
