@@ -13,6 +13,7 @@ routes = [
     ("POST",    "/hv/today",        application.store,  [Depends(is_user)]),
     ("GET",     "/hv/today/new",    application.new,    [Depends(is_user)]),
     ("POST",    "/hv/login",        application.login,  []),
+    ("GET",    "/hv/logout",        application.logout,  [Depends(is_user)]),
 
     ("GET",     "/hv/purchases/{purchase_id}",          purchase.show,      [Depends(is_user)]),
     ("GET",     "/hv/purchases/{purchase_id}/edit",     purchase.edit,      [Depends(is_user)]),

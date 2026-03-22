@@ -186,6 +186,32 @@ async def login(request: Request):
 
     return response
 
+async def logout(request: Request):
+    accept_header = request.headers.get("accept", "")
+    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+
+    # if not request.state.user:
+    #     return RedirectResponse(url="/signin", status_code=303)
+        
+    with sqlite3.connect("db.sqlite3") as conn:
+        cursor = conn.cursor()        
+        cursor.execute("DELETE FROM session where session_id = ?;", (request.state.user.session_id,))
+
+    # response = RedirectResponse(url="/login", status_code=303)
+    # response.delete_cookie("session-id")
+    # return response
+    response = templates.TemplateResponse(
+        request=request,
+        name="hv/auth/logout.xml",
+        headers={
+            "Content-Type": content_type
+            }
+    )
+
+    response.delete_cookie(key="session-id")
+
+    return response
+
 
 async def today(request: Request):
     accept_header = request.headers.get("accept", "")
