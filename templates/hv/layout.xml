@@ -1,4 +1,7 @@
-<doc xmlns="https://hyperview.org/hyperview">
+<doc 
+    xmlns="https://hyperview.org/hyperview"
+    xmlns:navigation="https://hyperview.org/navigation"
+    >
     <screen>
         <styles>
             {% include "hv/styles/index.style.xml" %}
@@ -12,6 +15,25 @@
             {% endblock header %}
 
             {% block content %}{% endblock %}   
+
+            <navigation:bottom-tab-bar
+                navigation:navigator="tabs-navigator"
+            >
+                <view style="bottom-nav">
+                    <navigation:bottom-tab-bar-item navigation:route="today" style="tab-item" selected="true">
+                        <view>
+                            <text style="tab-label">Today</text>
+                        </view>
+                    </navigation:bottom-tab-bar-item>
+
+                    <navigation:bottom-tab-bar-item navigation:route="buckets" style="tab-item">
+                        <view>
+                            <text style="tab-label">Buckets</text>
+                        </view>
+                    </navigation:bottom-tab-bar-item>
+                </view>
+
+            </navigation:bottom-tab-bar>
 
         </body>
   </screen>

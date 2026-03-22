@@ -1,0 +1,9 @@
+<view xmlns="https://hyperview.org/hyperview" id="logout-btn" style="btn btn-tab">
+    <behavior trigger="press" target="logout-btn" action="replace" href="/hv/logout" />
+    <text style="text-dark text-large text-center">Logout</text>
+    <behavior
+        trigger="load"
+        action="dispatch-event"
+        event-name="reload-root-navigation"
+        />
+</view>

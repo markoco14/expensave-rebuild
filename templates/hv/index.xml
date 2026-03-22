@@ -1,5 +1,30 @@
 <doc xmlns="https://hyperview.org/hyperview">
     <navigator id="root" type="stack">
-        <nav-route id="today" href="/hv/today" />
-    </navigator>
+        <behavior
+        trigger="on-event"
+        event-name="reload-root-navigation"
+        action="reload"
+        href="/hv/index"
+        />
+        {% if request.state.user %}
+            <nav-route id="tabs">
+                <navigator id="tabs-navigator" type="tab">
+                    <nav-route id="today" href="/hv/today" />
+                    <nav-route id="buckets" href="/hv/buckets" />
+                    {# <nav-route id="today">
+                        <navigator id="today-stack" type="stack">
+                            <nav-route id="today-screen" href="/hv/today" />
+                        </navigator>
+                    </nav-route> #}
+                    {# <nav-route id="buckets">
+                        <navigator id="bucket-stack" type="stack">
+                            <nav-route id="bucket-screen" href="/hv/buckets" />
+                        </navigator>
+                    </nav-route> #}
+                </navigator>
+            </nav-route>
+        {% else %}
+            <nav-route id="today" href="/hv/today" />
+        {% endif %}
+  </navigator>
 </doc>

@@ -1,6 +1,11 @@
 <form id="login-form" xmlns="https://hyperview.org/hyperview">
     {% if saved == True %}
-        <behavior trigger="load" action="reload" href="/hv/today"/>
+        {# <behavior trigger="load" action="reload" href="/hv/today"/> #}
+        <behavior
+        trigger="load"
+        action="dispatch-event"
+        event-name="reload-root-navigation"
+        />
     {% endif %}
 
     <view style="input-group">
