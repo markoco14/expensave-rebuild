@@ -6,7 +6,7 @@
         {% include "hv/svg/back.xml" %}
     </view>
     <text style="heading text-dark text-center">Top Up</text>
-    <view style="header-placeholder" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}/edit">
+    <view style="header-placeholder" action="reload" href="/hv/top-up/{{ bucket.top_up.top_up_id }}/edit">
         {% include "hv/svg/edit.xml" %}
     </view>
 </header>
@@ -23,7 +23,7 @@
 
     <view id="top-up-purchases">
         <behavior 
-            href="/hv/top-up/{{ bucket.top_up.top_up_id}}?content=list" 
+            href="/hv/buckets/{{ bucket.bucket_id }}?content=list" 
             trigger="load" 
             target="top-up-purchases" 
             action="replace" />
