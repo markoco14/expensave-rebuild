@@ -15,19 +15,20 @@
 {% block content %}
 <view style="container">
     <view style="card margin-bottom">
-        <text style="text-dark text-large">Bucket: {{ top_up.bucket_name }}</text>
-        <text style="text-dark text-large">Month: {{ top_up.month_start }}</text>
-        <text style="text-dark text-large">Amount available: {{ top_up.start_amount }}</text>
-        <text style="text-dark text-large">Amount spent: {{ top_up.end_amount if top_up.end_amount else 0 }}</text>
+        <text style="text-dark text-large">Bucket: {{ bucket.name }}</text>
+        <text style="text-dark text-large">Month: {{ bucket.top_up.month_start }}</text>
+        <text style="text-dark text-large">Amount available: {{ bucket.top_up.start_amount }}</text>
+        <text style="text-dark text-large">Amount spent: {{ bucket.top_up.end_amount if bucket.top_up.end_amount else 0 }}</text>
     </view>
-    {# <text style="text-dark text-large" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}/edit">Edit</text> #}
+
     <view id="top-up-purchases">
         <behavior 
-            href="/hv/top-up/{{ top_up.top_up_id}}?content=list" 
+            href="/hv/top-up/{{ bucket.top_up.top_up_id}}?content=list" 
             trigger="load" 
             target="top-up-purchases" 
             action="replace" />
         <text style="card text-large text-dark">Loading...</text>
     </view>
+    
 </view>
 {% endblock content%}

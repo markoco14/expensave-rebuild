@@ -22,6 +22,7 @@ routes = [
     ("POST",    "/hv/purchases/{purchase_id}/delete",   purchase.delete,    [Depends(is_user)]),
 
     ("GET",     "/hv/buckets",  bucket.list, [Depends(is_user)]),
+    ("GET",     "/hv/buckets/{bucket_id}", bucket.show, [Depends(is_user)]),
 
     ("GET",     "/hv/top-up/{top_up_id}",       top_up.show,    [Depends(is_user)]),
     ("GET",     "/hv/top-up/{top_up_id}/edit",  top_up.edit,    [Depends(is_user)]),
