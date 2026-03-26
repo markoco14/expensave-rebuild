@@ -58,7 +58,8 @@ async def update(request: Request, top_up_id: int):
                             btu.month_start, 
                             btu.start_amount, 
                             btu.end_amount,
-                            b.name as bucket_name 
+                            b.name as bucket_name,
+                            b.bucket_id
                         FROM bucket_month_top_up as btu
                         JOIN bucket as b
                         USING (bucket_id)
