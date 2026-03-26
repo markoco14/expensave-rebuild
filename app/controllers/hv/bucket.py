@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 from app.models.bucket import Bucket
 from app.models.bucket_month_top_up import BucketMonthTopUp
 from app.respository.bucket import get_with_top_up, list_with_top_ups
+from app.respository.purchase import list_for_bucket_and_month
 
 
 templates = Jinja2Templates(directory="templates")
@@ -79,43 +80,16 @@ async def show(request: Request, bucket_id: int):
     # get start and end of month
     if query_params.get("content") == "list":
 
-        # get the bucket by the top up
         with sqlite3.connect("db.sqlite3") as conn:
             conn.execute("PRAGMA foreign_keys = ON;")
             conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute("""
-                            SELECT 
-                                b.bucket_id, 
-                                b.name,
-                                btu.top_up_id,
-                                btu.month_start
-                            FROM bucket as b 
-                            JOIN bucket_month_top_up as btu
-                            USING (bucket_id)
-                            WHERE bucket_id = ?
-                            AND month_start = ?;
-                            """, (bucket_id, month_start))
-            row = cursor.fetchone()
 
-            if not row:
-                return templates.TemplateResponse(
-                    request=request,
-                    name="hv/top-up/list.xml",
-                    context={
-                        "purchases": []
-                    }
+            purchase_rows = list_for_bucket_and_month(
+                conn=conn,
+                bucket_id=bucket_id,
+                utc_month_start=utc_month_start,
+                utc_month_end=utc_month_end
                 )
-
-            cursor.execute("""
-                           SELECT * 
-                           FROM purchase 
-                           WHERE bucket_id = ?
-                           AND purchased_at >= ?
-                           AND purchased_at < ?
-                           ORDER BY purchased_at DESC;""", (row["bucket_id"], utc_month_start, utc_month_end))
-            
-            purchase_rows = cursor.fetchall()
 
         return templates.TemplateResponse(
             request=request,
