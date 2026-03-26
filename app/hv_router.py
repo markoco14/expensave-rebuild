@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers.hv import application, bucket, purchase, top_up
+from app.controllers.hv import application, auth, bucket, purchase, top_up
 from app.dependencies import is_user
 
 
@@ -12,8 +12,9 @@ routes = [
     ("GET",     "/hv/today",        application.today,  [Depends(is_user)]),
     ("POST",    "/hv/today",        application.store,  [Depends(is_user)]),
     ("GET",     "/hv/today/new",    application.new,    [Depends(is_user)]),
-    ("POST",    "/hv/login",        application.login,  []),
-    ("GET",    "/hv/logout",        application.logout,  [Depends(is_user)]),
+    
+    ("POST",    "/hv/login",        auth.login,  []),
+    ("GET",    "/hv/logout",        auth.logout,  [Depends(is_user)]),
 
     ("GET",     "/hv/purchases/{purchase_id}",          purchase.show,      [Depends(is_user)]),
     ("GET",     "/hv/purchases/{purchase_id}/edit",     purchase.edit,      [Depends(is_user)]),
