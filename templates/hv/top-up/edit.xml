@@ -20,7 +20,7 @@
 
         <view
             verb="post"
-            href="/hv/top-up/{{ top_up.top_up_id }}"
+            href="/hv/top-up/{{ top_up.top_up_id }}/update"
             target="form-fields"
             action="replace" 
             style="btn btn-primary"
@@ -30,7 +30,7 @@
 
         <view 
             action="reload"
-            href="/hv/top-up/{{ top_up.top_up_id }}"
+            href="/hv/buckets/{{ top_up.bucket_id }}"
             style="btn btn-secondary"
             >
             <text style="text-dark text-large text-center">Cancel</text>

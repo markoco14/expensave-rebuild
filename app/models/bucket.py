@@ -6,6 +6,7 @@ from typing import List, Optional
 
 @dataclass
 class Bucket:
+    # table attributes
     bucket_id: int
     name: Optional[str] = None
     amount: Optional[int] = None
@@ -14,6 +15,9 @@ class Bucket:
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     user_id: Optional[int] = None
+
+    # application attributes
+    top_up: Optional[int] = None
 
     @classmethod
     def list_for_month(cls, user_id: int, fields: List[str]):

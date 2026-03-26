@@ -1,7 +1,7 @@
 <view id="form-fields" xmlns="https://hyperview.org/hyperview" style="form-column">
     {% if saved == True %}
         <behavior trigger="load" action="dispatch-event" event-name="top-up-updated" />
-        <behavior trigger="load" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}"/>
+        <behavior trigger="load" action="reload" href="/hv/buckets/{{ top_up.bucket_id }}"/>
     {% endif %}
     <view>
         <text style="text-dark text-large">Start amount</text>
