@@ -13,22 +13,22 @@
 {% endblock header %}
 
 {% block content %}
-<view style="container">
-    <view style="card margin-bottom">
+<list style="container">
+    <item style="card margin-bottom">
         <text style="text-dark text-large">Bucket: {{ bucket.name }}</text>
         <text style="text-dark text-large">Month: {{ bucket.top_up.month_start }}</text>
-        <text style="text-dark text-large">Amount available: {{ bucket.top_up.start_amount }}</text>
-        <text style="text-dark text-large">Amount spent: {{ bucket.top_up.end_amount if bucket.top_up.end_amount else 0 }}</text>
-    </view>
+        <text style="text-dark text-large">Starting Amount: {{ bucket.top_up.start_amount }}</text>
+        <text style="text-dark text-large">Amount Remaining: {{ bucket.top_up.end_amount if bucket.top_up.end_amount else 0 }}</text>
+    </item>
 
-    <view id="top-up-purchases">
+    <item id="top-up-purchases">
         <behavior 
             href="/hv/buckets/{{ bucket.bucket_id }}?content=list" 
             trigger="load" 
             target="top-up-purchases" 
             action="replace" />
         <text style="card text-large text-dark">Loading...</text>
-    </view>
+    </item>
     
-</view>
+</list>
 {% endblock content%}
