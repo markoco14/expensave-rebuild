@@ -93,7 +93,7 @@ async def show(request: Request, bucket_id: int):
 
         return templates.TemplateResponse(
             request=request,
-            name="hv/bucket/list.xml",
+            name="hv/bucket/_list.xml",
             context={
                 "purchases": purchase_rows
             }
