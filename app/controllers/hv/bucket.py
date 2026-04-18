@@ -1,3 +1,4 @@
+import calendar
 from datetime import datetime, timezone
 from pprint import pprint
 import sqlite3
@@ -122,14 +123,25 @@ async def show(request: Request, bucket_id: int):
     bucket = Bucket(
         bucket_id=bucket_top_up_join["bucket_id"],
         name=bucket_top_up_join["name"],
+        is_daily=bucket_top_up_join["is_daily"],
         top_up=top_up
     )
+
+    amount_spent = None
+    if bucket.is_daily:
+        day_number = datetime.now().day
+        number_of_days_finished = day_number
+        month_num_days = calendar.monthrange(datetime.now().year, datetime.now().month)[1]
+        daily_allowance = int(top_up.start_amount / month_num_days)
+        amount_spent = daily_allowance * number_of_days_finished
+
 
     return templates.TemplateResponse(
         request=request,
         name="hv/bucket/show.xml",
         context={
-            "top_up": None,
-            "bucket": bucket
+            "bucket": bucket,
+            "top_up": top_up,
+            "amount_spent": amount_spent
             }
     )
