@@ -133,13 +133,13 @@ async def show(request: Request, bucket_id: int):
         top_up=top_up
     )
 
-    amount_spent = None
+    expected_spending = 0
     if bucket.is_daily:
         day_number = datetime.now().day
         number_of_days_finished = day_number
         month_num_days = calendar.monthrange(datetime.now().year, datetime.now().month)[1]
         daily_allowance = int(top_up.start_amount / month_num_days)
-        amount_spent = daily_allowance * number_of_days_finished
+        expected_spending = daily_allowance * number_of_days_finished
 
 
     return templates.TemplateResponse(
@@ -148,7 +148,8 @@ async def show(request: Request, bucket_id: int):
         context={
             "bucket": bucket,
             "top_up": top_up,
-            "amount_spent": amount_spent,
-            "logged_spending": int(logged_spending)
+            "expected_spending": expected_spending,
+            "logged_spending": int(logged_spending),
+            "actual_spending": top_up.start_amount - top_up.end_amount 
             }
     )
