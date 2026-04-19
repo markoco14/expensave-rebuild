@@ -35,6 +35,7 @@ def get_with_top_up(conn: sqlite3.Connection, month_start, bucket_id):
         SELECT
             b.bucket_id,
             b.name,
+            b.is_daily,
             btu.top_up_id,
             btu.month_start,
             btu.start_amount,

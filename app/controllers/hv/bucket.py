@@ -1,7 +1,6 @@
+import calendar
 from datetime import datetime, timezone
-from pprint import pprint
 import sqlite3
-from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
@@ -9,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from app.models.bucket import Bucket
 from app.models.bucket_month_top_up import BucketMonthTopUp
 from app.respository.bucket import get_with_top_up, list_with_top_ups
-from app.respository.purchase import list_for_bucket_and_month
+from app.respository import purchase as purchase_repo
 
 
 templates = Jinja2Templates(directory="templates")
@@ -84,7 +83,7 @@ async def show(request: Request, bucket_id: int):
             conn.execute("PRAGMA foreign_keys = ON;")
             conn.row_factory = sqlite3.Row
 
-            purchase_rows = list_for_bucket_and_month(
+            purchase_rows = purchase_repo.list_for_bucket_and_month(
                 conn=conn,
                 bucket_id=bucket_id,
                 utc_month_start=utc_month_start,
@@ -93,7 +92,7 @@ async def show(request: Request, bucket_id: int):
 
         return templates.TemplateResponse(
             request=request,
-            name="hv/bucket/list.xml",
+            name="hv/bucket/_list.xml",
             context={
                 "purchases": purchase_rows
             }
@@ -104,6 +103,14 @@ async def show(request: Request, bucket_id: int):
         conn.row_factory = sqlite3.Row
 
         bucket_top_up_join = get_with_top_up(conn=conn, month_start=month_start, bucket_id=bucket_id)
+
+        logged_spending = purchase_repo.get_logged_spend_for_bucket_month(
+            conn=conn,
+            bucket_id=bucket_id,
+            utc_month_start=utc_month_start,
+            utc_month_end=utc_month_end
+            )
+
 
     if not bucket_top_up_join:
         return templates.TemplateResponse(
@@ -122,14 +129,26 @@ async def show(request: Request, bucket_id: int):
     bucket = Bucket(
         bucket_id=bucket_top_up_join["bucket_id"],
         name=bucket_top_up_join["name"],
+        is_daily=bucket_top_up_join["is_daily"],
         top_up=top_up
     )
+
+    amount_spent = None
+    if bucket.is_daily:
+        day_number = datetime.now().day
+        number_of_days_finished = day_number
+        month_num_days = calendar.monthrange(datetime.now().year, datetime.now().month)[1]
+        daily_allowance = int(top_up.start_amount / month_num_days)
+        amount_spent = daily_allowance * number_of_days_finished
+
 
     return templates.TemplateResponse(
         request=request,
         name="hv/bucket/show.xml",
         context={
-            "top_up": None,
-            "bucket": bucket
+            "bucket": bucket,
+            "top_up": top_up,
+            "amount_spent": amount_spent,
+            "logged_spending": int(logged_spending)
             }
     )
