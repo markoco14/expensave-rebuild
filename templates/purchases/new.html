@@ -12,9 +12,9 @@ New Purchase | The Money Game
     {% else %}
     <form hx-post="/purchases" hx-swap="none" action="/purchases" method="POST">
         
-        <div class="input-group">
-            <label for="amount">Amount</label>
-            <input
+        <div class="form__input-group">
+            <label for="amount" class="form__label">Amount</label>
+            <input class="form__input"
                 id="amount"
                 name="amount"
                 type="number"
@@ -23,9 +23,9 @@ New Purchase | The Money Game
                 />
             <span class="error">{{ errors.get("amount", "") if errors else ''}}</span>
         </div>
-        {# <div class="input-group">
-            <label for="currency">Currency</label>
-            <input
+        {# <div class="form__input-group">
+            <label for="currency" class="form__label">Currency</label>
+            <input class="form__input"
                 id="currency"
                 name="currency"
                 type="text"
@@ -34,19 +34,19 @@ New Purchase | The Money Game
                 />
             <span class="error">{{ errors.get("currency", "") if errors else ''}}</span>
         </div> #}
-        <div class="input-group">
-            <label for="date">Date</label>
-            <input id="date" name="date" type="date" value='{{ previous_values.get("date", default_date) if errors else default_date}}' />
+        <div class="form__input-group">
+            <label for="date" class="form__label">Date</label>
+            <input class="form__input" id="date" name="date" type="date" value='{{ previous_values.get("date", default_date) if errors else default_date}}' />
             <span class="error">{{ errors.get("date", "") if errors else ''}}</span>
         </div>
-        <div class="input-group">
-            <label for="time">Time</label>
-            <input id="time" name="time" type="time" step="1" value='{{ previous_values.get("time", default_time) if errors else default_time}}' />
+        <div class="form__input-group">
+            <label for="time" class="form__label">Time</label>
+            <input class="form__input" id="time" name="time" type="time" step="1" value='{{ previous_values.get("time", default_time) if errors else default_time}}' />
             <span class="error">{{ errors.get("time", "") if errors else ''}}</span>
         </div>
-        {# <div class="input-group">
-            <label for="timezone">Timezone</label>
-            <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly/>
+        {# <div class="form__input-group">
+            <label for="timezone" class="form__label">Timezone</label>
+            <input class="form__input" id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly/>
             <span class="error">{{ errors.get("timezone", "") if errors else ''}}</span>
         </div> #}
         <fieldset>
@@ -54,7 +54,7 @@ New Purchase | The Money Game
             <div class="radio-group">
                 {% for bucket in buckets %}
                     <label>
-                        <input 
+                        <input class="form__input" 
                             type="radio"
                             name="bucket"
                             value="{{ bucket.bucket_id }}"
@@ -68,7 +68,7 @@ New Purchase | The Money Game
             </div>
             <span class="error">{{ errors.get("bucket", "") if errors else ''}}</span>
         </fieldset>
-        <button type="submit">Save</button>
+        <button type="submit" class="form__button">Save</button>
     </form>
     {% endif%}
 </div>

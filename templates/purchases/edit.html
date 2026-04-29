@@ -10,21 +10,21 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
     <hr />
     <br />
     <form hx-put="/purchases/{{ purchase.purchase_id }}" hx-swap="none">
-        <div class="input-group">
-            <label for="amount">Amount</label>
-            <input id="amount" name="amount" type="text" value="{{ purchase.amount }}"/>
+        <div class="form__input-group">
+            <label for="amount" class="form__label">Amount</label>
+            <input id="amount" name="amount" type="text" value="{{ purchase.amount }}" class="form__input"/>
         </div>
-        <div class="input-group">
-            <label for="date">Date</label>
-            <input id="date" name="date" type="date" value="{{ purchase.purchased_at.strftime('%Y-%m-%d') }}"/>
+        <div class="form__input-group">
+            <label for="date" class="form__label">Date</label>
+            <input id="date" name="date" type="date" value="{{ purchase.purchased_at.strftime('%Y-%m-%d') }}" class="form__input"/>
         </div>
-        <div class="input-group">
-            <label for="time">Time</label>
-            <input id="time" name="time" type="time" value="{{ purchase.purchased_at.strftime('%H:%M:%S') }}"/>
+        <div class="form__input-group">
+            <label for="time" class="form__label">Time</label>
+            <input id="time" name="time" type="time" value="{{ purchase.purchased_at.strftime('%H:%M:%S') }}" class="form__input"/>
         </div>
-        <div class="input-group">
-            <label for="timezone">Timezone</label>
-            <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly />
+        <div class="form__input-group">
+            <label for="timezone" class="form__label">Timezone</label>
+            <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly class="form__input"/>
         </div>
          <fieldset>
             <legend>Spending Bucket</legend>
@@ -47,10 +47,9 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
             </div>
             <span class="error">{{ errors.get("bucket", "") if errors else ''}}</span>
         </fieldset>
-        <button type="submit">Update purchase</button>
+        <button type="submit" class="form__button">Update purchase</button>
     </form>
 </section>
-<hr class="divider"/>
 <section class="wrapper danger-zone">
     <h2>Danger Zone</h2>
     <p>Press the button below to delete this purchase. Warning, you cannot undo this action.</p>

@@ -12,11 +12,15 @@
         {% set start_date = "2025-11-01" if not request.query_params.get("start_date") else request.query_params.get("start_date")%}
         {% set end_date = "2025-11-30" if not request.query_params.get("end_date") else request.query_params.get("end_date")%}
         <form action="/stats" method="GET">
-            <label for="start">Start</label>
-            <input type="date" id="start"  name="start_date" value="{{ start_value }}"/>
-            <label for="end">End</label>
-            <input type="date" id="end" name="end_date" value="{{ end_value }}"/>
-            <button type="submit">Go</button>
+            <div class="form__input-group">
+                <label for="start" class="form__label">Start</label>
+                <input type="date" id="start"  name="start_date" value="{{ start_value }}" class="form__input" />
+            </div>
+            <div class="form__input-group">
+                <label for="end" class="form__label">End</label>
+                <input type="date" id="end" name="end_date" value="{{ end_value }}" class="form__input" />
+            </div>
+            <button type="submit" class="form__button">Go</button>
         </form>
     </section>
     <section>

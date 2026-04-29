@@ -31,6 +31,7 @@
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
+    --space-8: 4rem;
 
     --color-white: #ffffff;
     --color-black: #000000;
@@ -545,6 +546,9 @@ form {
     }    
 }
 
+.danger-zone {
+    margin-top: var(--space-8);
+}
 
 .danger-zone > h2 {
     margin-bottom: 0.5rem;
@@ -740,5 +744,6 @@ body {
 }
 
 .form__button:hover {
+    color: var(--color-white);
     background-color: var(--color-primary-hover);
 }
