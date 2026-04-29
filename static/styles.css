@@ -4,6 +4,34 @@
 
 
 :root {
+
+    /* Brand greens — hand-picked, not generated */
+    --green-light:   #e6fce6;   /* tints, chip backgrounds */
+    --green-mid:     #6ee870    ;   /* highlights, badges */
+    --green:         #04c307;   /* primary actions, buttons */
+    --green-dark:    #039406;   /* hover, pressed states */
+    --green-deeper:  #025c03;   /* high-contrast text on light bg */
+
+    /* Semantic aliases — what you actually use in BEM */
+    --color-primary:        var(--green);
+    --color-primary-hover:  var(--green-dark);
+    --color-accent:         var(--green-mid);
+    --color-tint:           var(--green-light);
+    --color-positive:       var(--green);       /* income, gains */
+    --color-negative:       #f87171;            /* expenses, losses */
+
+    /* Neutrals */
+    --color-bg:             #f9fafb;
+    --color-surface:        #ffffff;
+    --color-border:         #e5e7eb;
+    --color-text-muted:     #6b7280;
+    --color-text:           #111827;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+
     --color-white: #ffffff;
     --color-black: #000000;
 
@@ -200,7 +228,7 @@ details[open] {
 .header__logo {
     font-weight: 600;
     font-size: 1.5rem;
-    color: var(--color-green-600);
+    color: var(--color-primary-hover);
 }
 
 .header__nav {
@@ -215,7 +243,7 @@ details[open] {
 }
 
 .header__nav a:hover {
-    color: var(--color-green-600);
+    color: var(--color-primary-hover);
     text-decoration: underline;
     text-underline-offset: 0.25rem;
 }
@@ -398,16 +426,16 @@ details[open] {
 form {
     display: grid;
     
-    .input-group {
+    /* .input-group {
         display: grid;
         gap: 0.25rem;
         margin-bottom: 0.5rem;
-    }
+    } */
 
-    .input-group > label {
+    /* .input-group > label {
         font-weight: 600;
         color: var(--color-gray-800);
-    }
+    } */
 
     .input-group > .error {
         height: 14px;
@@ -418,11 +446,11 @@ form {
         margin-top: 0;
     }
 
-    .input-group > input {
+    /* .input-group > input {
         border: 1px solid rgb(124, 124, 124);
         border-radius: 0.25rem;
         padding:0.5rem;
-    }
+    } */
 
     input[readonly] {
         background-color: rgb(239,239,239);
@@ -517,37 +545,35 @@ form {
     }    
 }
 
-.danger-zone {
-    h2 {
-        margin-bottom: 0.5rem;
-    }
-    
-    p {
-        margin-bottom: 1rem;
-    }
 
-    .delete-btn {
-        text-transform: uppercase;
-        font-weight: bold;
-        display: inline-block;
-        border: 1px solid red;
-        color: white;
-        background-color: red;
-        border-radius: 0.25rem;
-        padding: 0.5rem 0.5rem;
-        cursor: pointer;
-    }
-
-    .delete-btn:hover {
-        background-color: rgba(177, 33, 33, 1);
-        border-color: rgba(177, 33, 33, 1);
-    }
-
-    .delete-btn:active {
-        scale: 0.99;
-    }
+.danger-zone > h2 {
+    margin-bottom: 0.5rem;
 }
 
+.danger-zone > p {
+    margin-bottom: 1rem;
+}
+
+.danger-zone > .delete-btn {
+    text-transform: uppercase;
+    font-weight: bold;
+    display: inline-block;
+    border: 1px solid red;
+    color: white;
+    background-color: red;
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.5rem;
+    cursor: pointer;
+}
+
+.danger-zone > .delete-btn:hover {
+    background-color: rgba(177, 33, 33, 1);
+    border-color: rgba(177, 33, 33, 1);
+}
+
+.danger-zone > .delete-btn:active {
+    scale: 0.99;
+}
 
 
 .bucket_list {
@@ -679,4 +705,40 @@ form {
         padding-block: 0.25rem;
         padding-inline: 0.5rem;
     }
+}
+
+
+
+body {
+    min-height: 100vh;
+}
+
+.page__heading {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.form__input-group {
+    display: grid;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+}
+
+.form__label {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.form__input {
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding:0.5rem;
+}
+
+.form__button {
+    background-color: var(--color-primary);
+}
+
+.form__button:hover {
+    background-color: var(--color-primary-hover);
 }

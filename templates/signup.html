@@ -4,17 +4,17 @@
 <div class="wrapper public-page">
     <h1>Sign Up</h1>
     <form action="/register" method="POST">
-        <div class="input-group">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" />
+        <div class="form__input-group">
+            <label for="email" class="form__label">Email</label>
+            <input id="email" name="email" type="email" class="form__input"/>
             <span class="error"></span>
         </div>
-        <div class="input-group">
-            <label for="pwd">Password</label>
-            <input id="pwd" name="password" type="password" />
+        <div class="form__input-group">
+            <label for="pwd" class="form__label">Password</label>
+            <input id="pwd" name="password" type="password" class="form__input"/>
             <span class="error"></span>
         </div>
-        <button type="submit">Register</button>
+        <button type="submit" class="form__button">Register</button>
     </form>
 </div>
 {% endblock %}
