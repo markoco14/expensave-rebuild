@@ -141,14 +141,22 @@ async def show(request: Request, bucket_id: int):
         daily_allowance = int(top_up.start_amount / month_num_days)
         expected_spending = daily_allowance * number_of_days_finished
     
-    if not top_up.end_amount:
+
+    print(top_up)
+    print("start amount", top_up.start_amount)
+    print("end amount", top_up.end_amount)
+
+    if top_up.end_amount is None:
+        print('no end amount')
         actual_spending = 0
+
     else:
         if top_up.end_amount == 0:
             actual_spending = top_up.start_amount
         else:
             actual_spending = top_up.start_amount - top_up.end_amount
 
+    print("actual spending", actual_spending)
     return templates.TemplateResponse(
         request=request,
         name="hv/bucket/show.xml",
