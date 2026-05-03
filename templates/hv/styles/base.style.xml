@@ -1,3 +1,4 @@
+
 <style id="body"
     minHeight="100%"
     />
@@ -163,3 +164,47 @@
     flexDirection="column"
     backgroundColor="{{ gray_900 }}"
     />
+
+
+{# keypad styles #}
+
+<style id="keypad-display"
+    backgroundColor="white"
+    paddingVertical="8"
+    paddingHorizontal="8"
+    />
+
+<style id="keypad-display-text"
+    color="black"
+    fontSize="24"
+    textAlign="right"
+    />
+
+<style id="keypad-numbers"
+    display="flex"
+    flexDirection="row"
+    flexWrap="wrap"
+    gap="{{ GAP }}"
+    marginTop="8"
+    />
+
+
+<style id="keypad-button"
+    width="{{ button_width }}"
+    height="50"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+    backgroundColor="white"
+    />
+
+<style id="keypad-button-empty" 
+    width="{{ button_width }}"
+    height="50"
+    />
+
+<style id="keypad-button-text" 
+    fontSize="24"
+    color="black"
+    />
+
