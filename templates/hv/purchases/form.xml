@@ -5,23 +5,6 @@
     <behavior trigger="load" action="back" />
     {% endif %}
     <view>
-        <text style="text-dark text-large">Amount</text>
-        <text-field 
-            name="amount"
-            keyboard-type="number-pad"
-            style="text-field"
-            />
-        <text style="error">{{ errors.get("amount", "") if errors else ''}}</text>
-    </view>
-    
-    {# <text style="text-dark">Currency</text>
-    <text-field name="currency" placeholder="Currency" style="text-field" value="TWD"/>
-    <text style="error">{{ errors.get("currency", "") if errors else ''}}</text> #}
-    
-    {# <text style="text-dark">Timezone</text>
-    <text-field name="timezone" placeholder="Timezone" style="text-field" value="Asia/Taipei"/>
-    <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text> #}
-    <view>
         <text style="text-dark text-large">Bucket</text>
         <select-single style="select-single" name="bucket">
             {% for bucket in buckets %}
@@ -36,6 +19,31 @@
         </select-single>
         <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
     </view>
+
+    <keypad-input xmlns="https://mysavemoneylife.com/hyperview/keypad">
+        <keypad-number-btn display_number="1" />
+        <keypad-number-btn display_number="2" />
+        <keypad-number-btn display_number="0" />
+        <keypad-delete-btn />
+    </keypad-input>
+    
+    {# <view>
+        <text style="text-dark text-large">Amount</text>
+        <text-field 
+            name="amount"
+            keyboard-type="number-pad"
+            style="text-field"
+            />
+        <text style="error">{{ errors.get("amount", "") if errors else ''}}</text>
+    </view> #}
+    
+    {# <text style="text-dark">Currency</text>
+    <text-field name="currency" placeholder="Currency" style="text-field" value="TWD"/>
+    <text style="error">{{ errors.get("currency", "") if errors else ''}}</text> #}
+    
+    {# <text style="text-dark">Timezone</text>
+    <text-field name="timezone" placeholder="Timezone" style="text-field" value="Asia/Taipei"/>
+    <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text> #}
     
     <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="btn btn-primary">
         <text style="text-center text-large text-light">Save</text>
