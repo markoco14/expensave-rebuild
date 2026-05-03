@@ -21,9 +21,13 @@
     </view>
 
     <keypad-input xmlns="https://mysavemoneylife.com/hyperview/keypad">
-        <keypad-number-btn display_number="1" />
-        <keypad-number-btn display_number="2" />
-        <keypad-number-btn display_number="0" />
+        <keypad-display style="keypad-display">
+            <keypad-display-text style="keypad-display-text" />
+        </keypad-display>
+        {% for i in range(1, 10)%}
+            <keypad-number-btn display_number="{{ i }}" />
+        {% endfor %}
+        <keypad-number-btn display_number="0"/>
         <keypad-delete-btn />
     </keypad-input>
     

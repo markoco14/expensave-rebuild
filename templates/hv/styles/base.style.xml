@@ -163,3 +163,18 @@
     flexDirection="column"
     backgroundColor="{{ gray_900 }}"
     />
+
+
+{# keypad styles #}
+
+<style id="keypad-display"
+    backgroundColor="white"
+    paddingVertical="8"
+    paddingHorizontal="8"
+    />
+
+<style id="keypad-display-text"
+    color="black"
+    fontSize="24"
+    textAlign="right"
+    />
