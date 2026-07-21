@@ -1,0 +1,22 @@
+<div class="input-group">
+    <label for="amount">Amount</label>
+    <input
+        id="amount"
+        name="amount"
+        type="number"
+        autofocus
+        value='{{ previous_values.get("amount", "") if errors else ""}}'
+        />
+    <span id="amount_error" class="error">{{ amount_error }}</span>
+</div>
+<div class="input-group">
+    <label for="date">Date</label>
+    <input id="date" name="date" type="date" value='{{ previous_values.get("date", default_date) if errors else default_date}}' />
+    <span id="date_error" class="error">{{ date_error }}</span>
+</div>
+<div class="input-group">
+    <label for="time">Time</label>
+    <input id="time" name="time" type="time" step="1" value='{{ previous_values.get("time", default_time) if errors else default_time}}' />
+    <span id="time_error" class="error">{{ time_error }}</span>
+</div>
+<button type="submit">Save</button>

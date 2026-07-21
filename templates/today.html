@@ -3,7 +3,14 @@
 {% block content %}
 <div class="wrapper app-page">
     <h1>{{ today_date.strftime("%B %d, %Y") }}</h1>
-    <a href="/purchases/new" class="purchase-new">Add purchases</a>
+    <form 
+        hx-post="/today"
+        hx-swap="innerHTML"
+        hx-target="this"
+        hx-target-422="this" 
+        >
+        {% include "purchases/new/_inputs.html" %}
+    </form>
     {% if purchases %}
     <ul class="purchase-list">
         {% for purchase in purchases %}
