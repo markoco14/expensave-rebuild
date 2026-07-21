@@ -116,7 +116,7 @@ async def today(request: Request):
     )    
 
     local_today = utils.get_local_today()
-
+    default_date, default_time = utils.get_form_default_date_time(local_today=local_today)
     utc_today_start, utc_today_end = utils.get_today_utc_range(local_today)
 
     purchase_rows = purchase_repository.list_for_period(
@@ -134,11 +134,76 @@ async def today(request: Request):
         name="today.html",
         context={
             "today_date": local_today,
+            "default_date": default_date,
+            "default_time": default_time,
             "purchases": purchases,
             "total_spent": None,
             "daily_spending_bucket": None
-        }
+            }
     )
+
+
+async def store(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    current_user = User(
+        user_id=request.state.user.user_id,
+        email=request.state.user.email
+    )
+
+    local_today = utils.get_local_today()
+    default_date, default_time = utils.get_form_default_date_time(local_today=local_today)
+    form_data = await request.form()
+    if not form_data:
+        return templates.TemplateResponse(
+            request=request,
+            name="purchases/new/_inputs.html",
+            status_code=422,
+            context={
+                "default_date": default_date,
+                "default_time": default_time
+                }
+        )
+    
+    form_amount = form_data.get("amount", "").strip()
+    form_date = form_data.get("date", "").strip()
+    form_time = form_data.get("time", "").strip()
+
+    if not form_amount or not form_date or not form_time:
+        return templates.TemplateResponse(
+            request=request,
+            name="purchases/new/_inputs.html",
+            status_code=422,
+            context={
+                "default_date": default_date,
+                "default_time": default_time,
+                "amount_error": "You need to choose an amount" if not form_amount else "",
+                "date_error": "You need to choose a date" if not form_date else "",
+                "time_error": "You need to choose a time" if not form_time else ""
+                }
+        )
+    
+    try:
+        local_dt = utils.combine_date_time(form_date, form_time)
+        tz_local_dt = local_dt.replace(tzinfo=ZoneInfo("Asia/Taipei"))
+        utc_string = tz_local_dt.astimezone(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+    except Exception as e:
+        print(f"error formatting times: {e}", exc_info=True)
+
+    try:
+        purchase_repository.store(
+            amount=form_amount,
+            currency="TWD",
+            purchased_at=utc_string,
+            timezone="Asia/Taipei",
+            user_id=current_user.user_id
+            )
+    except Exception as e:
+        print(f"something went wrong storing the purchase: {e}")
+        return "Something went wrong on our server."
+    
+    return Response(status_code=200, headers={"Hx-Refresh": "true"})
 
 
 async def stats(request: Request):

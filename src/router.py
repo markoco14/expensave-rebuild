@@ -16,6 +16,7 @@ routes = [
     ("GET",     "/logout",                          auth.logout,        [Depends(is_user)]),
 
     ("GET",     "/today",                           application.today,  [Depends(is_user)]),
+    ("POST",     "/today",                           application.store,  [Depends(is_user)]),
     ("GET",     "/stats",                           application.stats,  [Depends(is_user)]),
     
     ("GET",     "/purchases",                       purchase.list,      [Depends(is_user)]),
