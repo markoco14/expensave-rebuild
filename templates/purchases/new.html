@@ -7,11 +7,11 @@ New Purchase | The Money Game
 {% block content %}
 <div class="wrapper app-page">
     <h1>New purchase</h1>
-    {% if not buckets %}
+    {# {% if not buckets %}
     <p>You need to creating a Daily Spending bucket to use this app. <a href="/me">Create one now</a>.</p>
-    {% else %}
+    {% else %} #}
+    {# {% endif%} #}
     <form hx-post="/purchases" hx-swap="none" action="/purchases" method="POST">
-        
         <div class="input-group">
             <label for="amount">Amount</label>
             <input
@@ -49,7 +49,7 @@ New Purchase | The Money Game
             <input id="timezone" name="timezone" type="text" value="Asia/Taipei" readonly/>
             <span class="error">{{ errors.get("timezone", "") if errors else ''}}</span>
         </div> #}
-        <fieldset>
+        {# <fieldset>
             <legend>Spending Bucket</legend>
             <div class="radio-group">
                 {% for bucket in buckets %}
@@ -67,9 +67,9 @@ New Purchase | The Money Game
                 {% endfor %}
             </div>
             <span class="error">{{ errors.get("bucket", "") if errors else ''}}</span>
-        </fieldset>
+        </fieldset> #}
         <button type="submit">Save</button>
     </form>
-    {% endif%}
+    
 </div>
 {% endblock content %}

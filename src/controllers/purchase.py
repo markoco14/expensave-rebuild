@@ -8,9 +8,12 @@ from fastapi import Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from src import utils
 from src.config import get_db
 from src.models.bucket import Bucket
 from src.models.purchase import Purchase
+from src.models.user import User
+from src.respository import purchase_repository
 
 templates = Jinja2Templates(directory="templates")
 
@@ -38,21 +41,18 @@ async def new(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
-    current_datetime_utc = datetime.now(timezone.utc)
-    localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
+    local_today = utils.get_local_today()
 
-    default_date = localized_datetime.date()
-    default_time = localized_datetime.time().strftime("%H:%M:%S")
 
-    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id, name, is_daily"])
+    # buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id, name, is_daily"])
 
     return templates.TemplateResponse(
         request=request,
         name="purchases/new.html",
         context={
-            "buckets": buckets,
-            "default_date": default_date,
-            "default_time": default_time,
+            # "buckets": buckets,
+            "default_date": local_today.date(),
+            "default_time": local_today.time().strftime("%H:%M:%S"),
             "errors": {},
             "previous_values": {}
         }
@@ -62,6 +62,12 @@ async def new(request: Request):
 async def create(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
+    
+    current_user = User(
+        user_id=request.state.user.user_id,
+        email=request.state.user.email
+    )    
+
 
     form_data = await request.form()
 
@@ -70,10 +76,10 @@ async def create(request: Request):
     currency = "TWD"
     form_timezone = "Asia/Taipei"
     
-    bucket_id = form_data.get("bucket")
-    previous_values["bucket"] = bucket_id
-    if not bucket_id:
-        errors["bucket"] =  "You need to choose a bucket."
+    # bucket_id = form_data.get("bucket")
+    # previous_values["bucket"] = bucket_id
+    # if not bucket_id:
+    #     errors["bucket"] =  "You need to choose a bucket."
 
     amount = form_data.get("amount")
     previous_values["amount"] = amount
@@ -118,7 +124,7 @@ async def create(request: Request):
             conn.row_factory = sqlite3.Row
 
             cursor = conn.cursor()
-            cursor.execute("SELECT bucket_id, is_daily, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
+            cursor.execute("SELECT bucket_id, is_daily, name FROM bucket WHERE user_id = ?;", (current_user.user_id, ))
             buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
             
       
@@ -141,16 +147,17 @@ async def create(request: Request):
     utc_time = local_tz_aware.astimezone(timezone.utc)
     utc_naive = utc_time.replace(tzinfo=None)
     
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
-
-        cursor = conn.cursor()
-        try:
-            cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);", (amount, currency, utc_naive, form_timezone, request.state.user.user_id, bucket_id))
-        except Exception as e:
-            print(f"something went wrong storing the purchase: {e}")
-            return "Something went wrong on our server."
+    try:
+        purchase_repository.store(
+            amount=amount,
+            currency=currency,
+            purchased_at=utc_naive,
+            timezone=form_timezone,
+            user_id=current_user.user_id
+            )
+    except Exception as e:
+        print(f"something went wrong storing the purchase: {e}")
+        return "Something went wrong on our server."
         
     if request.headers.get("hx-request"):
         return Response(status_code=200, headers={"hx-redirect": "/purchases"})

@@ -1,7 +1,8 @@
+from datetime import datetime
 import sqlite3
 
 
-def list_for_period(user_id, period_start, period_end):
+def list_for_period(user_id: int, period_start: datetime, period_end: datetime):
     with sqlite3.connect("db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         purchase_rows = conn.execute(
@@ -10,7 +11,8 @@ def list_for_period(user_id, period_start, period_end):
             FROM purchase 
             WHERE user_id = :user_id 
             AND purchased_at >= :period_start
-            AND purchased_at < :period_end;""", 
+            AND purchased_at < :period_end
+            ORDER BY purchased_at DESC;""", 
             {
                 "user_id": user_id, 
                 "period_start": period_start.strftime('%Y-%m-%d %H:%M:%S'),
@@ -19,6 +21,30 @@ def list_for_period(user_id, period_start, period_end):
             ).fetchall()
         
         return purchase_rows
+    
+
+def store(amount: int, currency: str, purchased_at: datetime, timezone: str, user_id: int):
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+        cursor.execute(
+            """INSERT INTO purchase (
+                amount, currency, purchased_at, timezone, user_id
+            ) VALUES (
+                :amount, :currency, :purchased_at, :timezone, :user_id
+            );
+            """, 
+            {
+                "amount": amount, 
+                "currency": currency, 
+                "purchased_at": purchased_at, 
+                "timezone": timezone,
+                "user_id": user_id
+            })
+        conn.commit()
+        return cursor.lastrowid
         
         
 def list_for_bucket_and_month(conn: sqlite3.Connection, bucket_id: int, utc_month_start, utc_month_end):
