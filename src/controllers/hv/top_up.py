@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from app.models.bucket_month_top_up import BucketMonthTopUp
+from src.models.bucket_month_top_up import BucketMonthTopUp
 
 templates = Jinja2Templates(directory="templates")
 

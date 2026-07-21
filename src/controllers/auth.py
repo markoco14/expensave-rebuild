@@ -6,7 +6,7 @@ from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app import cryptography
+from src import cryptography
 
 templates = Jinja2Templates(directory="templates")
 

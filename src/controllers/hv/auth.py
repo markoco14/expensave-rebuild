@@ -6,10 +6,10 @@ import uuid
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from app import cryptography
-from app.models.user import User
-from app.respository.session import store_session
-from app.respository.user import get_user_with_password
+from src import cryptography
+from src.models.user import User
+from src.respository.session import store_session
+from src.respository.user import get_user_with_password
 
 templates = Jinja2Templates(directory="templates")
 

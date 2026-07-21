@@ -2,8 +2,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from app.router import router
-from app.hv_router import hv_router
+from src.router import router
+from src.hv_router import hv_router
 
 app = FastAPI()
 

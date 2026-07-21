@@ -5,10 +5,10 @@ from zoneinfo import ZoneInfo
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from app.models.bucket import Bucket
-from app.models.bucket_month_top_up import BucketMonthTopUp
-from app.respository.bucket import get_with_top_up, list_with_top_ups
-from app.respository import purchase as purchase_repo
+from src.models.bucket import Bucket
+from src.models.bucket_month_top_up import BucketMonthTopUp
+from src.respository.bucket import get_with_top_up, list_with_top_ups
+from src.respository import purchase as purchase_repo
 
 
 templates = Jinja2Templates(directory="templates")

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers.hv import application, auth, bucket, purchase, top_up
-from app.dependencies import is_user
+from src.controllers.hv import application, auth, bucket, purchase, top_up
+from src.dependencies import is_user
 
 
 hv_router = APIRouter()

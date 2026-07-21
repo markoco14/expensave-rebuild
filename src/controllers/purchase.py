@@ -8,9 +8,9 @@ from fastapi import Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.config import get_db
-from app.models.bucket import Bucket
-from app.models.purchase import Purchase
+from src.config import get_db
+from src.models.bucket import Bucket
+from src.models.purchase import Purchase
 
 templates = Jinja2Templates(directory="templates")
 

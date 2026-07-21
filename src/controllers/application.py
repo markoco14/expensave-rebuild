@@ -8,7 +8,7 @@ from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.models.bucket import Bucket
+from src.models.bucket import Bucket
 
 templates = Jinja2Templates(directory="templates")
 

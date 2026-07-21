@@ -10,8 +10,8 @@ from zoneinfo import ZoneInfo
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from app import cryptography
-from app.models.bucket import Bucket
+from src import cryptography
+from src.models.bucket import Bucket
 
 
 templates = Jinja2Templates(directory="templates")
