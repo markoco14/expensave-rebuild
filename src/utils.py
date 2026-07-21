@@ -23,3 +23,9 @@ def get_today_utc_range(local_today: datetime) -> Tuple[datetime, datetime]:
     utc_start_of_tomorrow =  local_start_of_tomorrow.astimezone(timezone.utc) 
 
     return utc_start_of_day, utc_start_of_tomorrow
+
+def get_form_default_date_time(local_today: datetime):
+    return local_today.date(), local_today.time().strftime("%H:%M:%S")
+
+def combine_date_time(date_str, time_str):
+    return datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
