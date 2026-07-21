@@ -22,6 +22,19 @@ def list_for_period(user_id: int, period_start: datetime, period_end: datetime):
         
         return purchase_rows
     
+def list_for_user(user_id: int):
+    with sqlite3.connect("db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        purchase_rows = conn.execute(
+            """SELECT * 
+            FROM purchase 
+            WHERE user_id = :user_id 
+            ORDER BY purchased_at DESC;""", 
+            {"user_id": user_id}
+            ).fetchall()
+        
+        return purchase_rows
+    
 
 def store(amount: int, currency: str, purchased_at: datetime, timezone: str, user_id: int):
     with sqlite3.connect("db.sqlite3") as conn:

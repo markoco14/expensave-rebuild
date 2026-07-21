@@ -3,7 +3,7 @@
 {% block content %}
 <div class="wrapper app-page">
     <h1>{{ today_date.strftime("%B %d, %Y") }}</h1>
-    <a href="/purchases/new">New purchase</a>
+    <a href="/purchases/new" class="purchase-new">Add purchases</a>
     {% if purchases %}
     <ul class="purchase-list">
         {% for purchase in purchases %}

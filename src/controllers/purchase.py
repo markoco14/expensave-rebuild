@@ -22,13 +22,23 @@ async def list(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
-    with get_db() as conn:
-        purchases = Purchase.get_user_purchases(conn=conn, user_id=request.state.user.user_id)
-
+    current_user = User(
+        user_id=request.state.user.user_id,
+        email=request.state.user.email
+    )    
+    try:
+        purchase_rows = purchase_repository.list_for_user(user_id=current_user.user_id)
+    except Exception as e:
+        print("DB error getting purchases for user", exc_info=True)
+        return templates.TemplateResponse(
+            request=request,
+            name="purchases/index.html",
+            context={"purchases": []}
+        )
+        
+    purchases = [dict(row) for row in purchase_rows]
     for purchase in purchases:
-        naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
-        utc_aware = naive.replace(tzinfo=timezone.utc)
-        purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
+        purchase["purchased_at"] = datetime.strptime(purchase["purchased_at"], "%Y-%m-%d %H:%M:%S")
 
     return templates.TemplateResponse(
         request=request,
