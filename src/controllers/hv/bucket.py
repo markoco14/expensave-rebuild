@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from src.models.bucket import Bucket
 from src.models.bucket_month_top_up import BucketMonthTopUp
 from src.respository.bucket import get_with_top_up, list_with_top_ups
-from src.respository import purchase as purchase_repo
+from src.respository import purchase_repository as purchase_repo
 
 
 templates = Jinja2Templates(directory="templates")
