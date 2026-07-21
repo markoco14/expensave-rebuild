@@ -3,7 +3,20 @@
 {% block content %}
 <div class="wrapper app-page">
     <h1>{{ today_date.strftime("%B %d, %Y") }}</h1>
-    <section>
+    {% if purchases %}
+    <ul class="purchase-list">
+        {% for purchase in purchases %}
+        <li class="list-item">
+            <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
+            <span>${{ purchase.amount }}</span>
+            <a href="/purchases/{{ purchase.purchase_id }}">Details</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>You haven't bought anything today.</p>
+    {% endif %}
+    {# <section>
     {% if not daily_spending_bucket %}
         <p>You haven't set up your daily budget for this month.</p>
         <a href="/me">Click here to set your budget</a>
@@ -22,6 +35,6 @@
         </ul>    
         {% endif %}
     {% endif %}
-    </section>
+    </section> #}
 </div>
 {% endblock %}

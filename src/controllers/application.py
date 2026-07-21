@@ -8,12 +8,15 @@ from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from src import utils
 from src.models.bucket import Bucket
+from src.models.user import User
+from src.respository import purchase_repository
 
 templates = Jinja2Templates(directory="templates")
 
 
-async def today(request: Request):
+async def today_old(request: Request):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
@@ -100,6 +103,40 @@ async def today(request: Request):
             "purchases": purchases,
             "total_spent": total_spent,
             "daily_spending_bucket": daily_spending_bucket
+        }
+    )
+
+async def today(request: Request):
+    if not request.state.user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    current_user = User(
+        user_id=request.state.user.user_id,
+        email=request.state.user.email
+    )    
+
+    local_today = utils.get_local_today()
+
+    utc_today_start, utc_today_end = utils.get_today_utc_range(local_today)
+
+    purchase_rows = purchase_repository.list_for_period(
+        user_id=current_user.user_id, 
+        period_start=utc_today_start,
+        period_end=utc_today_end
+        )
+        
+    purchases = [dict(row) for row in purchase_rows]
+    for purchase in purchases:
+        purchase["purchased_at"] = datetime.strptime(purchase["purchased_at"], "%Y-%m-%d %H:%M:%S")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="today.html",
+        context={
+            "today_date": local_today,
+            "purchases": purchases,
+            "total_spent": None,
+            "daily_spending_bucket": None
         }
     )
 
