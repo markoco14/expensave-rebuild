@@ -37,16 +37,27 @@
     --color-blue-800: #1E40AF;
     --color-blue-900: #1E3A8A;
 
-    --color-green-50: #ECFDF5; 
-    --color-green-100: #D1FAE5; 
-    --color-green-200: #A7F3D0; 
+    --color-green-50: #edfdec; 
+    --color-green-100: #d2fad1; 
+    --color-green-200: #a7f3ba; 
     --color-green-300: #6EE7B7; 
-    --color-green-400: #34D399; 
-    --color-green-500: #10B981; 
-    --color-green-600: #059669; 
-    --color-green-700: #047857; 
-    --color-green-800: #065F46; 
-    --color-green-900: #064E3B; 
+    --color-green-400: #34d33c; 
+    --color-green-500: #10b948; 
+    --color-green-600: #059629; 
+    --color-green-700: #04782b; 
+    --color-green-800: #065f15; 
+    --color-green-900: #064e12; 
+
+
+    --color-primary: var(--color-green-500);
+    --color-primary-hover: var(--color-green-400);
+    --color-primary-active: var(--color-green-600);
+
+    --color-danger: var(--color-red-500);
+    --color-danger-hover: var(--color-red-400);
+    --color-danger-active: var(--color-red-600);
+    
+    --color-text-link-hover: var(--color-green-600);
 }
 
 * {
@@ -215,7 +226,7 @@ details[open] {
 }
 
 .header__nav a:hover {
-    color: var(--color-green-600);
+    color: var(--color-text-link-hover);
     text-decoration: underline;
     text-underline-offset: 0.25rem;
 }
@@ -380,7 +391,7 @@ details[open] {
 }
 
 .bucket-delete-btn {
-    background-color: var(--color-red-500);
+    background-color: var(--color-danger);
     padding-block: 0.25rem;
     padding-inline: 0.5rem;
     border-radius: 0.125rem;
@@ -388,11 +399,11 @@ details[open] {
 }
 
 .bucket-delete-btn:hover {
-    background-color: var(--color-red-400);
+    background-color: var(--color-danger-hover);
 }
 
 .bucket-delete-btn:active {
-    background-color: var(--color-red-600);
+    background-color: var(--color-danger-active);
 }
 
 form {
@@ -504,17 +515,21 @@ form {
 
     button {
         cursor: pointer;
-        background-color: hsl(121 96 39);
+        background-color: var(--color-primary);
         color: hsl(122, 94%, 7%);;
         padding-block: 0.5rem;
         border-radius: 0.25rem;
-        width: content;
+        /* width: content; */
         margin-top: 1.5rem;
     }
 
     button:hover {
-        background-color: hsl(121, 93%, 45%);
-    }    
+        background-color: var(--color-primary-hover);
+    }
+    
+    button:active {
+        background-color: var(--color-primary-active);
+    }
 }
 
 .danger-zone {
