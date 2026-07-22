@@ -37,16 +37,35 @@
     --color-blue-800: #1E40AF;
     --color-blue-900: #1E3A8A;
 
-    --color-green-50: #ECFDF5; 
-    --color-green-100: #D1FAE5; 
-    --color-green-200: #A7F3D0; 
+    --color-green-50: #edfdec; 
+    --color-green-100: #d2fad1; 
+    --color-green-200: #a7f3ba; 
     --color-green-300: #6EE7B7; 
-    --color-green-400: #34D399; 
-    --color-green-500: #10B981; 
-    --color-green-600: #059669; 
-    --color-green-700: #047857; 
-    --color-green-800: #065F46; 
-    --color-green-900: #064E3B; 
+    --color-green-400: #34d33c; 
+    --color-green-500: #10b948; 
+    --color-green-600: #059629; 
+    --color-green-700: #04782b; 
+    --color-green-800: #065f15; 
+    --color-green-900: #064e12; 
+
+    --color-logo: var(--color-green-600);
+
+    --color-primary: var(--color-green-500);
+    --color-primary-hover: var(--color-green-400);
+    --color-primary-active: var(--color-green-600);
+
+    --color-danger: var(--color-red-500);
+    --color-danger-hover: var(--color-red-400);
+    --color-danger-active: var(--color-red-600);
+    
+    --color-text: var(--color-gray-900);
+
+    --color-text-link-hover: var(--color-green-600);
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
 }
 
 * {
@@ -76,7 +95,7 @@ body.no-scroll {
 }
 
 p {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 }
 
 p:last-child {
@@ -101,7 +120,7 @@ button {
 } */
 
 main {
-    padding-top: 48px;
+    padding-top: calc(var(--space-4) * 3);
     padding-bottom: 2rem;
 }
 
@@ -109,7 +128,7 @@ ol, ul {
     list-style: inside;
 
     li {
-        margin-bottom: 0.25rem;
+        margin-bottom: var(--space-1);
     }
 
     li:last-child {
@@ -122,7 +141,7 @@ ol {
 }
 
 details {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 
     summary {
         display: flex;
@@ -130,7 +149,7 @@ details {
         list-style: none;
         font-size: 1.25rem;
         border-bottom: 1px solid black;
-        margin-bottom: 0.25rem;
+        margin-bottom: var(--space-1);
         padding-bottom: 0.25rem;
     }
 
@@ -147,7 +166,7 @@ details[open] {
     padding-bottom: 1rem;
     
     summary {
-        margin-bottom: 1rem;
+        margin-bottom: var(--space-4);
         border-bottom: 1px solid gray;
     }
 
@@ -171,7 +190,7 @@ details[open] {
 }
 
 .divider {
-    margin-bottom: 2rem;
+    margin-bottom: calc(var(--space-4) * 2);
     max-width: 500px;
     margin-inline: auto;
 }
@@ -200,7 +219,7 @@ details[open] {
 .header__logo {
     font-weight: 600;
     font-size: 1.5rem;
-    color: var(--color-green-600);
+    color: var(--color-logo);
 }
 
 .header__nav {
@@ -210,12 +229,12 @@ details[open] {
 
 .header__nav a {
     font-size: 1.25rem;
-    color: var(--color-gray-900);
+    color: var(--color-text);
     text-decoration: none;
 }
 
 .header__nav a:hover {
-    color: var(--color-green-600);
+    color: var(--color-text-link-hover);
     text-decoration: underline;
     text-underline-offset: 0.25rem;
 }
@@ -278,30 +297,30 @@ details[open] {
 }
 
 .public-page {
-    padding-top: 1rem;
+    padding-top: var(--space-4);
 
     section {
-        margin-bottom: 2rem;
+        margin-bottom: calc(var(--space-4) * 2);
     }
 
     h1, h2 {
-        margin-bottom: 1rem;
+        margin-bottom: var(--space-4);
     }
 }
 
 .app-page {
-    padding-top: 1rem;
+    padding-top: var(--space-4);
 
     h1 {
-        margin-bottom: 1rem;
+        margin-bottom: var(--space-4);
     }
 
     section {
-        margin-block: 2rem; 
+        margin-block: calc(var(--space-4) * 2); 
     }
 
     .section-heading {
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--space-2);
         border-bottom: 1px solid black;
     }
 }
@@ -309,7 +328,7 @@ details[open] {
 @media screen and (min-width: 600px) {
     .app-page {
         heading {
-            padding-top: 2rem;
+            padding-top: calc(var(--space-4) * 2);
         }
     }
 }
@@ -340,7 +359,7 @@ details[open] {
     list-style-position: inside;
     
     .list-item {
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--space-2);
     }
 }
 
@@ -380,7 +399,7 @@ details[open] {
 }
 
 .bucket-delete-btn {
-    background-color: var(--color-red-500);
+    background-color: var(--color-danger);
     padding-block: 0.25rem;
     padding-inline: 0.5rem;
     border-radius: 0.125rem;
@@ -388,11 +407,11 @@ details[open] {
 }
 
 .bucket-delete-btn:hover {
-    background-color: var(--color-red-400);
+    background-color: var(--color-danger-hover);
 }
 
 .bucket-delete-btn:active {
-    background-color: var(--color-red-600);
+    background-color: var(--color-danger-active);
 }
 
 form {
@@ -401,7 +420,7 @@ form {
     .input-group {
         display: grid;
         gap: 0.25rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--space-2);
     }
 
     .input-group > label {
@@ -437,11 +456,11 @@ form {
     fieldset > legend {
         display: block;
         font-weight: 600;
-        margin-bottom: 0.25rem;
+        margin-bottom: var(--space-2);
     }
 
     fieldset > .radio-group {
-        margin-bottom: 0.25rem;
+        margin-bottom: var(--space-2);
     }
     
     fieldset > .error {
@@ -504,26 +523,30 @@ form {
 
     button {
         cursor: pointer;
-        background-color: hsl(121 96 39);
+        background-color: var(--color-primary);
         color: hsl(122, 94%, 7%);;
         padding-block: 0.5rem;
         border-radius: 0.25rem;
-        width: content;
-        margin-top: 1.5rem;
+        /* width: content; */
+        margin-top: calc(var(--space-4) * 2);
     }
 
     button:hover {
-        background-color: hsl(121, 93%, 45%);
-    }    
+        background-color: var(--color-primary-hover);
+    }
+    
+    button:active {
+        background-color: var(--color-primary-active);
+    }
 }
 
 .danger-zone {
     h2 {
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--space-2);
     }
     
     p {
-        margin-bottom: 1rem;
+        margin-bottom: var(--space-4);
     }
 
     .delete-btn {
@@ -555,18 +578,18 @@ form {
         list-style: none;
         /* display: flex; */
         /* justify-content: space-between; */
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--space-2);
     }
 }
 
 .purchase-header {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
 }
 
 .purchase-new {
     display: block;
     padding-block: 1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-2);
     text-align: center;
     text-decoration: none;
     color: rgb(45, 74, 56);
@@ -589,7 +612,7 @@ form {
         align-items: baseline;
         border: 1px solid rgba(124, 124, 124, 1);
         padding: 1rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--space-2);
         border-radius: 0.25rem;
     
     }
