@@ -13,7 +13,7 @@
     {% if not daily_spending_bucket %}
         <text>You haven't set up your daily budget for this month.</text>
         <text>Click here to set your budget</text>
-    {% else %}
+    {% endif %}
         <list 
             id="purchase-list" 
             trigger="refresh" 
@@ -23,6 +23,5 @@
             >
             {% include "hv/_rows.xml"%}
         </list>
-    {% endif %}
 </view>
 {% endblock content%}

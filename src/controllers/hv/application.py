@@ -10,8 +10,10 @@ from zoneinfo import ZoneInfo
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from src import cryptography
+from src import cryptography, utils
 from src.models.bucket import Bucket
+from src.models.user import User
+from src.respository import purchase_repository
 
 
 templates = Jinja2Templates(directory="templates")
@@ -133,13 +135,39 @@ async def today(request: Request):
         
         return response
     
-    context = await get_today_context(user_id=request.state.user.user_id)
+    # context = await get_today_context(user_id=request.state.user.user_id)
+     
+    current_user = User(
+        user_id=request.state.user.user_id,
+        email=request.state.user.email
+    )    
+
+    local_today = utils.get_local_today()
+    default_date, default_time = utils.get_form_default_date_time(local_today=local_today)
+    utc_today_start, utc_today_end = utils.get_today_utc_range(local_today)
+
+    purchase_rows = purchase_repository.list_for_period(
+        user_id=current_user.user_id, 
+        period_start=utc_today_start,
+        period_end=utc_today_end
+        )
+        
+    purchases = [dict(row) for row in purchase_rows]
+    for purchase in purchases:
+        purchase["purchased_at"] = datetime.strptime(purchase["purchased_at"], "%Y-%m-%d %H:%M:%S")
 
     if request.query_params.get("rows_only") and request.query_params.get("rows_only") == "true":
         return templates.TemplateResponse(
             request=request,
             name="hv/_rows.xml",
-            context=context,
+            context={
+                "today_date": local_today,
+                "default_date": default_date,
+                "default_time": default_time,
+                "purchases": purchases,
+                "total_spent": None,
+                "daily_spending_bucket": None
+                },
             headers={"Content-Type": content_type}
         )
 
@@ -147,7 +175,14 @@ async def today(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="hv/today.xml",
-        context=context,
+        context={
+            "today_date": local_today,
+            "default_date": default_date,
+            "default_time": default_time,
+            "purchases": purchases,
+            "total_spent": None,
+            "daily_spending_bucket": None
+            },
         headers={"Content-Type": content_type}
     )
 
@@ -186,16 +221,21 @@ async def store(request: Request):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
+    current_user = User(
+        user_id=request.state.user.user_id,
+        email=request.state.user.email
+    )  
+
     form_data = await request.form()
 
     previous_values = {}
     errors = {}
     
-    bucket_id = form_data.get("bucket")
-    previous_values["bucket"] = bucket_id
-    selected_bucket_id = bucket_id
-    if not bucket_id:
-        errors["bucket"] =  "You need to choose a bucket."
+    # bucket_id = form_data.get("bucket")
+    # previous_values["bucket"] = bucket_id
+    # selected_bucket_id = bucket_id
+    # if not bucket_id:
+    #     errors["bucket"] =  "You need to choose a bucket."
 
     amount = form_data.get("amount")
     previous_values["amount"] = amount
@@ -246,16 +286,22 @@ async def store(request: Request):
                 "previous_values": previous_values,
                 "errors": errors,
                 "buckets": buckets,
-                "selected_bucket_id": selected_bucket_id
+                "selected_bucket_id": None
                 },
             headers={"Content-Type": content_type}
             )
 
-    with sqlite3.connect("db.sqlite3") as conn:
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO purchase (amount, currency, purchased_at, timezone, user_id, bucket_id) VALUES (?, ?, ?, ?, ?, ?);",
-                       (amount, "TWD", purchased_at, "Asia/Taipei", request.state.user.user_id, bucket_id))
-        conn.commit()
+    try:
+        purchase_repository.store(
+            amount=amount,
+            currency="TWD",
+            purchased_at=purchased_at,
+            timezone="Asia/Taipei",
+            user_id=current_user.user_id
+            )
+    except Exception as e:
+        print(f"something went wrong storing the purchase: {e}")
+        return "Something went wrong on our server."
 
     return templates.TemplateResponse(
         request=request,
@@ -265,7 +311,7 @@ async def store(request: Request):
             "previous_values": {},
             "errors": {},
             "buckets": buckets,
-            "selected_bucket_id": selected_bucket_id
+            "selected_bucket_id": None
             },
         headers={"Content-Type": content_type}
         )

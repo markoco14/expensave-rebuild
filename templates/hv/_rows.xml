@@ -1,11 +1,19 @@
 <items xmlns="https://hyperview.org/hyperview">
-    <item key="progress" style="progress-track">
+    {# <item key="progress" style="progress-track">
         <view style="progress-bar">{% if percent_remaining >= 50 %}<text style="text-dark text-large">${{daily_spending_bucket.daily_amount - total_spent}}</text>{% endif %}</view>
         {% if percent_remaining <= 50 %}
         <text style="text-dark text-large">${{daily_spending_bucket.daily_amount - total_spent}}</text>
         {% endif %}
+    </item> #}
+    <item key="new">
+        <view style="bucket-bar">
+            <view style="bucket-bar-item">
+                <behavior action="new" trigger="press" href="/hv/today/new"/>
+                <text style="text-dark text-large">Add purchase</text>
+            </view>
+        </view>
     </item>
-    <item key="buckets">
+    {# <item key="buckets">
         <text style="text-dark text-large label">Add purchase in:</text>
         <view scroll="true" scroll-orientation="horizontal" shows-scroll-indicator="false">
             <view style="bucket-bar">
@@ -17,14 +25,14 @@
                 {% endfor %}
             </view>
         </view>
-    </item>
-    <item key="total" style="total">
+    </item> #}
+    {# <item key="total" style="total">
         <text style="total-text text-dark text-large">Total spent:</text>
         <text style="total-text text-dark text-large">${{ total_spent }}</text>
-    </item>
+    </item> #}
     {% if not purchases %}
     <item key="no-purchases" style="list-item">
-        <text style="list-item-text text-large text-dark text-center">You have tracked any purchases today</text>
+        <text style="list-item-text text-large text-dark text-center">You have not tracked any purchases today</text>
     </item>
     {% endif %}
     {% for purchase in purchases %}
