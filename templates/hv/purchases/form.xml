@@ -4,7 +4,7 @@
     <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
     <behavior trigger="load" action="back" />
     {% endif %}
-    <view>
+    {# <view>
         <text style="text-dark text-large">Bucket</text>
         <select-single style="select-single" name="bucket">
             {% for bucket in buckets %}
@@ -18,7 +18,7 @@
             {% endfor %}
         </select-single>
         <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
-    </view>
+    </view> #}
 
     <keypad-input xmlns="https://mysavemoneylife.com/hyperview/keypad">
         <keypad-display style="keypad-display">
