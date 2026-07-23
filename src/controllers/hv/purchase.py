@@ -21,12 +21,24 @@ async def show(request: Request, purchase_id: int):
         with get_db() as conn:
             purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
     except Exception as e:
-        purchase = None
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/server-error.xml",
+            context={},
+            headers={"Content-Type": content_type}
+        )
 
-    if purchase:
-        naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
-        utc_aware = naive.replace(tzinfo=timezone.utc)
-        purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
+    if not purchase:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/404.xml",
+            context={},
+            headers={"Content-Type": content_type}
+        )
+    
+    naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+    utc_aware = naive.replace(tzinfo=timezone.utc)
+    purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
     return templates.TemplateResponse(
         request=request,
