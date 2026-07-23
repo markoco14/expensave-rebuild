@@ -7,12 +7,14 @@
         hx-post="/today"
         hx-swap="innerHTML"
         hx-target="this"
-        hx-target-422="this" 
+        hx-target-422="this"
         >
         {% include "purchases/new/_inputs.html" %}
     </form>
-    {% if purchases %}
     <ul class="purchase-list">
+        {% if not purchases %}
+        <li class="list-item list-item--empty">You haven't bought anything today.</li>
+        {% else %}
         {% for purchase in purchases %}
         <li class="list-item">
             <span>{{ purchase.purchased_at.strftime("%b %d") }}</span>
@@ -20,10 +22,8 @@
             <a href="/purchases/{{ purchase.purchase_id }}">Details</a>
         </li>
         {% endfor %}
+        {% endif %}
     </ul>
-    {% else %}
-    <p>You haven't bought anything today.</p>
-    {% endif %}
     {# <section>
     {% if not daily_spending_bucket %}
         <p>You haven't set up your daily budget for this month.</p>

@@ -603,6 +603,7 @@ form {
 }
 
 .purchase-list {
+    margin-top: calc(var(--space-4) * 2);
     list-style: none;
 
     .list-item {
@@ -614,7 +615,11 @@ form {
         padding: 1rem;
         margin-bottom: var(--space-2);
         border-radius: 0.25rem;
-    
+        width: 100%;
+    }
+
+    .list-item--empty {
+        justify-content: center;
     }
     
     
