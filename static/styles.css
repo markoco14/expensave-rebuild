@@ -538,6 +538,12 @@ form {
     button:active {
         background-color: var(--color-primary-active);
     }
+
+    input[type="time"], input[type="date"] {
+        width: 100%;
+        background-color: white;
+    }
+
 }
 
 .danger-zone {
