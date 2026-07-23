@@ -6,7 +6,9 @@ from zoneinfo import ZoneInfo
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
+from src.config import get_db
 from src.models.bucket import Bucket
+from src.respository import purchase_repository
 
 templates = Jinja2Templates(directory="templates")
 
@@ -15,24 +17,14 @@ async def show(request: Request, purchase_id: int):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        cursor.execute("""
-                        SELECT purchase.purchase_id,
-                        purchase.amount,
-                        purchase.currency,
-                        purchase.purchased_at,
-                        purchase.timezone,
-                        bucket.name as bucket_name 
-                        FROM purchase JOIN bucket USING (bucket_id) 
-                        WHERE purchase_id = ?;
-                       """,
-                       (purchase_id, ))
-        purchase = cursor.fetchone()
+    try:
+        with get_db() as conn:
+            purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
+    except Exception as e:
+        purchase = None
 
     if purchase:
-        purchase = SimpleNamespace(**purchase)
+        # purchase = SimpleNamespace(**purchase)
         naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
@@ -48,25 +40,10 @@ async def edit(request: Request, purchase_id: int):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        cursor.execute("""
-                        SELECT purchase.purchase_id,
-                        purchase.amount,
-                        purchase.currency,
-                        purchase.purchased_at,
-                        purchase.timezone,
-                        purchase.bucket_id,
-                        bucket.name as bucket_name 
-                        FROM purchase JOIN bucket USING (bucket_id) 
-                        WHERE purchase_id = ?;
-                       """,
-                       (purchase_id, ))
-        purchase = cursor.fetchone()
+    with get_db() as conn:
+        purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
 
     if purchase:
-        purchase = SimpleNamespace(**purchase)
         naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
