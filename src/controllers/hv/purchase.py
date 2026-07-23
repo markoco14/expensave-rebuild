@@ -23,10 +23,17 @@ async def show(request: Request, purchase_id: int):
     except Exception as e:
         purchase = None
 
-    if purchase:
-        naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
-        utc_aware = naive.replace(tzinfo=timezone.utc)
-        purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
+    if not purchase:
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/404.xml",
+            context={},
+            headers={"Content-Type": content_type}
+        )
+    
+    naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
+    utc_aware = naive.replace(tzinfo=timezone.utc)
+    purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
     return templates.TemplateResponse(
         request=request,
