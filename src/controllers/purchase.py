@@ -206,8 +206,7 @@ async def show(request: Request, purchase_id: int):
         )
     
     with get_db() as conn:
-        purchase = Purchase.get(conn=conn, purchase_id=purchase_id)
-        bucket = Bucket.get(conn=conn, bucket_id=purchase.bucket_id)
+        purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
 
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
     utc_aware = naive.replace(tzinfo=timezone.utc)
@@ -216,7 +215,7 @@ async def show(request: Request, purchase_id: int):
     return templates.TemplateResponse(
         request=request,
         name="purchases/show.html",
-        context={"purchase": purchase, "bucket": bucket}
+        context={"purchase": purchase}
     )
 
 
@@ -249,33 +248,16 @@ async def edit(request: Request, purchase_id: int):
             },
             status_code=403
         )
-    
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
 
-        cursor = conn.cursor()
-        cursor.execute("""
-                    SELECT purchase.purchase_id, purchase.amount,
-                        purchase.currency, purchase.purchased_at,
-                        purchase.timezone, purchase.user_id,
-                        purchase.bucket_id as bucket_id,
-                        bucket.name as bucket_name 
-                    FROM purchase 
-                    JOIN bucket USING (bucket_id) 
-                    WHERE purchase.user_id = ? AND purchase.purchase_id = ?;""", (request.state.user.user_id, purchase_id))
-        row = cursor.fetchone()
-        purchase = SimpleNamespace(**row) if row else None
-    
-    month_start = date.today().replace(day=1)
-    
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
+    try:
+        with sqlite3.connect("db.sqlite3") as conn:
 
-        cursor = conn.cursor()
-        cursor.execute("SELECT bucket_id, name FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
-        buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+            conn.execute("PRAGMA foreign_keys = ON;")
+            conn.row_factory = sqlite3.Row
+
+            purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
+    except Exception as e:
+        print(f"DB error getting purchase {purchase_id}: {e}", exc_info=True)
     
     naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
     utc_aware = naive.replace(tzinfo=timezone.utc)
@@ -284,7 +266,7 @@ async def edit(request: Request, purchase_id: int):
     return templates.TemplateResponse(
         request=request,
         name="purchases/edit.html",
-        context={"purchase": purchase, "buckets": buckets}
+        context={"purchase": purchase}
     )
 
 
@@ -315,19 +297,16 @@ async def update(request: Request, purchase_id: int):
     form_timezone = form_data.get("timezone")
     if not form_timezone:
         return "You need to choose a timezone."
-    
-    bucket = form_data.get("bucket")
-    if not bucket:
-        return "You need to choose a bucket"
-    
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
 
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM purchase WHERE purchase_id = ?;", (purchase_id,))
-        row = cursor.fetchone()
-        purchase = SimpleNamespace(**row) if row else None
+    try:
+        with get_db() as conn:
+            purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
+    except Exception as e:
+        print(f"DB error getting purchase {purchase_id}: {e}")
+        purchase = None
+
+    if not purchase:
+        return "Purchase does not exist"
     
     local_naive = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
     local_tz_aware = local_naive.replace(tzinfo=ZoneInfo(form_timezone))
@@ -335,15 +314,17 @@ async def update(request: Request, purchase_id: int):
     utc_naive = utc_time.replace(tzinfo=None)
 
     try:
-        with sqlite3.connect("db.sqlite3") as conn:
-            conn.execute("PRAGMA foreign_keys = ON;")
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute("UPDATE purchase SET amount = ?, purchased_at = ?, bucket_id = ? WHERE purchase_id = ?;", (amount, utc_naive, bucket, purchase_id))
+        with get_db() as conn:
+            purchase_repository.update(
+                conn=conn, 
+                amount=amount, 
+                purchased_at=utc_naive, 
+                purchase_id=purchase_id)
 
         html = "<div class='toast success' hx-delete='/toast/delete' hx-trigger='load delay:1.5s' hx-swap='outerHTML swap:300ms'><p>Purchase info updated</p></div>"
         return HTMLResponse(status_code=200, content=html, headers={"hx-retarget": "body", "hx-reswap": "afterbegin"})
     except Exception as e:
+        print(e)
         html = "<div class='toast failure' hx-delete='/toast/delete' hx-trigger='load delay:1.5s' hx-swap='outerHTML swap:300ms'><p>Something went wrong</p></div>"
         return HTMLResponse(status_code=200, content=html, headers={"hx-retarget": "body", "hx-reswap": "afterbegin"})
 
