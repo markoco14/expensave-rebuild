@@ -1,6 +1,8 @@
 from datetime import datetime
 import sqlite3
 
+from src.models.purchase import Purchase
+
 
 def list_for_period(user_id: int, period_start: datetime, period_end: datetime):
     with sqlite3.connect("db.sqlite3") as conn:
@@ -34,7 +36,29 @@ def list_for_user(user_id: int):
             ).fetchall()
         
         return purchase_rows
+
+def get(conn: sqlite3.Connection, purchase_id: int):
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        SELECT 
+            purchase_id,
+            amount,
+            currency,
+            purchased_at,
+            timezone, 
+            user_id,
+            bucket_id
+        FROM purchase 
+        WHERE purchase.purchase_id = ?;
+        """, (purchase_id, ))
     
+    row = cursor.fetchone()
+
+    if not row:
+        return None
+    
+    return Purchase(**row)
 
 def store(amount: int, currency: str, purchased_at: datetime, timezone: str, user_id: int):
     with sqlite3.connect("db.sqlite3") as conn:
