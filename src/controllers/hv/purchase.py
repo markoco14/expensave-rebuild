@@ -21,7 +21,12 @@ async def show(request: Request, purchase_id: int):
         with get_db() as conn:
             purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
     except Exception as e:
-        purchase = None
+        return templates.TemplateResponse(
+            request=request,
+            name="hv/server-error.xml",
+            context={},
+            headers={"Content-Type": content_type}
+        )
 
     if not purchase:
         return templates.TemplateResponse(

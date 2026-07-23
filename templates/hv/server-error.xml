@@ -1,0 +1,16 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}
+<header style="header">
+    <text style="heading text-dark text-center">Server Error</text>
+</header>
+{% endblock header%}
+
+{% block content %}
+<view style="container">
+    <text style="text-dark text-center">Sorry, something went wrong on our end.</text>
+    <view style="btn btn-secondary">
+        <text action="back" style="text-dark text-center">Go Back</text>
+    </view>
+</view>
+{% endblock content%}
