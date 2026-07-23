@@ -82,7 +82,15 @@ def store(amount: int, currency: str, purchased_at: datetime, timezone: str, use
             })
         conn.commit()
         return cursor.lastrowid
-        
+
+def update(conn: sqlite3.Connection, amount: int, purchased_at: datetime, purchase_id: int):
+    conn.execute("PRAGMA foreign_keys = ON;")
+    conn.row_factory = sqlite3.Row
+    conn = conn.cursor()
+    conn.execute(
+        "UPDATE purchase SET amount = :amount, purchased_at = :purchased_at WHERE purchase_id = :purchase_id;", 
+        {"amount": amount, "purchased_at": purchased_at, "purchase_id": purchase_id}
+        )
         
 def list_for_bucket_and_month(conn: sqlite3.Connection, bucket_id: int, utc_month_start, utc_month_end):
     cursor = conn.cursor()
