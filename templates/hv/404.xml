@@ -8,7 +8,7 @@
 
 {% block content %}
 <view style="container">
-    <text style="text-dark text-center">Sorry, this page could not be found.</text>
+    <text style="not-found-description">Sorry, this page could not be found.</text>
     <view style="btn btn-secondary">
         <text action="back" style="text-dark text-center">Go Back</text>
     </view>

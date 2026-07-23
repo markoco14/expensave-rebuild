@@ -8,7 +8,7 @@
 
 {% block content %}
 <view style="container">
-    <text style="text-dark text-center">Sorry, something went wrong on our end.</text>
+    <text style="server-error-description">Sorry, something went wrong on our end.</text>
     <view style="btn btn-secondary">
         <text action="back" style="text-dark text-center">Go Back</text>
     </view>

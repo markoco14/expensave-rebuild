@@ -208,3 +208,19 @@
     color="black"
     />
 
+
+{# not found styles #}
+<style id="not-found-description"
+    fontSize="24"
+    color="black"
+    marginBottom="24"
+    textAlign="center"
+    />
+
+{# server error styles #}
+<style id="server-error-description"
+    fontSize="24"
+    color="black"
+    marginBottom="24"
+    textAlign="center"
+    />
