@@ -24,7 +24,6 @@ async def show(request: Request, purchase_id: int):
         purchase = None
 
     if purchase:
-        # purchase = SimpleNamespace(**purchase)
         naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
@@ -35,6 +34,7 @@ async def show(request: Request, purchase_id: int):
         context={"purchase": purchase},
         headers={"Content-Type": content_type}
     )
+
 
 async def edit(request: Request, purchase_id: int):
     accept_header = request.headers.get("accept", "")
@@ -48,21 +48,15 @@ async def edit(request: Request, purchase_id: int):
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
-    month_start = date.today().replace(day=1)
-    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
-
-    selected_bucket_id = purchase.bucket_id
-
     return templates.TemplateResponse(
         request=request,
         name="hv/purchases/edit.xml",
         context={
             "purchase": purchase,
-            "buckets": buckets,
-            "selected_bucket_id": selected_bucket_id
             },
         headers={"Content-Type": content_type}
     )
+
 
 async def update(request: Request, purchase_id: int):
     accept_header = request.headers.get("accept", "")
@@ -70,7 +64,6 @@ async def update(request: Request, purchase_id: int):
 
     form_data = await request.form()
     amount = form_data.get("amount")
-    bucket_id = form_data.get("bucket")
 
     errors = {}
     if not amount:
@@ -82,75 +75,43 @@ async def update(request: Request, purchase_id: int):
     elif int(amount) <= 0:
         errors["amount"] = "The amoun needs to be more than 0."
 
-    if not bucket_id:
-        errors["bucket"] = "You need to choose a bucket"
-    elif not bucket_id.isdigit():
-        errors["bucket"] = "Invalid bucket selected"
-    elif int(bucket_id) <= 0:
-        errors["bucket"] = "Invalid bucket selected"
-
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        cursor.execute("""
-                        SELECT purchase.purchase_id,
-                        purchase.amount,
-                        purchase.currency,
-                        purchase.purchased_at,
-                        purchase.timezone,
-                        purchase.bucket_id,
-                        bucket.name as bucket_name 
-                        FROM purchase JOIN bucket USING (bucket_id) 
-                        WHERE purchase_id = ?;
-                       """,
-                       (purchase_id, ))
-        purchase = cursor.fetchone()
+    with get_db() as conn:
+        purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
 
     if purchase:
-        purchase = SimpleNamespace(**purchase)
         naive = datetime.strptime(purchase.purchased_at, "%Y-%m-%d %H:%M:%S")
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
-
-
-    month_start = date.today().replace(day=1)
-    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
-
-    selected_bucket_id = purchase.bucket_id
 
     if errors:
         return templates.TemplateResponse(
             request=request,
             name="hv/purchases/_form_fields.xml",
             context={
-                "purchase": purchase,
-                "buckets": buckets,
-                "selected_bucket_id": selected_bucket_id,
+                "purchase": purchase,                
                 "errors": errors
             },
             headers={"Content-Type": content_type}
         )
 
-    with sqlite3.connect("db.sqlite3") as conn:
-        cursor = conn.cursor()
-        cursor.execute("UPDATE purchase SET amount = ?, bucket_id =? WHERE purchase_id = ?;", (amount, bucket_id, purchase_id))
+    with get_db() as conn:
+        conn.execute(
+            "UPDATE purchase SET amount = ? WHERE purchase_id = ?;", 
+            (amount, purchase_id))
+        conn.commit()
 
     purchase.amount = amount
-    purchase.bucket_id = bucket_id
 
     return templates.TemplateResponse(
         request=request,
         name="hv/purchases/_form_fields.xml",
         context={
             "saved": True,
-            "purchase": purchase,
-            "buckets": buckets,
-            "selected_bucket_id": selected_bucket_id,
+            "purchase": purchase,            
             "errors": {}
         },
         headers={"Content-Type": content_type}
     )
-
 
 
 async def delete(request: Request, purchase_id: int):
