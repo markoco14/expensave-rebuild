@@ -18,8 +18,6 @@ Edit Purchase {{ purchase.purchase_id }} | The Money Game
     <span>Time</span>
     <p class="purchase-info">{{ purchase.purchased_at.strftime("%H:%M:%S") }}</p>
     <span>Timezone</span>
-    <p class="purchase-info">({{ purchase.timezone }})</p>
-    <span>Bucket</span>
-    <p class="purchase-info">{{ bucket.name }}</p>
+    <p class="purchase-info">{{ purchase.timezone }}</p>
 </div>
 {% endblock content %}
