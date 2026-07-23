@@ -27,10 +27,6 @@
             <text style="label text-large text-dark">Time</text>
             <text style="text-large text-dark">{{ purchase.purchased_at.strftime("%B %d at %H:%M:%S") }} ({{ purchase.timezone }})</text>
         </view>
-        <view style="input-group">
-            <text style="label text-large text-dark">Bucket</text>
-            <text style="text-large text-dark">{{ purchase.bucket_name }}</text>
-        </view>
         {% endif %}
     </view>
 </view>
