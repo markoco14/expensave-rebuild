@@ -1,18 +1,41 @@
-
-{% set gray_50 = "#f0f0f0" %}
-{% set gray_100 = "#f3f4f6" %}
-{% set gray_200 = "#e5e7eb" %}
-{% set gray_400 = "#9ca3af" %}
-{% set gray_600 = "#4b5563" %}
-{% set gray_900 = "#111827" %}
-
 {% set white = "#ffffff" %}
 {% set black = "#000000" %}
 
-{% set red_500 = "#f14f4f" %}
+{% set gray_50 = "#F2F2F2"%}
+{% set gray_100 = "#E6E6E6"%}
+{% set gray_200 = "#CCCCCC"%}
+{% set gray_300 = "#B3B3B3"%}
+{% set gray_400 = "#999999"%}
+{% set gray_500 = "#808080"%}
+{% set gray_600 = "#666666"%}
+{% set gray_700 = "#4D4D4D"%}
+{% set gray_800 = "#333333"%}
+{% set gray_900 = "#1A1A1A"%}
+{% set gray_950 = "#121212"%}
 
-{% set green_100 = "#91f7a5" %}
-{% set green_500 = "#2ee246" %}
+{% set red_50 = "#FCE9E9" %}
+{% set red_100 = "#F8D3D3" %}
+{% set red_200 = "#F2A6A6" %}
+{% set red_300 = "#EB7A7A" %}
+{% set red_400 = "#E44E4E" %}
+{% set red_500 = "#DE2121" %}
+{% set red_600 = "#B11B1B" %}
+{% set red_700 = "#851414" %}
+{% set red_800 = "#590D0D" %}
+{% set red_900 = "#2C0707" %}
+{% set red_950 = "#1F0505" %}
+
+{% set green_50 = "#EAFCE9" %}
+{% set green_100 = "#D6F8D3" %}
+{% set green_200 = "#ADF1A7" %}
+{% set green_300 = "#84EA7B" %}
+{% set green_400 = "#5BE34F" %}
+{% set green_500 = "#32DD22" %}
+{% set green_600 = "#28B01C" %}
+{% set green_700 = "#1E8415" %}
+{% set green_800 = "#14580E" %}
+{% set green_900 = "#0A2C07" %}
+{% set green_950 = "#071F05" %}
 
 {% set CONTAINER_PADDING = 8 %}
 {% set dimensions = request.headers.get('x-hyperview-dimensions', '390w 844h') %}
