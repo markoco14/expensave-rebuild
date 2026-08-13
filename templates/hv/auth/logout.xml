@@ -1,6 +1,8 @@
-<view xmlns="https://hyperview.org/hyperview" id="logout-btn" style="btn btn-tab">
+<view xmlns="https://hyperview.org/hyperview" id="logout-btn" style="">
     <behavior trigger="press" target="logout-btn" action="replace" href="/hv/logout" />
-    <text style="text-dark text-large text-center">Logout</text>
+    <text style="text-dark text-large text-center">
+        {% include "hv/svg/logout.xml" %}
+    </text>
     <behavior
         trigger="load"
         action="dispatch-event"
