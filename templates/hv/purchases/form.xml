@@ -4,22 +4,9 @@
     <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
     <behavior trigger="load" action="back" />
     {% endif %}
-    {# <view>
-        <text style="text-dark text-large">Bucket</text>
-        <select-single style="select-single" name="bucket">
-            {% for bucket in buckets %}
-            <option 
-                style="option" 
-                value="{{ bucket.bucket_id }}" 
-                {% if selected_bucket_id|int == bucket.bucket_id %}selected="true"{% endif %}
-                >
-                <text style="text-dark text-medium">{{ bucket.name }}</text>
-            </option>
-            {% endfor %}
-        </select-single>
-        <text style="error">{{ errors.get("bucket", "") if errors else ''}}</text>
-    </view> #}
-
+    <view>
+        <text style="text-dark text-large">How much did you spend</text>
+    </view>
     <keypad-input xmlns="https://mysavemoneylife.com/hyperview/keypad">
         <keypad-display style="keypad-display">
             <keypad-display-text style="keypad-display-text" />
@@ -40,24 +27,17 @@
         </keypad-view>
     </keypad-input>
     
-    {# <text style="text-dark">Currency</text>
-    <text-field name="currency" placeholder="Currency" style="text-field" value="TWD"/>
-    <text style="error">{{ errors.get("currency", "") if errors else ''}}</text> #}
-    
-    {# <text style="text-dark">Timezone</text>
-    <text-field name="timezone" placeholder="Timezone" style="text-field" value="Asia/Taipei"/>
-    <text style="error">{{ errors.get("timezone", "") if errors else ''}}</text> #}
-    
-    <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="btn btn-primary">
-        <text style="btn-primary-text">Save</text>
-    </view>
-
-    <view 
+    <view style="form-actions">
+        <view 
             action="back"
             style="btn btn-secondary"
             >
             <text style="text-dark text-large text-center">Cancel</text>
         </view>
+
+        <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="btn btn-primary">
+            <text style="btn-primary-text">Save</text>
+        </view>
+    </view>
     
 </form>
-
