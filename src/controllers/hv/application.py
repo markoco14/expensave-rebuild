@@ -155,6 +155,7 @@ async def today(request: Request):
     purchases = [dict(row) for row in purchase_rows]
     for purchase in purchases:
         purchase["purchased_at"] = datetime.strptime(purchase["purchased_at"], "%Y-%m-%d %H:%M:%S")
+        purchase["purchased_at"] = purchase["purchased_at"].replace(tzinfo=timezone.utc).astimezone(ZoneInfo("Asia/Taipei"))
 
     if request.query_params.get("rows_only") and request.query_params.get("rows_only") == "true":
         return templates.TemplateResponse(
