@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from src.controllers import application, auth, bucket, public, purchase, top_up, user
+from src.controllers.web import user
+from src.controllers.web import application, auth, bucket, public, purchase, top_up
 from src.dependencies import is_purchase_owner, is_top_up_owner, is_user
 
 router = APIRouter()
