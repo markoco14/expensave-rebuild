@@ -90,8 +90,24 @@
     />
 
 <style id="btn-primary" 
-    backgroundColor="{{ gray_600 }}"
-    />
+    backgroundColor="{{ green_600 }}"
+    >
+    <modifier pressed="true">
+        <style backgroundColor="{{ green_700 }}"  />
+    </modifier>
+</style>
+
+<style id="btn-primary-text"
+    color="{{ white }}"
+    textAlign="center"
+    fontSize="18"
+    fontWeight="600"
+    textTransform="uppercase"
+>
+    <modifier pressed="true">
+        <style color="{{ white }}" />
+    </modifier>
+</stlye>
 
 <style id="btn-secondary" 
     borderWidth="1"
