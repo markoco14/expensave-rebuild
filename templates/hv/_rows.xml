@@ -26,10 +26,10 @@
             </view>
         </view>
     </item> #}
-    {# <item key="total" style="total">
+    <item key="total" style="total">
         <text style="total-text text-dark text-large">Total spent:</text>
         <text style="total-text text-dark text-large">${{ total_spent }}</text>
-    </item> #}
+    </item>
     {% if not purchases %}
     <item key="no-purchases" style="list-item">
         <text style="list-item-text text-large text-dark text-center">You have not tracked any purchases today</text>

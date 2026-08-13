@@ -153,9 +153,11 @@ async def today(request: Request):
         )
         
     purchases = [dict(row) for row in purchase_rows]
+    total_spent = 0
     for purchase in purchases:
         purchase["purchased_at"] = datetime.strptime(purchase["purchased_at"], "%Y-%m-%d %H:%M:%S")
         purchase["purchased_at"] = purchase["purchased_at"].replace(tzinfo=timezone.utc).astimezone(ZoneInfo("Asia/Taipei"))
+        total_spent += purchase["amount"]
 
     if request.query_params.get("rows_only") and request.query_params.get("rows_only") == "true":
         return templates.TemplateResponse(
@@ -166,7 +168,7 @@ async def today(request: Request):
                 "default_date": default_date,
                 "default_time": default_time,
                 "purchases": purchases,
-                "total_spent": None,
+                "total_spent": total_spent,
                 "daily_spending_bucket": None
                 },
             headers={"Content-Type": content_type}
@@ -181,7 +183,7 @@ async def today(request: Request):
             "default_date": default_date,
             "default_time": default_time,
             "purchases": purchases,
-            "total_spent": None,
+            "total_spent": total_spent,
             "daily_spending_bucket": None
             },
         headers={"Content-Type": content_type}
