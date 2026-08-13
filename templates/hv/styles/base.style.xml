@@ -145,19 +145,6 @@
     marginBottom="4"
     />
 
-<style id="total" 
-    display="flex"
-    flexDirection="row"
-    justifyContent="space-between"
-    borderBottomWidth="1"
-    borderColor="gray"
-    marginBottom="8"
-    paddingHorizontal="8"
-    />
-
-<style id="total-text" 
-    textAlign="right" 
-    />
 
 <style id="bucket-link" 
     display="flex"
