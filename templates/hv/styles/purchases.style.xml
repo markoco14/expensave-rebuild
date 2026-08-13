@@ -41,10 +41,11 @@
     />
 
 <style id="bucket-bar-item"
-    backgroundColor="{{ green_100 }}"
-    padding="2"
-    paddingLeft="8"
-    paddingRight="8"
+    backgroundColor="{{ green_200 }}"
+    borderWidth="1"
+    borderColor="{{ green_400 }}"
+    paddingVertical="4"
+    paddingHorizontal="16"
     borderRadius="8"
     />
 
@@ -55,10 +56,9 @@
     justifyContent="space-between"
     color="{{ gray_900 }}" 
     backgroundColor="{{ white }}"
-    elevation="2"
-    borderRadius="4"
     padding="16"
-    marginBottom="8"
+    borderColor="{{ gray_200 }}"
+    borderBottomWidth="1"
     />
 
 <style 

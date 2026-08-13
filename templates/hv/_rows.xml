@@ -27,8 +27,8 @@
         </view>
     </item> #}
     <item key="total" style="total">
-        <text style="total-text text-dark text-large">Total spent:</text>
-        <text style="total-text text-dark text-large">${{ total_spent }}</text>
+        <text style="total-text">Total spent:</text>
+        <text style="total-text">${{ total_spent }}</text>
     </item>
     {% if not purchases %}
     <item key="no-purchases" style="list-item">

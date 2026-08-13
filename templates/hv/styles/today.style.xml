@@ -1,0 +1,16 @@
+
+<style id="total" 
+    display="flex"
+    flexDirection="row"
+    justifyContent="space-between"
+    borderBottomWidth="1"
+    borderColor="{{ gray_400 }}"
+    paddingHorizontal="8"
+    />
+
+<style id="total-text" 
+    textAlign="right" 
+    fontSize="24"
+    fontWeight="500"
+    color="{{ gray_900 }}"
+    />

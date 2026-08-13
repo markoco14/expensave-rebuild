@@ -35,17 +35,32 @@
 </style>
 
 <style id="container"
+    position="relative"
     minHeight="100%"
     paddingLeft="8"
     paddingRight="8"
     paddingTop="8"
     backgroundColor="{{ gray_50 }}"
     marginBottom="128"
+    display="flex"
+    flexDirection="column"
+    />
+<style id="container-2"
+    position="relative"
+    minHeight="100%"
+    backgroundColor="{{ gray_50 }}"
+    marginBottom="128"
+    display="flex"
+    flexDirection="column"
     />
 
 <style id="header"
     marginTop="12"
     marginBottom="24"
+    paddingHorizontal="8"
+    />
+<style id="header-2"
+    marginTop="12"
     paddingHorizontal="8"
     />
 
@@ -90,8 +105,24 @@
     />
 
 <style id="btn-primary" 
-    backgroundColor="{{ gray_600 }}"
-    />
+    backgroundColor="{{ green_600 }}"
+    >
+    <modifier pressed="true">
+        <style backgroundColor="{{ green_700 }}"  />
+    </modifier>
+</style>
+
+<style id="btn-primary-text"
+    color="{{ white }}"
+    textAlign="center"
+    fontSize="18"
+    fontWeight="600"
+    textTransform="uppercase"
+>
+    <modifier pressed="true">
+        <style color="{{ white }}" />
+    </modifier>
+</stlye>
 
 <style id="btn-secondary" 
     borderWidth="1"
@@ -145,19 +176,6 @@
     marginBottom="4"
     />
 
-<style id="total" 
-    display="flex"
-    flexDirection="row"
-    justifyContent="space-between"
-    borderBottomWidth="1"
-    borderColor="gray"
-    marginBottom="8"
-    paddingHorizontal="8"
-    />
-
-<style id="total-text" 
-    textAlign="right" 
-    />
 
 <style id="bucket-link" 
     display="flex"

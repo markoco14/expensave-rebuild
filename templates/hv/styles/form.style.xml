@@ -1,6 +1,9 @@
 <style id="form-column"
     display="flex"
     flexDirection="column"
+    flexGrow="1"
+    paddingHorizontal="8"
+    justifyContent="center"
     gap="16"
     />
 
@@ -57,4 +60,15 @@
     flexDirection="row"
     justifyContent="center"
     width="100%"
+    />
+
+<style id="form-actions"
+    position="absolute"
+    bottom="156"
+    left="0"
+    display="flex"
+    flexDirection="row"
+    width="100%"
+    justifyContent="center"
+    gap="8"
     />
