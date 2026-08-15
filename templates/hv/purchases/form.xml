@@ -30,14 +30,22 @@
     <view style="form-actions">
         <view 
             action="back"
-            style="btn btn-secondary"
+            style="btn btn-secondary form-action form-action--secondary"
             >
-            <text style="text-dark text-large text-center">Cancel</text>
+            {% include "hv/svg/cancel.xml" %}
         </view>
 
-        <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="btn btn-primary">
-            <text style="btn-primary-text">Save</text>
+        <view 
+            verb="post" 
+            href="/hv/today" 
+            action="replace" 
+            target="purchase-form" 
+            style="btn btn-primary form-action form-action--primary"
+            >
+            {% include "hv/svg/checkmark-primary.xml" %}
         </view>
+        <view style="form-action form-action--placeholder"/>
+
     </view>
     
 </form>
