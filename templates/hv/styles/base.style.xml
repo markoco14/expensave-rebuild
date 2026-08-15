@@ -15,32 +15,19 @@
 
 <style id="main"
     flex="2"
-    {# backgroundColor="{{ gray_50 }}" #}
-    backgroundColor="green"
+    backgroundColor="{{ gray_50 }}"
     display="flex"
     flexDirection="column"
-    {# paddingBottom="100" #}
     />
 
 <style id="container"
     padding="8"
-    {# flex="1" #}
     flexGrow="1"
     flexShrink="0"
     flexBasis="0"
     minHeight="100%"
-    backgroundColor="red"
     />
     
-<style id="container-2"
-    position="relative"
-    minHeight="100%"
-    backgroundColor="{{ gray_50 }}"
-    marginBottom="128"
-    display="flex"
-    flexDirection="column"
-    />
-
 
 
 <style id="bottom-nav"

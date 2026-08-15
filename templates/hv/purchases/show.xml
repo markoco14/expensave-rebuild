@@ -2,9 +2,6 @@
 
 {% block header %}
 <text style="heading text-dark text-center">Purchase</text>
-<view style="header-placeholder" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}/edit">
-    {% include "hv/svg/edit.xml" %}
-</view>
 {% endblock header%}
 
 {% block content %}
@@ -25,21 +22,27 @@
         {% endif %}
     </view>
     <view style="form-actions">
-        <view 
-            action="back"
-            style="btn btn-secondary form-action form-action--secondary"
-            >
-            {% include "hv/svg/back.xml" %}
+
+        <view style="form-actions__column form-actions__column--left">
+            <view 
+                action="back"
+                style="form-action form-action--secondary"
+                >
+                {% include "hv/svg/back.xml" %}
+            </view>
         </view>
 
-        <view 
-            action="reload" 
-            href="/hv/purchases/{{ purchase.purchase_id }}/edit"
-            style="btn btn-primary form-action form-action--primary"
-            >
-            {% include "hv/svg/edit.xml" %}
+        <view style="form-actions__column form-actions__column--center">
+            <view 
+                action="reload" 
+                href="/hv/purchases/{{ purchase.purchase_id }}/edit"
+                style="form-action form-action--primary"
+                >
+                {% include "hv/svg/edit.xml" %}
+            </view>
         </view>
-        <view style="form-action form-action--placeholder"/>
+
+        <view style="form-actions__column form-actions__column--right" />
 
     </view>
 </view>
