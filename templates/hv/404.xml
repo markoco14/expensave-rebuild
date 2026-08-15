@@ -1,16 +1,12 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<header style="header">
-    <text style="heading text-dark text-center">Content Not Found</text>
-</header>
+<text style="heading text-dark text-center">Content Not Found</text>
 {% endblock header%}
 
 {% block content %}
-<view style="container">
-    <text style="not-found-description">Sorry, this page could not be found.</text>
-    <view style="btn btn-secondary">
-        <text action="back" style="text-dark text-center">Go Back</text>
-    </view>
+<text style="not-found-description">Sorry, this page could not be found.</text>
+<view style="btn btn-secondary">
+    <text action="back" style="text-dark text-center">Go Back</text>
 </view>
 {% endblock content%}

@@ -55,6 +55,7 @@
     />
 
 <style id="header"
+    minWidth="100%"
     marginTop="12"
     marginBottom="24"
     paddingHorizontal="8"

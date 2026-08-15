@@ -8,13 +8,15 @@
         </styles>
         <body>
 
-            {% block header %}
             <header style="header flex-header">
+                {% block header %}
                 <text>MySaveMoneyLife</text>
+                {% endblock header %}
             </header>
-            {% endblock header %}
 
+            <view style="container">
             {% block content %}{% endblock %}   
+            </view>
 
             <navigation:bottom-tab-bar
                 navigation:navigator="tabs-navigator"
