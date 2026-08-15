@@ -15,15 +15,17 @@
 {% endblock header%}
 
 {% block content %}
-<behavior trigger="on-event" event-name="purchase-added" action="reload" href="/hv/today"/>
-<behavior trigger="on-event" event-name="purchase-deleted" action="reload" href="/hv/today"/>
-<list 
-    id="purchase-list" 
-    trigger="refresh" 
-    action="replace-inner" 
-    target="purchase-list" 
-    href="/hv/today?rows_only=true"
-    >
-    {% include "hv/_rows.xml"%}
-</list>
+<view style="container">
+    <behavior trigger="on-event" event-name="purchase-added" action="reload" href="/hv/today"/>
+    <behavior trigger="on-event" event-name="purchase-deleted" action="reload" href="/hv/today"/>
+    <list 
+        id="purchase-list" 
+        trigger="refresh" 
+        action="replace-inner" 
+        target="purchase-list" 
+        href="/hv/today?rows_only=true"
+        >
+        {% include "hv/_rows.xml"%}
+    </list>
+</view>
 {% endblock content%}

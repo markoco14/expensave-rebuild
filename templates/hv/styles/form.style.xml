@@ -62,15 +62,23 @@
     width="100%"
     />
 
+<style id="purchase-form"
+    flex="1"
+    flexDirection="column"
+    justifyContent="center"
+    padding="8"
+    />
+
 <style id="form-actions"
     position="absolute"
-    bottom="156"
+    bottom="0"
     left="0"
     display="flex"
     flexDirection="row"
     width="100%"
     justifyContent="center"
     gap="8"
+    paddingBottom="24"
     />
 
 <style id="form-action"
