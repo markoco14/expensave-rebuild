@@ -1,4 +1,4 @@
-<form id="purchase-form" xmlns="https://hyperview.org/hyperview" style="purchase-form">
+<form id="purchase-form" xmlns="https://hyperview.org/hyperview" style="container--form">
     {% if saved == True %}
     <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
     <behavior trigger="load" action="back" />

@@ -1,16 +1,13 @@
-import asyncio
 from calendar import monthrange
 from datetime import date, datetime, timedelta, timezone
 import sqlite3
-import time
 from types import SimpleNamespace
-import uuid
 from zoneinfo import ZoneInfo
 
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from src import cryptography, utils
+from src import utils
 from src.models.bucket import Bucket
 from src.models.user import User
 from src.respository import purchase_repository
@@ -24,7 +21,6 @@ async def get_today_context(user_id: int):
 
     local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
 
-    # month_start = local_date_today.replace(month=12, day=1).date()
     month_start = local_date_today.replace(day=1).date()
 
     local_start_of_day = local_date_today.replace(hour=0, minute=0, second=0)
@@ -273,12 +269,11 @@ async def store(request: Request):
 
     purchased_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-    month_start = date.today().replace(day=1)
+ 
     
     current_datetime_utc = datetime.now(timezone.utc)
     localized_datetime = current_datetime_utc.astimezone(ZoneInfo("Asia/Taipei"))
 
-    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
 
     if errors:
         return templates.TemplateResponse(
@@ -288,7 +283,6 @@ async def store(request: Request):
                 "saved": False,
                 "previous_values": previous_values,
                 "errors": errors,
-                "buckets": buckets,
                 "selected_bucket_id": None
                 },
             headers={"Content-Type": content_type}
@@ -313,7 +307,7 @@ async def store(request: Request):
             "saved": True,
             "previous_values": {},
             "errors": {},
-            "buckets": buckets,
+            "buckets": [],
             "selected_bucket_id": None
             },
         headers={"Content-Type": content_type}

@@ -3,5 +3,5 @@
 {% block header %}{% endblock header %}
 
 {% block content %}
-    {% include "hv/purchases/form.xml"%}
+{% include "hv/purchases/form.xml"%}
 {% endblock content %}

@@ -62,7 +62,7 @@
     width="100%"
     />
 
-<style id="purchase-form"
+<style id="container--form"
     flex="1"
     flexDirection="column"
     justifyContent="center"
