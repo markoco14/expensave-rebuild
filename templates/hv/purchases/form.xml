@@ -1,5 +1,4 @@
-<form id="purchase-form" xmlns="https://hyperview.org/hyperview" style="form-column">
-    
+<form id="purchase-form" xmlns="https://hyperview.org/hyperview" style="container--form">
     {% if saved == True %}
     <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
     <behavior trigger="load" action="back" />
@@ -28,16 +27,30 @@
     </keypad-input>
     
     <view style="form-actions">
-        <view 
-            action="back"
-            style="btn btn-secondary"
-            >
-            <text style="text-dark text-large text-center">Cancel</text>
+
+        <view style="form-actions__column form-actions__column--left">
+            <view 
+                action="back"
+                style="btn btn-secondary form-action form-action--secondary"
+                >
+                {% include "hv/svg/back.xml" %}
+            </view>
         </view>
 
-        <view verb="post" href="/hv/today" action="replace" target="purchase-form" style="btn btn-primary">
-            <text style="btn-primary-text">Save</text>
+        <view style="form-actions__column form-actions__column--center">
+            <view 
+                verb="post" 
+                href="/hv/today" 
+                action="replace" 
+                target="purchase-form" 
+                style="btn btn-primary form-action form-action--primary"
+                >
+                {% include "hv/svg/checkmark-primary.xml" %}
+            </view>
         </view>
+
+        <view style="form-actions__column form-actions__column--right" />
+
     </view>
     
 </form>

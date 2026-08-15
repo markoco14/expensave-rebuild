@@ -6,15 +6,17 @@
         <styles>
             {% include "hv/styles/index.style.xml" %}
         </styles>
-        <body>
+        <body style="body">
 
-            {% block header %}
-            <header style="header flex-header">
+            <header style="header">
+                {% block header %}
                 <text>MySaveMoneyLife</text>
+                {% endblock header %}
             </header>
-            {% endblock header %}
 
-            {% block content %}{% endblock %}   
+            <view style="main">
+                {% block content %}{% endblock %}   
+            </view>
 
             <navigation:bottom-tab-bar
                 navigation:navigator="tabs-navigator"

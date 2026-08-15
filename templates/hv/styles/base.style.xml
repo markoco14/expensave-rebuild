@@ -1,7 +1,33 @@
-
 <style id="body"
+    flex="1"
+    position="relative"
+    />
+
+<style id="header"
+    flex="0"
+    minWidth="100%"
+    paddingHorizontal="8"
+    display="flex"
+    flexDirection="row"
+    justifyContent="space-between"
+    alignItems="center"
+    />
+
+<style id="main"
+    flex="2"
+    backgroundColor="{{ gray_50 }}"
+    display="flex"
+    flexDirection="column"
+    />
+
+<style id="container"
+    padding="8"
+    flexGrow="1"
+    flexShrink="0"
+    flexBasis="0"
     minHeight="100%"
     />
+    
 
 
 <style id="bottom-nav"
@@ -34,42 +60,6 @@
     </modifier>
 </style>
 
-<style id="container"
-    position="relative"
-    minHeight="100%"
-    paddingLeft="8"
-    paddingRight="8"
-    paddingTop="8"
-    backgroundColor="{{ gray_50 }}"
-    marginBottom="128"
-    display="flex"
-    flexDirection="column"
-    />
-<style id="container-2"
-    position="relative"
-    minHeight="100%"
-    backgroundColor="{{ gray_50 }}"
-    marginBottom="128"
-    display="flex"
-    flexDirection="column"
-    />
-
-<style id="header"
-    marginTop="12"
-    marginBottom="24"
-    paddingHorizontal="8"
-    />
-<style id="header-2"
-    marginTop="12"
-    paddingHorizontal="8"
-    />
-
-<style id="flex-header" 
-    display="flex"
-    flexDirection="row"
-    justifyContent="space-between"
-    alignItems="center"
-    />
 
 <style id="heading"
     fontSize="32"

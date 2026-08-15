@@ -1,51 +1,65 @@
 {% extends "hv/layout.xml" %}
+
 {% block header %}
-<header style="header flex-header">
-    <view style="header-placeholder" action="back">
-        {% include "hv/svg/back.xml" %}
-    </view>
-    <text style="heading text-dark">Edit Purchase</text>
-    <view style="header-placeholder" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}/edit">
-        {% include "hv/svg/edit.xml" %}
-    </view>
-</header>
+<text style="heading text-dark">Edit Purchase</text>
 {% endblock header%}
+
 {% block content %}
-<view style="container">
-    {# for development #}
+<form id="purchase-form" style="container">
     <behavior trigger="refresh" action="reload"/>
-    <view style="card">
+    
+    {% include "hv/purchases/_form_fields.xml" %}
 
-        <form id="purchase-form">
-            
-            {% include "hv/purchases/_form_fields.xml" %}
+    <view style="form-actions">
 
+        <view style="form-actions__column form-actions__column--left">
+            <view 
+                style="btn btn-secondary form-action form-action--secondary"
+                >
+                <behavior trigger="press" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
+                {% include "hv/svg/cancel.xml" %}
+            </view>
+        </view>
+
+        <view style="form-actions__column form-actions__column--center">
             <view 
                 verb="post"
                 href="/hv/purchases/{{ purchase.purchase_id }}/edit"
                 target="form-fields"
                 action="replace-inner"
-                style="btn btn-primary btn-gap"
+                style="btn btn-primary form-action form-action--primary"
                 >
-                <text style="text-center text-light text-large">Save</text>
+                {% include "hv/svg/checkmark-primary.xml" %}
             </view>
+        </view>
+        
+        <view style="form-actions__column form-actions__column--right">
+            <view style="form-action form-action--delete">
 
-            <view style="btn btn-secondary">
-                <behavior trigger="press" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
-                <text style="text-center text-large text-dark">Cancel</text>
+                <behavior
+                    xmlns:alert="https://hyperview.org/hyperview-alert"
+                    trigger="press"
+                    action="alert"
+                    alert:title="Delete purchase"
+                    alert:message="Are you sure you want to delete this purchase?"
+                    >
+                    <alert:option alert:label="Delete">
+                        <behavior 
+                            trigger="press"
+                            action="append"
+                            target="form-fields"
+                            href="/hv/purchases/{{ purchase.purchase_id }}/delete" 
+                            verb="post"
+                        />
+                    </alert:option>
+                    <alert:option alert:label="Cancel"/>
+
+                </behavior>
+                {% include "hv/svg/delete.xml" %}
             </view>
-            
-        </form>
+        </view>
+
     </view>
-    <view style="btn btn-delete">
-        <behavior 
-            trigger="press" 
-            action="append" 
-            target="purchase-info"
-            href="/hv/purchases/{{ purchase.purchase_id }}/delete" 
-            verb="post"
-            />
-        <text style="text-center text-large text-dark">Delete</text>
-    </view>
-</view>
+</form>
+
 {% endblock content%}

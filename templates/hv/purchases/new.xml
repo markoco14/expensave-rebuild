@@ -1,20 +1,7 @@
 {% extends "hv/layout.xml"%}
 
-{% block header %}
-{# <header style="header-2">
-    <text style="heading text-center text-dark">
-        New purchase
-    </text>
-</header> #}
-{% endblock header %}
+{% block header %}{% endblock header %}
 
 {% block content %}
-<view style="container-2">
-    <header style="header-2">
-        <text style="heading text-center text-dark">
-            New purchase
-        </text>
-    </header>
-    {% include "hv/purchases/form.xml"%}
-</view>
+{% include "hv/purchases/form.xml"%}
 {% endblock content %}
