@@ -28,4 +28,4 @@
         {% include "hv/_rows.xml"%}
     </list>
 </view>
-{% endblock content%}
+{% endblock content %}

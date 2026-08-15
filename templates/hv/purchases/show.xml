@@ -1,19 +1,14 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<header style="header flex-header">
-    <view style="header-placeholder" action="back">
-        {% include "hv/svg/back.xml" %}
-    </view>
-    <text style="heading text-dark text-center">Purchase</text>
-    <view style="header-placeholder" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}/edit">
-        {% include "hv/svg/edit.xml" %}
-    </view>
-</header>{% endblock header%}
+<text style="heading text-dark text-center">Purchase</text>
+<view style="header-placeholder" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}/edit">
+    {% include "hv/svg/edit.xml" %}
+</view>
+{% endblock header%}
 
 {% block content %}
 <view style="container">
-    {# for development #}
     <behavior trigger="refresh" action="reload"/>
     <view style="card">
         {% if not purchase %}
@@ -28,6 +23,24 @@
             <text style="text-large text-dark">{{ purchase.purchased_at.strftime("%B %d at %H:%M:%S") }} ({{ purchase.timezone }})</text>
         </view>
         {% endif %}
+    </view>
+    <view style="form-actions">
+        <view 
+            action="back"
+            style="btn btn-secondary form-action form-action--secondary"
+            >
+            {% include "hv/svg/back.xml" %}
+        </view>
+
+        <view 
+            action="reload" 
+            href="/hv/purchases/{{ purchase.purchase_id }}/edit"
+            style="btn btn-primary form-action form-action--primary"
+            >
+            {% include "hv/svg/edit.xml" %}
+        </view>
+        <view style="form-action form-action--placeholder"/>
+
     </view>
 </view>
 {% endblock content %}
