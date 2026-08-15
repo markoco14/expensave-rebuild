@@ -32,7 +32,7 @@
             action="back"
             style="btn btn-secondary form-action form-action--secondary"
             >
-            {% include "hv/svg/cancel.xml" %}
+            {% include "hv/svg/back.xml" %}
         </view>
 
         <view 
