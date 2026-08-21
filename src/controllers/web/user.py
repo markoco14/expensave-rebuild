@@ -26,42 +26,42 @@ async def me(request: Request):
     local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
     month_start = local_date_today.replace(day=1).date()
 
-    try:
-        with sqlite3.connect("db.sqlite3") as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute("SELECT bucket_id, name, is_daily FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
-            buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
+    # try:
+    #     with sqlite3.connect("db.sqlite3") as conn:
+    #         conn.row_factory = sqlite3.Row
+    #         cursor = conn.cursor()
+    #         cursor.execute("SELECT bucket_id, name, is_daily FROM bucket WHERE user_id = ?;", (request.state.user.user_id, ))
+    #         buckets = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
-            bucket_ids = [str(bucket.bucket_id) for bucket in buckets]
-            bucket_ids = ", ".join(bucket_ids)
+    #         bucket_ids = [str(bucket.bucket_id) for bucket in buckets]
+    #         bucket_ids = ", ".join(bucket_ids)
     
-            cursor.execute(f"""
-                            SELECT 
-                                top_up_id, bucket_id, month_start, start_amount 
-                            FROM bucket_month_top_up 
-                            WHERE bucket_id 
-                            IN ({bucket_ids}) AND month_start = ?;""",
-                            (month_start, ))
+    #         cursor.execute(f"""
+    #                         SELECT 
+    #                             top_up_id, bucket_id, month_start, start_amount 
+    #                         FROM bucket_month_top_up 
+    #                         WHERE bucket_id 
+    #                         IN ({bucket_ids}) AND month_start = ?;""",
+    #                         (month_start, ))
             
-            top_ups = [SimpleNamespace(**row) for row in cursor.fetchall()]
+    #         top_ups = [SimpleNamespace(**row) for row in cursor.fetchall()]
 
          
-    except Exception as e:
-        print(f"something went wrong retrieving data: {e}")
-        return "Internal server error"
+    # except Exception as e:
+    #     print(f"something went wrong retrieving data: {e}")
+    #     return "Internal server error"
     
-    for bucket in buckets:
-        for top_up in top_ups:
-            if top_up.bucket_id == bucket.bucket_id:
-                bucket.top_up = top_up
+    # for bucket in buckets:
+    #     for top_up in top_ups:
+    #         if top_up.bucket_id == bucket.bucket_id:
+    #             bucket.top_up = top_up
     
     return templates.TemplateResponse(
         request=request,
         name="me.html",
         context={
             "current_user": request.state.user,
-            "buckets": buckets,
+            # "buckets": buckets,
             "month_start": month_start
         }
     )
