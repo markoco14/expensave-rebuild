@@ -28,9 +28,9 @@
                         </view>
                     </navigation:bottom-tab-bar-item>
 
-                    <navigation:bottom-tab-bar-item navigation:route="buckets" style="tab-item">
+                    <navigation:bottom-tab-bar-item navigation:route="categories" style="tab-item">
                         <view>
-                            <text style="tab-label">Buckets</text>
+                            <text style="tab-label">Categories</text>
                         </view>
                     </navigation:bottom-tab-bar-item>
                 </view>

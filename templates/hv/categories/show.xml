@@ -32,7 +32,7 @@
     
     <item id="top-up-purchases">
         <behavior 
-            href="/hv/buckets/{{ bucket.bucket_id }}?content=list" 
+            href="/hv/categories/{{ bucket.bucket_id }}?content=list" 
             trigger="load" 
             target="top-up-purchases" 
             action="replace" />

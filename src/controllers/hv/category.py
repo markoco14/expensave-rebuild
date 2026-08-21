@@ -20,34 +20,34 @@ async def list(request: Request):
 
     month_start = local_date_today.replace(day=1).date()
     
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
+    # with sqlite3.connect("db.sqlite3") as conn:
+    #     conn.execute("PRAGMA foreign_keys = ON;")
+    #     conn.row_factory = sqlite3.Row
 
-        bucket_rows = list_with_top_ups(conn=conn, month_start=month_start, user_id=request.state.user.user_id)
+    #     bucket_rows = list_with_top_ups(conn=conn, month_start=month_start, user_id=request.state.user.user_id)
     
-    buckets = []
-    for row in bucket_rows:
-        top_up = BucketMonthTopUp(
-            top_up_id = row["top_up_id"],
-            month_start=row["month_start"],
-            start_amount=row["start_amount"],
-            end_amount=row["end_amount"]
-        )
+    # buckets = []
+    # for row in bucket_rows:
+    #     top_up = BucketMonthTopUp(
+    #         top_up_id = row["top_up_id"],
+    #         month_start=row["month_start"],
+    #         start_amount=row["start_amount"],
+    #         end_amount=row["end_amount"]
+    #     )
 
-        bucket = Bucket(
-            bucket_id=row["bucket_id"],
-            name=row["name"],
-            top_up=top_up
-        )
+    #     bucket = Bucket(
+    #         bucket_id=row["bucket_id"],
+    #         name=row["name"],
+    #         top_up=top_up
+    #     )
 
-        buckets.append(bucket)
+    #     buckets.append(bucket)
         
     return templates.TemplateResponse(
         request=request,
-        name="hv/bucket/index.xml",
+        name="hv/categories/index.xml",
         context={
-            "buckets": buckets,
+            "buckets": [],
             "current_month": month_start
             }
         )
@@ -92,7 +92,7 @@ async def show(request: Request, bucket_id: int):
 
         return templates.TemplateResponse(
             request=request,
-            name="hv/bucket/_list.xml",
+            name="hv/categories/_list.xml",
             context={
                 "purchases": purchase_rows
             }
@@ -159,7 +159,7 @@ async def show(request: Request, bucket_id: int):
     print("actual spending", actual_spending)
     return templates.TemplateResponse(
         request=request,
-        name="hv/bucket/show.xml",
+        name="hv/categories/show.xml",
         context={
             "bucket": bucket,
             "top_up": top_up,
