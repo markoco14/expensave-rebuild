@@ -1,24 +1,10 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<header style="header flex-header">
-    <text style="heading text-dark">Login time</text>
-</header>
 {% endblock header %}
 
 {% block content %}
-<view style="container">
-    <behavior trigger="refresh" action="reload" href="/hv/today"/>
-    {% include "hv/auth/form.xml" %}
-</view>
-{% endblock content%}
-{# <doc xmlns="https://hyperview.org/hyperview"> #}
-    {# <screen> #}
-        {# <styles> #}
-            {# {% include "hv/styles/base.style.xml" %} #}
-            {# {% include "hv/styles/form.style.xml" %} #}
-        {# </styles> #}
-        <body>
-        </body>
-  </screen>
+
+{% include "hv/auth/form.xml" %}
+{% endblock content %}
 </doc>
