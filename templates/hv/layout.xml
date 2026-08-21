@@ -15,7 +15,7 @@
             </header>
 
             <view style="main">
-                {% block content %}{% endblock %}   
+                {% block content %}{% endblock content %}   
             </view>
 
             <navigation:bottom-tab-bar

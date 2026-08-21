@@ -1,4 +1,4 @@
-<form id="login-form" xmlns="https://hyperview.org/hyperview">
+<form id="login-form" xmlns="https://hyperview.org/hyperview" style="container--form">    
     {% if saved == True %}
         {# <behavior trigger="load" action="reload" href="/hv/today"/> #}
         <behavior
@@ -7,6 +7,9 @@
         event-name="reload-root-navigation"
         />
     {% endif %}
+    <view style="form-heading">
+        <text style="heading text-dark">Login</text>
+    </view>
 
     <view style="input-group">
         <text style="text-dark">Email</text>
@@ -32,7 +35,7 @@
     </view>
 
     <view verb="post" href="/hv/login" action="replace" target="login-form" style="btn btn-primary">
-        <text style="text-center text-large text-dark">Login</text>
+        <text id="login-text" style="btn-primary-text">Login</text>
     </view>
 
 </form>

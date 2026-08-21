@@ -95,15 +95,15 @@
     />
 
 <style id="btn-primary" 
-    backgroundColor="{{ green_600 }}"
+    backgroundColor="{{ green_500 }}"
     >
     <modifier pressed="true">
-        <style backgroundColor="{{ green_700 }}"  />
+        <style backgroundColor="{{ green_600 }}"  />
     </modifier>
 </style>
 
 <style id="btn-primary-text"
-    color="{{ white }}"
+    color="{{ green_800 }}"
     textAlign="center"
     fontSize="18"
     fontWeight="600"

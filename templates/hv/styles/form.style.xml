@@ -69,6 +69,10 @@
     padding="8"
     />
 
+<style id="form-heading"
+    marginBottom="24"
+    />
+
 <style id="form-actions"
     position="absolute"
     bottom="0"
