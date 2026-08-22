@@ -1,9 +1,6 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<header style="header">
-	<text style="heading text-dark text-center">Buckets</text>
-</header>
 {% endblock header %}
 
 {% block content %}
@@ -12,11 +9,10 @@
 
 	<text style="heading text-dark text-center">{{ current_month.strftime("%B %Y") }}</text>
 
-	{% for bucket in buckets %}
+	{% for category in categories %}
 	<view style="card">
-		<behavior action="push" href="/hv/categories/{{ bucket.bucket_id }}"/>
-		<text style="text-dark text-large text-center">{{ bucket.name }}</text>
-		<text style="text-dark balance text-center">Balance: ${{ bucket.top_up.end_amount if bucket.top_up.end_amount else 0 }}</text>
+		<behavior action="push" href="/hv/categories/{{ category.category_id }}"/>
+		<text style="text-dark text-large text-center">{{ category.name }}</text>
 	</view>
 	{% endfor %}
 
