@@ -43,7 +43,28 @@ async def list(
         )
 
 
-async def show(request: Request, bucket_id: int):
+async def show(
+        request: Request, 
+        conn: Annotated[sqlite3.Connection, Depends(get_db)],
+        category_id: int
+        ):
+
+    try:
+        category_row = conn.execute(
+            "SELECT * FROM category WHERE category_id = :category_id;", 
+            {"category_id": category_id}
+            ).fetchone()
+    except Exception as e:
+        logger.error(f"DB error getting category {category_id}: {e}", exc_info=True)
+        
+    return templates.TemplateResponse(
+            request=request,
+            name="hv/categories/show.xml",
+            context={
+                "category": category_row
+                }
+        )
+    
     query_params = request.query_params
     utc_date_today = datetime.now(timezone.utc)
 

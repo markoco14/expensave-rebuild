@@ -1,43 +1,44 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<header style="header flex-header">
-    <view style="header-placeholder" action="back">
-        {% include "hv/svg/back.xml" %}
-    </view>
-    <text style="heading text-dark text-center">{{ bucket.name|truncate(15) }}</text>
-    <view style="header-placeholder" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}/edit">
-        {% include "hv/svg/edit.xml" %}
-    </view>
-</header>
+<text style="heading text-dark text-center">{{ category.name }}</text>
 {% endblock header %}
 
 {% block content %}
-<list style="container">
-    <item style="card margin-bottom">
-        <text style="text-dark text-large">Month: {{ top_up.month_start }}</text>
-        <text style="text-dark text-large">Starting Amount: {{ top_up.start_amount }}</text>
-        <text style="text-dark text-large">Remaining Amount: {{ top_up.end_amount if top_up.end_amount else 0 }}</text>
-</text>
-    </item>
+<view style="container">
+    <view style="card">
+        <view style="input-group">
+            <text style="label text-large text-dark">Name</text>
+            <text style="text-large text-dark">{{ category.name }}</text>
+        </view>
+        <view style="input-group">
+            <text style="label text-large text-dark">Daily</text>
+            <text style="text-large text-dark">{{ "Tracked daily" if category.is_daily else "Tracked monthly" }}</text>
+        </view>
+    </view>
+    <view style="form-actions">
 
-    <item style="card margin-bottom">
-        <text style="text-dark text-large">Stats Summary</text>
-        {% if bucket.is_daily %}
-        <text style="text-dark text-large">Expected spending (at E.O.D): {{ expected_spending }} </text>
-        {% endif %}
-        <text style="text-dark text-large">Logged spending: {{ logged_spending }}</text>
-        <text style="text-dark text-large">Actual spending: {{ actual_spending }}</text>
-    </item>
-    
-    <item id="top-up-purchases">
-        <behavior 
-            href="/hv/categories/{{ bucket.bucket_id }}?content=list" 
-            trigger="load" 
-            target="top-up-purchases" 
-            action="replace" />
-        <text style="card text-large text-dark">Loading...</text>
-    </item>
-    
-</list>
+            <view style="form-actions__column form-actions__column--left">
+                <view 
+                    action="back"
+                    style="form-action form-action--secondary"
+                    >
+                    {% include "hv/svg/back.xml" %}
+                </view>
+            </view>
+
+            <view style="form-actions__column form-actions__column--center">
+                <view 
+                    action="reload" 
+                    {# href="/hv/purchases/{{ purchase.purchase_id }}/edit" #}
+                    style="form-action form-action--primary"
+                    >
+                    {% include "hv/svg/edit.xml" %}
+                </view>
+            </view>
+
+            <view style="form-actions__column form-actions__column--right" />
+
+        </view>
+</view>
 {% endblock content%}
