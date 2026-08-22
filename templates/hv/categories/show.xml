@@ -6,6 +6,7 @@
 
 {% block content %}
 <view style="container">
+    <behavior trigger="refresh" action="reload"/>
     <view style="card">
         <view style="input-group">
             <text style="label text-large text-dark">Name</text>
