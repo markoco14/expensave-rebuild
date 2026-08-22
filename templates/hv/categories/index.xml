@@ -1,0 +1,21 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}
+{% endblock header %}
+
+{% block content %}
+<view style="container column">
+	<behavior trigger="on-event" event-name="top-up-updated" action="reload" href="/hv/categories"/>
+
+	<text style="heading text-dark text-center">{{ current_month.strftime("%B %Y") }}</text>
+
+	{% for category in categories %}
+	<view style="card">
+		<behavior action="push" href="/hv/categories/{{ category.category_id }}"/>
+		<text style="text-dark text-large text-center">{{ category.name }}</text>
+	</view>
+	{% endfor %}
+
+</view>
+
+{% endblock content %}

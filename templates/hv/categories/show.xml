@@ -1,0 +1,45 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}
+<text style="heading text-dark text-center">{{ category.name }}</text>
+{% endblock header %}
+
+{% block content %}
+<view style="container">
+    <behavior trigger="refresh" action="reload"/>
+    <view style="card">
+        <view style="input-group">
+            <text style="label text-large text-dark">Name</text>
+            <text style="text-large text-dark">{{ category.name }}</text>
+        </view>
+        <view style="input-group">
+            <text style="label text-large text-dark">Tracking</text>
+            <text style="text-large text-dark">{{ "Daily" if category.is_daily else "Monthly" }}</text>
+        </view>
+    </view>
+    <view style="form-actions">
+
+            <view style="form-actions__column form-actions__column--left">
+                <view 
+                    action="back"
+                    style="form-action form-action--secondary"
+                    >
+                    {% include "hv/svg/back.xml" %}
+                </view>
+            </view>
+
+            <view style="form-actions__column form-actions__column--center">
+                <view 
+                    action="reload" 
+                    href="/hv/categories/{{ category.category_id }}/edit"
+                    style="form-action form-action--primary"
+                    >
+                    {% include "hv/svg/edit.xml" %}
+                </view>
+            </view>
+
+            <view style="form-actions__column form-actions__column--right" />
+
+        </view>
+</view>
+{% endblock content%}

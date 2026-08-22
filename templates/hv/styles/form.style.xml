@@ -141,3 +141,12 @@
 <style id="form-action--placeholder-item"
     width="24"
     />
+
+<style id="select-option"
+    color="{{ gray_700 }}"
+    >
+
+    <modifier selected="true">
+        <style color="{{ gray_900 }}" backgroundColor="{{ green_300 }}"/>
+    </modifier>
+</style>
