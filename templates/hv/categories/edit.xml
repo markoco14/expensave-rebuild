@@ -1,0 +1,81 @@
+{% extends "hv/layout.xml" %}
+
+{% block header %}
+<text style="heading text-dark text-center">{{ category.name }}</text>
+{% endblock header %}
+
+{% block content %}
+<form id="category-form" style="container">
+    <behavior trigger="refresh" action="reload"/>
+    <view id="form-fields" xmlns="https://hyperview.org/hyperview">
+
+        <text style="text-dark">Name</text>
+        <text-field style="text-field" value="{{ category.name if category.name else ''}}"/>
+
+        <text style="text-dark">Daily</text>
+        <select-single name="is_daily">
+            <option value="1" style="select-option" selected="{{ 'true' if not category.is_daily else '' }}">
+                <text>No</text>
+            </option>
+
+            <option value="2" style="select-option" selected="{{ 'true' if category.is_daily else '' }}">
+                <text>Yes</text>
+            </option>
+        </select-single>
+        
+    </view>
+
+    <view style="form-actions">
+
+        <view style="form-actions__column form-actions__column--left">
+            <view 
+                style="btn btn-secondary form-action form-action--secondary"
+                >
+                <behavior trigger="press" action="reload" href="/hv/categories/{{ category.category_id }}"/>
+                {% include "hv/svg/cancel.xml" %}
+            </view>
+        </view>
+
+        <view style="form-actions__column form-actions__column--center">
+            <view 
+                verb="post"
+                href="/hv/categories/{{ category.category_id }}/edit"
+                target="form-fields"
+                action="replace-inner"
+                style="btn btn-primary form-action form-action--primary"
+                >
+                {% include "hv/svg/checkmark-primary.xml" %}
+            </view>
+        </view>
+
+
+
+        <view style="form-actions__column form-actions__column--right">
+            <view style="form-action form-action--delete">
+
+                <behavior
+                    xmlns:alert="https://hyperview.org/hyperview-alert"
+                    trigger="press"
+                    action="alert"
+                    alert:title="Delete category"
+                    alert:message="Are you sure you want to delete this category?"
+                    >
+                    <alert:option alert:label="Delete">
+                        <behavior 
+                            trigger="press"
+                            action="append"
+                            target="form-fields"
+                            href="/hv/categories/{{ category.category_id }}/delete" 
+                            verb="post"
+                        />
+                    </alert:option>
+                    <alert:option alert:label="Cancel"/>
+
+                </behavior>
+                {% include "hv/svg/delete.xml" %}
+            </view>
+        </view>
+
+    </view>
+</form>
+{% endblock content%}

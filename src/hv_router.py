@@ -23,6 +23,7 @@ routes = [
 
     ("GET",     "/hv/categories",  category.list, [Depends(is_user)]),
     ("GET",     "/hv/categories/{category_id}", category.show, [Depends(is_user)]),
+    ("GET",     "/hv/categories/{category_id}/edit", category.edit, []),
 
     ("GET",     "/hv/top-up/{top_up_id}/edit",  top_up.edit,    [Depends(is_user)]),
     ("POST",    "/hv/top-up/{top_up_id}/update",       top_up.update,  [Depends(is_user)])
