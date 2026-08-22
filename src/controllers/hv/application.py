@@ -200,7 +200,6 @@ async def new(request: Request):
     # default_date = localized_datetime.date()
     # default_time = localized_datetime.time().strftime("%H:%M:%S")
 
-    buckets = Bucket.list_for_month(user_id=request.state.user.user_id, fields=["bucket_id", "name", "is_daily"])
 
     return templates.TemplateResponse(
         request=request,
@@ -210,7 +209,6 @@ async def new(request: Request):
             "selected_bucket_id": selected_bucket_id,
             "previous_values": {},
             "errors": {},
-            "buckets": buckets
             },
         headers={"Content-Type": content_type}
         )
