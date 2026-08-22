@@ -21,6 +21,10 @@ async def list(
         request: Request, 
         conn: Annotated[sqlite3.Connection, Depends(get_db)]
         ):
+    current_user = request.state.user
+    if not current_user:
+        return Response(status_code=401, content="not authenticated")
+    
     utc_date_today = datetime.now(timezone.utc)
 
     local_date_today = utc_date_today.astimezone(ZoneInfo("Asia/Taipei"))
@@ -28,7 +32,7 @@ async def list(
     month_start = local_date_today.replace(day=1).date()
     
     try:
-        category_rows = list_with_top_ups(conn=conn, month_start=month_start, user_id=request.state.user.user_id)
+        category_rows = list_with_top_ups(conn=conn, month_start=month_start, user_id=current_user.user_id)
     except Exception as e:
         logger.error(f"DB error getting categories: {e}", exc_info=True)
         return Response(status_code=500, content="something went wrong on our end")
@@ -48,7 +52,10 @@ async def show(
         conn: Annotated[sqlite3.Connection, Depends(get_db)],
         category_id: int
         ):
-
+    current_user = request.state.user
+    if not current_user:
+        return Response(status_code=401, content="not authenticated")
+    
     try:
         category_row = conn.execute(
             "SELECT * FROM category WHERE category_id = :category_id;", 
@@ -56,7 +63,7 @@ async def show(
             ).fetchone()
     except Exception as e:
         logger.error(f"DB error getting category {category_id}: {e}", exc_info=True)
-        
+
     return templates.TemplateResponse(
             request=request,
             name="hv/categories/show.xml",
