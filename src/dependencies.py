@@ -63,7 +63,7 @@ def is_user(request: Request):
     
     request.state.user = SimpleNamespace(**db_user)
     
-    return
+    return SimpleNamespace(**db_user)
 
 def is_purchase_owner(request: Request, purchase_id: int):
     request.state.purchase = None

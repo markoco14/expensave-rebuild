@@ -50,10 +50,11 @@ async def list(
 
 async def show(
         request: Request, 
+        current_user: Annotated[any, Depends(is_user)],
         conn: Annotated[sqlite3.Connection, Depends(get_db)],
         category_id: int
         ):
-    current_user = request.state.user
+
     if not current_user:
         return Response(status_code=401, content="not authenticated")
     
@@ -105,7 +106,6 @@ async def update(
         conn: Annotated[sqlite3.Connection, Depends(get_db)], 
         category_id: int
         ):
-    current_user = request.state.user
     if not current_user:
         return Response(status_code=401, content="not authenticated")
 
@@ -156,3 +156,31 @@ async def update(
             "category": category_row
         }
     )
+
+
+async def delete(
+        request: Request,
+        current_user: Annotated[any, Depends(is_user)],
+        conn: Annotated[sqlite3.Connection, Depends(get_db)], 
+        category_id: int
+        ):
+    accept_header = request.headers.get("accept", "")
+    content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
+    if not current_user:
+        return Response(status_code=401, content="not authenticated")
+
+    try:
+        conn.execute("DELETE FROM category WHERE category_id = :category_id;", {"category_id": category_id})
+        conn.commit()
+    except Exception as e:
+        logger.error(f"DB error deleting category: {e}", exc_info=True)
+        return Response(status_code=500, content="something went wrong")
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/categories/_deleted.xml",
+        context={},
+        headers={"Content-Type": content_type}
+    )
+    return Response(status_code=200, content="success")
+
+    
