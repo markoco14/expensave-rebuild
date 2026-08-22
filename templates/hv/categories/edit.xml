@@ -7,23 +7,8 @@
 {% block content %}
 <form id="category-form" style="container">
     <behavior trigger="refresh" action="reload"/>
-    <view id="form-fields" xmlns="https://hyperview.org/hyperview">
-
-        <text style="text-dark">Name</text>
-        <text-field style="text-field" value="{{ category.name if category.name else ''}}"/>
-
-        <text style="text-dark">Daily</text>
-        <select-single name="is_daily">
-            <option value="1" style="select-option" selected="{{ 'true' if not category.is_daily else '' }}">
-                <text>No</text>
-            </option>
-
-            <option value="2" style="select-option" selected="{{ 'true' if category.is_daily else '' }}">
-                <text>Yes</text>
-            </option>
-        </select-single>
-        
-    </view>
+    
+    {% include "hv/categories/_form-fields.xml" %}
 
     <view style="form-actions">
 

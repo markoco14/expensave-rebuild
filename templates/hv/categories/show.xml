@@ -13,8 +13,8 @@
             <text style="text-large text-dark">{{ category.name }}</text>
         </view>
         <view style="input-group">
-            <text style="label text-large text-dark">Daily</text>
-            <text style="text-large text-dark">{{ "Tracked daily" if category.is_daily else "Tracked monthly" }}</text>
+            <text style="label text-large text-dark">Tracking</text>
+            <text style="text-large text-dark">{{ "Daily" if category.is_daily else "Monthly" }}</text>
         </view>
     </view>
     <view style="form-actions">

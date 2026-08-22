@@ -98,3 +98,61 @@ async def edit(
             "category": category_row
         }
     )
+
+async def update(
+        request: Request,
+        current_user: Annotated[any, Depends(is_user)],
+        conn: Annotated[sqlite3.Connection, Depends(get_db)], 
+        category_id: int
+        ):
+    current_user = request.state.user
+    if not current_user:
+        return Response(status_code=401, content="not authenticated")
+
+    form_data = await request.form()
+    name = form_data.get("name", "").strip()
+    is_daily = form_data.get("is_daily", "").strip()
+
+    if not name:
+        print("no name")
+
+    if not is_daily:
+        print("no is daily")
+
+    if not name or not is_daily:
+        return Response(status_code=422, content="incomplete form")
+
+    if is_daily not in ("0", "1"):
+        print("is daily not 0 or 1")
+        return Response(status_code=422, content="invalid is daily")
+
+    try:
+        conn.execute(
+            "UPDATE category SET name = :name, is_daily = :is_daily WHERE category_id = :category_id;", 
+            {
+                "name": name,
+                "is_daily": is_daily,
+                "category_id": category_id
+            }
+            )
+        conn.commit()
+    except Exception as e:
+        logger.error(f"DB error updating category {category_id}: {e}", exc_info=True)
+        return Response(status_code=500, content="something went wrong on our end")
+
+    try:
+        category_row = conn.execute(
+            "SELECT * FROM category WHERE category_id = :category_id;", 
+            {"category_id": category_id}
+            ).fetchone()
+    except Exception as e:
+        logger.error(f"DB error getting category {category_id}: {e}", exc_info=True)
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/categories/_form-fields.xml",
+        context={
+            "saved": True,
+            "category": category_row
+        }
+    )
