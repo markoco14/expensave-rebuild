@@ -9,6 +9,11 @@
 
 	<text style="heading text-dark text-center">{{ current_month.strftime("%B %Y") }}</text>
 
+	<view style="card new-category">
+		<behavior action="new" href="/hv/categories/new" />
+		<text style="text-dark text-large text-center">+ Category</text>
+	</view>
+
 	{% for category in categories %}
 	<view style="card">
 		<behavior action="push" href="/hv/categories/{{ category.category_id }}"/>

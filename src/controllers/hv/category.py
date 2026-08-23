@@ -48,6 +48,20 @@ async def list(
         )
 
 
+async def new(
+        request: Request, 
+        current_user: Annotated[any, Depends(is_user)]
+        ):
+    if not current_user:
+        return Response(status_code=401, content="not authenticated")
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/categories/new.xml",
+        context={}
+    )
+
+
 async def show(
         request: Request, 
         current_user: Annotated[any, Depends(is_user)],
