@@ -7,7 +7,7 @@
 {% block content %}
 <view style="container">
     <behavior trigger="refresh" action="reload"/>
-    <view style="card">
+    <view style="content content--top">
         <view style="input-group">
             <text style="label text-large text-dark">Name</text>
             <text style="text-large text-dark">{{ category.name }}</text>
