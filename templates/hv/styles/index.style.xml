@@ -46,7 +46,7 @@
 {% set button_width = (SCREEN_WIDTH - (CONTAINER_PADDING * 2) - TOTAL_GAP) / COLUMN_COUNT %}
 
 {% include "hv/styles/base.style.xml" %}
-{% include "hv/styles/bucket.style.xml" %}
+{% include "hv/styles/categories.style.xml" %}
 {% include "hv/styles/form.style.xml" %}
 {% include "hv/styles/today.style.xml" %}
 {% include "hv/styles/purchases.style.xml" %}
