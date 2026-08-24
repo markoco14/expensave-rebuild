@@ -1,3 +1,15 @@
+<style id="category-container"
+    display="flex"
+    flexDirection="column"
+    gap="12"
+    paddingTop="32"
+    padding="8"
+    flexGrow="1"
+    flexShrink="0"
+    flexBasis="0"
+    minHeight="100%"
+    />
+
 <style id="bucket" 
     backgroundColor="{{ white }}"
     paddingVertical="8"
