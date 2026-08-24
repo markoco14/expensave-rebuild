@@ -25,6 +25,8 @@ routes = [
 
 
     ("GET",     "/hv/categories",                       category.list, [Depends(is_user)]),
+    ("GET",     "/hv/categories/new",                   category.new,   []),
+    ("POST",    "/hv/categories",                       category.store, []),
     ("GET",     "/hv/categories/{category_id}",         category.show, [Depends(is_user)]),
     ("GET",     "/hv/categories/{category_id}/edit",    category.edit, []),
     ("POST",    "/hv/categories/{category_id}/edit",    category.update, []),

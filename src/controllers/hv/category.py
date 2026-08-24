@@ -48,6 +48,55 @@ async def list(
         )
 
 
+async def new(
+        request: Request, 
+        current_user: Annotated[any, Depends(is_user)]
+        ):
+    if not current_user:
+        return Response(status_code=401, content="not authenticated")
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/categories/new.xml",
+        context={}
+    )
+
+
+async def store(
+        request: Request, 
+        current_user: Annotated[any, Depends(is_user)],
+        conn: Annotated[sqlite3.Connection, Depends(get_db)]
+        ):
+    if not current_user:
+        return Response(status_code=401, content="not authenticated")
+    
+    form_data = await request.form()
+    form_name = form_data.get("name", "").strip()
+    form_is_daily = form_data.get("is_daily", "").strip()
+
+    if not form_name or not form_is_daily:
+        return Response(status_code=422, content="form data missing")
+
+    if form_is_daily not in ("0", "1"):
+        return Response(status_code=422, content="invalid tracking value")
+
+    try:
+        conn.execute(
+            "INSERT INTO category (name, is_daily, user_id) VALUES (:name, :is_daily, :user_id);", 
+            {"name": form_name, "is_daily": form_is_daily, "user_id": current_user.user_id}
+            )
+        conn.commit()
+    except Exception as e:
+        logger.error(f"DB error storing category: {e}", exc_info=True)
+        return Response(status_code=500, content="server error, sorry")
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/categories/_form-fields.xml",
+        context={"saved": True}
+    )
+
+
 async def show(
         request: Request, 
         current_user: Annotated[any, Depends(is_user)],

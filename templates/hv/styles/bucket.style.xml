@@ -16,3 +16,7 @@
 <style id="balance"
     fontSize="32"
     />
+
+<style id="new-category"
+    backgroundColor="{{ green_300 }}"
+/>
