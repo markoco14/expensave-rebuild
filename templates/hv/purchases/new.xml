@@ -3,5 +3,36 @@
 {% block header %}{% endblock header %}
 
 {% block content %}
-{% include "hv/purchases/form.xml"%}
+<form id="purchase-form" style="container--form">
+
+    {% include "hv/purchases/_form-fields.xml"%}
+
+    <view style="form-actions">
+
+        <view style="form-actions__column form-actions__column--left">
+            <view 
+                action="back"
+                style="btn btn-secondary form-action form-action--secondary"
+                >
+                {% include "hv/svg/back.xml" %}
+            </view>
+        </view>
+
+        <view style="form-actions__column form-actions__column--center">
+            <view 
+                verb="post" 
+                href="/hv/today" 
+                action="replace" 
+                target="purchase-form" 
+                style="btn btn-primary form-action form-action--primary"
+                >
+                {% include "hv/svg/checkmark-primary.xml" %}
+            </view>
+        </view>
+
+        <view style="form-actions__column form-actions__column--right" />
+
+    </view>
+    
+</form>
 {% endblock content %}
