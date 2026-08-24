@@ -17,6 +17,51 @@
     fontSize="32"
     />
 
-<style id="new-category"
-    backgroundColor="{{ green_300 }}"
-/>
+<style id="add-category"
+    padding="16"
+    backgroundColor="{{ green_200 }}"
+    borderWidth="1"
+    borderColor="{{ green_400 }}"
+    borderRadius="8"
+    elevation="2"
+    >
+    <modifier pressed="true">
+        <style
+            elevation="0"
+            backgroundColor="{{ green_300 }}"
+            borderColor="{{ green_500 }}"
+            />
+    </modifier>
+</style>
+
+<style id="new-category-text"
+    color="{{ green_900 }}"
+    fontSize="18"
+    textAlign="center"
+    />
+
+
+<style id="category"
+    padding="16"
+    backgroundColor="{{ white }}"
+    borderWidth="1"
+    borderColor="{{ gray_200 }}"
+    borderRadius="8"
+    elevation="2"
+    >
+    <modifier pressed="true">
+        <style 
+            elevation="0"
+            backgroundColor="{{ gray_100 }}"
+            borderColor="{{ gray_300 }}"
+        />
+    </modifier>
+</style>
+
+<style id="category-text"
+    color="{{ gray_900 }}"
+    fontSize="18"
+    textAlign="center"
+    />
+
+

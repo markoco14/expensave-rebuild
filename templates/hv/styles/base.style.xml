@@ -63,6 +63,8 @@
 
 <style id="heading"
     fontSize="32"
+    color="{{ gray_900 }}"
+    textAlign="center"
     />
 
 <style id="header-placeholder"
