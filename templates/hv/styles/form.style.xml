@@ -65,8 +65,9 @@
 <style id="container--form"
     flex="1"
     flexDirection="column"
-    justifyContent="center"
+    justifyContent="space-between"
     padding="8"
+    marginVertical="24"
     />
 
 <style id="form-heading"
@@ -74,16 +75,12 @@
     />
 
 <style id="form-actions"
-    position="absolute"
-    bottom="0"
-    left="0"
+    width="100%"
     display="flex"
     flexDirection="row"
-    width="100%"
     justifyContent="center"
     alignItems="center"
     gap="8"
-    paddingBottom="24"
     />
 
 <style id="form-actions__column"
@@ -93,26 +90,18 @@
     />
 
 <style id="form-actions__column--left"
-    flex="1"
-    alignItems="center"
     justifyContent="flex-end"
     />
 
 <style id="form-actions__column--center"
-    flex="1"
     justifyContent="center"
-    alignItems="center"
    />
 
 <style id="form-actions__column--right"
-    flex="1"
-    alignItems="center"
     justifyContent="flex-start"
    />
 
 <style id="form-action"
-    flexShrink="1"
-    flexBasis="0"
     padding="16"
     borderWidth="1"
     borderRadius="100%"

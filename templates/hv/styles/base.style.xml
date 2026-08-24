@@ -27,6 +27,17 @@
     flexBasis="0"
     minHeight="100%"
     />
+
+<style id="content"
+    flex="1"
+    display="flex"
+    flexDirection="column"
+    justifyContent="center"
+    />
+    
+<style id="content--top"
+    justifyContent="flex-start"
+    />
     
 
 
@@ -63,6 +74,8 @@
 
 <style id="heading"
     fontSize="32"
+    color="{{ gray_900 }}"
+    textAlign="center"
     />
 
 <style id="header-placeholder"

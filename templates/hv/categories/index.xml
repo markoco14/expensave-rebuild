@@ -1,24 +1,24 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
+	<text style="heading">Categories</text>
 {% endblock header %}
 
 {% block content %}
-<view style="container column">
+<view style="category-container">
 	<behavior trigger="on-event" event-name="category-added" action="reload" href="/hv/categories"/>
 	<behavior trigger="on-event" event-name="category-deleted" action="reload" href="/hv/categories"/>
 
-	<text style="heading text-dark text-center">{{ current_month.strftime("%B %Y") }}</text>
 
-	<view style="card new-category">
+	<view style="add-category">
 		<behavior action="new" href="/hv/categories/new" />
-		<text style="text-dark text-large text-center">+ Category</text>
+		<text style="new-category-text">+ Category</text>
 	</view>
 
 	{% for category in categories %}
-	<view style="card">
+	<view style="category">
 		<behavior action="push" href="/hv/categories/{{ category.category_id }}"/>
-		<text style="text-dark text-large text-center">{{ category.name }}</text>
+		<text style="category-text">{{ category.name }}</text>
 	</view>
 	{% endfor %}
 

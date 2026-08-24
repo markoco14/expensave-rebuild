@@ -1,0 +1,79 @@
+<style id="category-container"
+    display="flex"
+    flexDirection="column"
+    gap="12"
+    paddingTop="32"
+    padding="8"
+    flexGrow="1"
+    flexShrink="0"
+    flexBasis="0"
+    minHeight="100%"
+    />
+
+<style id="bucket" 
+    backgroundColor="{{ white }}"
+    paddingVertical="8"
+    paddingHorizontal="8"
+    marginBottom="16"
+    borderRadius="4"
+    />
+
+<style id="card-header" 
+    display="flex"
+    flexDirection="row"
+    justifyContent="space-between"
+    alignItems="center"
+    />
+
+<style id="balance"
+    fontSize="32"
+    />
+
+<style id="add-category"
+    padding="16"
+    backgroundColor="{{ green_200 }}"
+    borderWidth="1"
+    borderColor="{{ green_400 }}"
+    borderRadius="8"
+    elevation="2"
+    >
+    <modifier pressed="true">
+        <style
+            elevation="0"
+            backgroundColor="{{ green_300 }}"
+            borderColor="{{ green_500 }}"
+            />
+    </modifier>
+</style>
+
+<style id="new-category-text"
+    color="{{ green_900 }}"
+    fontSize="18"
+    textAlign="center"
+    />
+
+
+<style id="category"
+    padding="16"
+    backgroundColor="{{ white }}"
+    borderWidth="1"
+    borderColor="{{ gray_200 }}"
+    borderRadius="8"
+    elevation="2"
+    >
+    <modifier pressed="true">
+        <style 
+            elevation="0"
+            backgroundColor="{{ gray_100 }}"
+            borderColor="{{ gray_300 }}"
+        />
+    </modifier>
+</style>
+
+<style id="category-text"
+    color="{{ gray_900 }}"
+    fontSize="18"
+    textAlign="center"
+    />
+
+

@@ -1,4 +1,4 @@
-<view id="form-fields" xmlns="https://hyperview.org/hyperview">
+<view id="form-fields" xmlns="https://hyperview.org/hyperview" style="content">
     {% if saved %}
         <behavior trigger="load" action="dispatch-event" event-name="category-added" />
         <behavior trigger="load" action="back" />

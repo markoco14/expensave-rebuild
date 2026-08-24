@@ -1,4 +1,4 @@
-<view id="form-fields" xmlns="https://hyperview.org/hyperview">
+<view id="form-fields" xmlns="https://hyperview.org/hyperview" style="content content--top">
     {% if saved == True %}
         <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
         <behavior trigger="load" action="reload" href="/hv/purchases/{{ purchase.purchase_id }}"/>
