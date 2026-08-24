@@ -5,7 +5,8 @@
 
 {% block content %}
 <view style="container column">
-	<behavior trigger="on-event" event-name="top-up-updated" action="reload" href="/hv/categories"/>
+	<behavior trigger="on-event" event-name="category-added" action="reload" href="/hv/categories"/>
+	<behavior trigger="on-event" event-name="category-deleted" action="reload" href="/hv/categories"/>
 
 	<text style="heading text-dark text-center">{{ current_month.strftime("%B %Y") }}</text>
 

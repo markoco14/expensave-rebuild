@@ -90,7 +90,11 @@ async def store(
         logger.error(f"DB error storing category: {e}", exc_info=True)
         return Response(status_code=500, content="server error, sorry")
     
-    return "OK"
+    return templates.TemplateResponse(
+        request=request,
+        name="hv/categories/_form-fields.xml",
+        context={"saved": True}
+    )
 
 
 async def show(

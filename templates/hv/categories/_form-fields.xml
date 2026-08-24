@@ -1,12 +1,11 @@
 <view id="form-fields" xmlns="https://hyperview.org/hyperview">
-    {% if saved == True %}
+    {% if saved %}
         <behavior trigger="load" action="dispatch-event" event-name="category-added" />
-        <behavior trigger="load" action="reload" href="/hv/categories/{{ category.category_id }}"/>
+        <behavior trigger="load" action="back" />
     {% endif %}
 
     <text style="text-dark">Name</text>
     <text-field name="name" style="text-field" value="{{ category.name if category and category.name else ''}}"/>
-
     <text style="text-dark">Tracking</text>
     <select-single name="is_daily">
         <option value="0" style="select-option" selected="{{ 'true' if category and not category.is_daily else '' }}">
