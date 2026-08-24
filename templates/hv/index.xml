@@ -10,7 +10,7 @@
             <nav-route id="tabs">
                 <navigator id="tabs-navigator" type="tab">
                     <nav-route id="today" href="/hv/today" />
-                    <nav-route id="categories" href="/hv/categories" selected="true" />
+                    <nav-route id="categories" href="/hv/categories" />
                     {# <nav-route id="today">
                         <navigator id="today-stack" type="stack">
                             <nav-route id="today-screen" href="/hv/today" />

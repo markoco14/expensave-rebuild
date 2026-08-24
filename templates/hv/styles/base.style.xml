@@ -27,6 +27,13 @@
     flexBasis="0"
     minHeight="100%"
     />
+
+<style id="content"
+    flex="1"
+    display="flex"
+    flexDirection="column"
+    justifyContent="center"
+    />
     
 
 
