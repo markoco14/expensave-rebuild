@@ -35,6 +35,10 @@
     justifyContent="center"
     />
     
+<style id="content--top"
+    justifyContent="flex-start"
+    />
+    
 
 
 <style id="bottom-nav"

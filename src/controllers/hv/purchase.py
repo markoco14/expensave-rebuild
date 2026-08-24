@@ -98,7 +98,7 @@ async def update(request: Request, purchase_id: int):
     if errors:
         return templates.TemplateResponse(
             request=request,
-            name="hv/purchases/_form_fields.xml",
+            name="hv/purchases/_old-form-fields.xml",
             context={
                 "purchase": purchase,                
                 "errors": errors
@@ -116,7 +116,7 @@ async def update(request: Request, purchase_id: int):
 
     return templates.TemplateResponse(
         request=request,
-        name="hv/purchases/_form_fields.xml",
+        name="hv/purchases/_old-form-fields.xml",
         context={
             "saved": True,
             "purchase": purchase,            

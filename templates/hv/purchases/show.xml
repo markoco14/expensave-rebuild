@@ -7,7 +7,7 @@
 {% block content %}
 <view style="container">
     <behavior trigger="refresh" action="reload"/>
-    <view style="card">
+    <view style="content content--top">
         {% if not purchase %}
         <text>No purchase found</text>
         {% else %}
