@@ -48,7 +48,7 @@ def get(conn: sqlite3.Connection, purchase_id: int):
             purchased_at,
             timezone, 
             user_id,
-            bucket_id
+            category_id
         FROM purchase 
         WHERE purchase.purchase_id = ?;
         """, (purchase_id, ))

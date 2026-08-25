@@ -1,23 +1,32 @@
+import logging
 from datetime import datetime, timezone
 import sqlite3
+from typing import Annotated
 from zoneinfo import ZoneInfo
 
-from fastapi import Request
+from fastapi import Depends, Request
 
 from src.config import get_db, templates
 from src.respository import purchase_repository
 
+logger = logging.getLogger(__name__)
 
-async def show(request: Request, purchase_id: int):
+
+async def show(
+        request: Request,
+        conn: Annotated[sqlite3.Connection, Depends(get_db)], 
+        purchase_id: int
+        ):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
     try:
-        with get_db() as conn:
-            purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
+        purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
     except Exception as e:
+        logger.error(f"DB error getting purchase: {e}", exc_info=True)
         return templates.TemplateResponse(
             request=request,
+            status_code=500,
             name="hv/server-error.xml",
             context={},
             headers={"Content-Type": content_type}
@@ -26,6 +35,7 @@ async def show(request: Request, purchase_id: int):
     if not purchase:
         return templates.TemplateResponse(
             request=request,
+            status_code=404,
             name="hv/404.xml",
             context={},
             headers={"Content-Type": content_type}
