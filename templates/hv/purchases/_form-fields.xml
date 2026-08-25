@@ -9,7 +9,7 @@ style="content"
     {% endif %}
     <view style="form-input-group">
         <text style="heading">How much did you spend</text>
-        <keypad:input>
+        <keypad:input initial_amount="{{ purchase.amount if purchase else ''}}">
             <keypad:display style="keypad-display">
                 <keypad:output style="keypad-display-text" />
             </keypad:display>
