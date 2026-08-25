@@ -92,8 +92,9 @@ async def update(request: Request, purchase_id: int):
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
     form_data = await request.form()
-    amount = form_data.get("amount")
-
+    amount = form_data.get("amount", "").strip()
+    form_category = form_data.get("category", "").strip()
+    
     errors = {}
     if not amount:
         errors["amount"] = "You need to include an amount."
@@ -103,6 +104,16 @@ async def update(request: Request, purchase_id: int):
 
     elif int(amount) <= 0:
         errors["amount"] = "The amoun needs to be more than 0."
+
+    form_category = form_data.get("category", "").strip()
+    if not form_category:
+        errors["category"] = "You need to choose a category"
+
+    try:
+        category_int = int(form_category)
+    except ValueError:
+        logger.warning("invalid category submitted")
+        errors["category"] = "The category is invalid"
 
     with get_db() as conn:
         purchase = purchase_repository.get(conn=conn, purchase_id=purchase_id)
@@ -115,7 +126,7 @@ async def update(request: Request, purchase_id: int):
     if errors:
         return templates.TemplateResponse(
             request=request,
-            name="hv/purchases/_old-form-fields.xml",
+            name="hv/purchases/_form-fields.xml",
             context={
                 "purchase": purchase,                
                 "errors": errors
@@ -125,15 +136,15 @@ async def update(request: Request, purchase_id: int):
 
     with get_db() as conn:
         conn.execute(
-            "UPDATE purchase SET amount = ? WHERE purchase_id = ?;", 
-            (amount, purchase_id))
+            "UPDATE purchase SET amount = :amount, category_id = :category_id WHERE purchase_id = :purchase_id;", 
+            {"amount": amount, "category_id": category_int, "purchase_id": purchase_id})
         conn.commit()
 
     purchase.amount = amount
 
     return templates.TemplateResponse(
         request=request,
-        name="hv/purchases/_old-form-fields.xml",
+        name="hv/purchases/_form-fields.xml",
         context={
             "saved": True,
             "purchase": purchase,            
