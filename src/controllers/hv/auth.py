@@ -4,14 +4,13 @@ import time
 import uuid
 
 from fastapi import Request
-from fastapi.templating import Jinja2Templates
 
 from src import cryptography
+from src.config import templates
 from src.models.user import User
 from src.respository.session import store_session
 from src.respository.user import get_user_with_password
 
-templates = Jinja2Templates(directory="templates")
 
 async def login(request: Request):
     accept_header = request.headers.get("accept", "")

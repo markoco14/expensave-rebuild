@@ -7,6 +7,10 @@
     gap="16"
     />
 
+<style id="form-input-group" 
+    marginBottom="32"
+    />
+
 <style id="input-group"
     marginBottom="16"
     />

@@ -10,7 +10,7 @@ class Purchase:
     purchased_at: Optional[str] = None
     timezone: Optional[str] = None
     user_id: Optional[int] = None
-    bucket_id: Optional[int] = None
+    category_id: Optional[int] = None
     bucket_name: Optional[int] = None
 
     @classmethod

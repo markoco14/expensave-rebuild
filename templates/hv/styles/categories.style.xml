@@ -1,3 +1,5 @@
+{% set category_option_width = grid_col_width(request, columns=3, gap=8, padding=8) %}
+
 <style id="category-container"
     display="flex"
     flexDirection="column"
@@ -77,3 +79,46 @@
     />
 
 
+<style id="category-select-label" 
+    color="{{ gray_900 }}"
+    fontSize="{{ 24 }}"
+    marginBottom="16"
+    />
+
+<style id="category-select"
+    display="flex"
+    flexDirection="column"
+    gap="8"
+    />
+
+<style id="category-select-row"
+    display="flex"
+    flexDirection="row"
+    justifyContent="space-between"
+    gap="8"
+    />
+<style id="category-select-row--start"
+    justifyContent="start"
+    /> 
+
+<style id="category-option" 
+    width="{{ category_option_width }}"
+    borderRadius="4"
+    backgroundColor="{{ white }}"
+    borderWidth="1"
+    borderColor="{{ gray_200 }}"
+    padding="8"
+    >
+    <modifier selected="true">
+        <style backgroundColor="{{ green_300 }}"/>
+    </modifier>
+</style>
+
+<style id="category-option-placeholder"
+    width="{{ category_option_width }}"
+    />
+
+<style id="category-option-text"
+    color="{{ gray_900 }}"
+    textAlign="center"
+    />

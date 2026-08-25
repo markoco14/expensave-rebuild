@@ -48,7 +48,7 @@ def get(conn: sqlite3.Connection, purchase_id: int):
             purchased_at,
             timezone, 
             user_id,
-            bucket_id
+            category_id
         FROM purchase 
         WHERE purchase.purchase_id = ?;
         """, (purchase_id, ))
@@ -60,17 +60,22 @@ def get(conn: sqlite3.Connection, purchase_id: int):
     
     return Purchase(**row)
 
-def store(amount: int, currency: str, purchased_at: datetime, timezone: str, user_id: int):
-    with sqlite3.connect("db.sqlite3") as conn:
-        conn.execute("PRAGMA foreign_keys = ON;")
-        conn.row_factory = sqlite3.Row
+def store(
+        conn: sqlite3.Connection,
+        amount: int, 
+        currency: str, 
+        purchased_at: datetime, 
+        timezone: str, 
+        user_id: int, 
+        category_id: int
+        ):
 
         cursor = conn.cursor()
         cursor.execute(
             """INSERT INTO purchase (
-                amount, currency, purchased_at, timezone, user_id
+                amount, currency, purchased_at, timezone, user_id, category_id
             ) VALUES (
-                :amount, :currency, :purchased_at, :timezone, :user_id
+                :amount, :currency, :purchased_at, :timezone, :user_id, :category_id
             );
             """, 
             {
@@ -78,7 +83,8 @@ def store(amount: int, currency: str, purchased_at: datetime, timezone: str, use
                 "currency": currency, 
                 "purchased_at": purchased_at, 
                 "timezone": timezone,
-                "user_id": user_id
+                "user_id": user_id,
+                "category_id": category_id
             })
         conn.commit()
         return cursor.lastrowid

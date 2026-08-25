@@ -1,13 +1,8 @@
-from datetime import datetime, timedelta, timezone
 import sqlite3
-from zoneinfo import ZoneInfo
 from fastapi import Request
-from fastapi.templating import Jinja2Templates
 
 from src.models.bucket_month_top_up import BucketMonthTopUp
-
-templates = Jinja2Templates(directory="templates")
-
+from src.config import templates
 
 
 async def edit(request: Request, top_up_id: int):

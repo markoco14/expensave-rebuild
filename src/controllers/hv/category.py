@@ -1,4 +1,3 @@
-import calendar
 from datetime import datetime, timezone
 import sqlite3
 from typing import Annotated
@@ -6,17 +5,13 @@ from zoneinfo import ZoneInfo
 from fastapi import Depends, Request, Response
 from fastapi.templating import Jinja2Templates
 
-from src.models.bucket import Bucket
-from src.models.bucket_month_top_up import BucketMonthTopUp
-from src.respository.category import get_with_top_up, list_with_top_ups
-from src.respository import purchase_repository as purchase_repo
-from src.config import get_db
+from src.respository.category import list_with_top_ups
+from src.config import get_db, templates
 from src.dependencies import is_user
 import logging
 
 logger = logging.getLogger(__name__)
 
-templates = Jinja2Templates(directory="templates")
 
 async def list(
         request: Request, 
