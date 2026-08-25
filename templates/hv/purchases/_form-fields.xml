@@ -36,7 +36,11 @@ style="content"
             {% for row in categories|batch(batch_size) %}
             <view style="category-select-row">
                 {% for category in row %}
-                <option value="{{ category.category_id }}" style="category-option">
+                <option 
+                    value="{{ category.category_id }}" 
+                    selected="{{ 'true' if purchase and purchase.category_id == category.category_id else 'false'}}"
+                    style="category-option" 
+                    >
                     <text style="category-option-text">{{ category.name }}</text>
                 </option>
                 {% endfor%}

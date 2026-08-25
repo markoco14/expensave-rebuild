@@ -4,9 +4,10 @@ import sqlite3
 from typing import Annotated
 from zoneinfo import ZoneInfo
 
-from fastapi import Depends, Request
+from fastapi import Depends, Request, Response
 
 from src.config import get_db, templates
+from src.dependencies import is_user
 from src.respository import purchase_repository
 
 logger = logging.getLogger(__name__)
@@ -53,7 +54,11 @@ async def show(
     )
 
 
-async def edit(request: Request, purchase_id: int):
+async def edit(
+        request: Request, 
+        current_user: Annotated[any, Depends(is_user)],
+        purchase_id: int
+        ):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
@@ -65,11 +70,18 @@ async def edit(request: Request, purchase_id: int):
         utc_aware = naive.replace(tzinfo=timezone.utc)
         purchase.purchased_at = utc_aware.astimezone(ZoneInfo(purchase.timezone))
 
+    try:
+        category_rows = conn.execute("SELECT * FROM category WHERE user_id = :user_id;", {"user_id": current_user.user_id})
+    except Exception as e:
+        logger.error(f"DB error getting categories: {e}", exc_info=True)
+        return Response(status_code=500, content="something went wrong our end")
+
     return templates.TemplateResponse(
         request=request,
         name="hv/purchases/edit.xml",
         context={
             "purchase": purchase,
+            "categories": category_rows
             },
         headers={"Content-Type": content_type}
     )
