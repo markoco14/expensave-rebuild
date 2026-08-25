@@ -1,3 +1,5 @@
+{% set button_width = grid_col_width(request, columns=3, gap=8, padding=8) %}
+
 <style id="body"
     flex="1"
     position="relative"
@@ -205,7 +207,7 @@
     display="flex"
     flexDirection="row"
     flexWrap="wrap"
-    gap="{{ GAP }}"
+    gap="8"
     marginTop="8"
     />
 

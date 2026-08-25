@@ -37,14 +37,6 @@
 {% set green_900 = "#0A2C07" %}
 {% set green_950 = "#071F05" %}
 
-{% set CONTAINER_PADDING = 8 %}
-{% set dimensions = request.headers.get('x-hyperview-dimensions', '390w 844h') %}
-{% set SCREEN_WIDTH = dimensions.split('w')[0] | float %}
-{% set GAP = 8 %}
-{% set COLUMN_COUNT = 3 %}
-{% set TOTAL_GAP = GAP * (COLUMN_COUNT - 1) %}
-{% set button_width = (SCREEN_WIDTH - (CONTAINER_PADDING * 2) - TOTAL_GAP) / COLUMN_COUNT %}
-
 {% include "hv/styles/base.style.xml" %}
 {% include "hv/styles/categories.style.xml" %}
 {% include "hv/styles/form.style.xml" %}
