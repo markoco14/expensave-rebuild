@@ -97,6 +97,9 @@
     justifyContent="space-between"
     gap="8"
     />
+<style id="category-select-row--start"
+    justifyContent="start"
+    /> 
 
 <style id="category-option" 
     width="{{ category_option_width }}"
@@ -110,6 +113,10 @@
         <style backgroundColor="{{ green_300 }}"/>
     </modifier>
 </style>
+
+<style id="category-option-placeholder"
+    width="{{ category_option_width }}"
+    />
 
 <style id="category-option-text"
     color="{{ gray_900 }}"

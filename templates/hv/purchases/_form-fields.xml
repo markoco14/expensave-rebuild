@@ -28,13 +28,17 @@
     <view>
         <text style="category-select-label">Choose your category</text>
         <select-single style="category-select">
-            {% for row in categories|batch(3) %}
+        {% set batch_size = 3 %}
+            {% for row in categories|batch(batch_size) %}
             <view style="category-select-row">
                 {% for category in row %}
                 <option value="{{ category.category_id }}" style="category-option">
                     <text style="category-option-text">{{ category.name }}</text>
                 </option>
                 {% endfor%}
+                {% for _ in range(batch_size - row|length) %}
+                <view style="category-option-placeholder" />
+                {% endfor %}
             </view>
             {% endfor %}
         </select-single>

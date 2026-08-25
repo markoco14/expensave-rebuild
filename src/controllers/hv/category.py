@@ -11,7 +11,6 @@ from src.dependencies import is_user
 import logging
 
 logger = logging.getLogger(__name__)
-templates = Jinja2Templates(directory="templates")
 
 
 async def list(
