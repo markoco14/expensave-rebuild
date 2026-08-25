@@ -1,8 +1,8 @@
 <view 
-xmlns="https://hyperview.org/hyperview" 
-xmlns:keypad="https://mysavemoneylife.com/hyperview/keypad"
-style="content"
->
+    xmlns="https://hyperview.org/hyperview" 
+    xmlns:keypad="https://mysavemoneylife.com/hyperview/keypad"
+    style="content"
+    >
     {% if saved == True %}
     <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
     <behavior trigger="load" action="back" />
