@@ -1,19 +1,22 @@
+import logging
 from calendar import monthrange
 from datetime import date, datetime, timedelta, timezone
 import sqlite3
 from types import SimpleNamespace
+from typing import Annotated
 from zoneinfo import ZoneInfo
 
-from fastapi import Request
-from fastapi.templating import Jinja2Templates
+from fastapi import Depends, Request, Response
 
 from src import utils
+from src.config import get_db, templates
 from src.models.bucket import Bucket
 from src.models.user import User
 from src.respository import purchase_repository
+from src.dependencies import is_user
 
+logger = logging.getLogger(__name__)
 
-templates = Jinja2Templates(directory="templates")
 
 async def get_today_context(user_id: int):
       
@@ -186,7 +189,11 @@ async def today(request: Request):
     )
 
 
-async def new(request: Request):
+async def new(
+        request: Request,
+        current_user: Annotated[any, Depends(is_user)],
+        conn: Annotated[sqlite3.Connection, Depends(get_db)]
+        ):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
@@ -199,13 +206,18 @@ async def new(request: Request):
 
     # default_date = localized_datetime.date()
     # default_time = localized_datetime.time().strftime("%H:%M:%S")
-
+    try:
+        category_rows = conn.execute("SELECT * FROM category WHERE user_id = :user_id;", {"user_id": current_user.user_id})
+    except Exception as e:
+        logger.error(f"DB error getting categories: {e}", exc_info=True)
+        return Response(status_code=500, content="something went wrong our end")
 
     return templates.TemplateResponse(
         request=request,
         name="hv/purchases/new.xml",
         context={
             "saved": False,
+            "categories": category_rows,
             "selected_bucket_id": selected_bucket_id,
             "previous_values": {},
             "errors": {},

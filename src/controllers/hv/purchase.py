@@ -1,16 +1,11 @@
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 import sqlite3
-from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
 from fastapi import Request
-from fastapi.templating import Jinja2Templates
 
-from src.config import get_db
-from src.models.bucket import Bucket
+from src.config import get_db, templates
 from src.respository import purchase_repository
-
-templates = Jinja2Templates(directory="templates")
 
 
 async def show(request: Request, purchase_id: int):
