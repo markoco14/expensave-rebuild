@@ -226,7 +226,10 @@ async def new(
         )
 
 
-async def store(request: Request):
+async def store(
+        request: Request,
+        conn: Annotated[sqlite3.Connection, Depends(get_db)]
+        ):
     accept_header = request.headers.get("accept", "")
     content_type = "application/vnd.hyperview+xml" if "hyperview" in accept_header else "text/xml"
 
@@ -256,7 +259,17 @@ async def store(request: Request):
 
         elif int(amount) < 1:
             errors["amount"] = "The amount needs to be more than 0."
-    
+
+    form_category = form_data.get("category", "").strip()
+    if not form_category:
+        errors["category"] = "You need to choose a category"
+
+    try:
+        category_int = int(form_category)
+    except ValueError:
+        logger.warning("invalid category submitted")
+        errors["category"] = "The category is invalid"
+
     # currency = form_data.get("currency")
     # previous_values["currency"] = currency
     # if not currency:
@@ -300,11 +313,13 @@ async def store(request: Request):
 
     try:
         purchase_repository.store(
+            conn=conn,
             amount=amount,
             currency="TWD",
             purchased_at=purchased_at,
             timezone="Asia/Taipei",
-            user_id=current_user.user_id
+            user_id=current_user.user_id,
+            category_id=category_int
             )
     except Exception as e:
         print(f"something went wrong storing the purchase: {e}")

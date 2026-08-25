@@ -27,7 +27,7 @@
     </view>
     <view>
         <text style="category-select-label">Choose your category</text>
-        <select-single style="category-select">
+        <select-single name="category" style="category-select">
         {% set batch_size = 3 %}
             {% for row in categories|batch(batch_size) %}
             <view style="category-select-row">
