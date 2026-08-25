@@ -93,7 +93,6 @@
     marginTop="8"
     />
 
-
 <style id="keypad-button"
     width="{{ button_width }}"
     height="50"
@@ -101,7 +100,14 @@
     alignItems="center"
     justifyContent="center"
     backgroundColor="white"
-    />
+    borderRadius="4"
+    borderWidth="1"
+    borderColor="{{ gray_300 }}"
+    >
+    <modifier pressed="true">
+        <style backgroundColor="{{ green_200 }}" />
+    </modifier>
+</style>
 
 <style id="keypad-button-empty" 
     width="{{ button_width }}"
