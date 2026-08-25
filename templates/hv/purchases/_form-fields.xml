@@ -1,29 +1,33 @@
-<view xmlns="https://hyperview.org/hyperview" style="content" >
+<view 
+    xmlns="https://hyperview.org/hyperview" 
+    xmlns:keypad="https://mysavemoneylife.com/hyperview/keypad"
+    style="content"
+    >
     {% if saved == True %}
     <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
     <behavior trigger="load" action="back" />
     {% endif %}
     <view style="form-input-group">
         <text style="heading">How much did you spend</text>
-        <keypad-input xmlns="https://mysavemoneylife.com/hyperview/keypad">
-            <keypad-display style="keypad-display">
-                <keypad-display-text style="keypad-display-text" />
-            </keypad-display>
-            <keypad-view style="keypad-numbers">
+        <keypad:input initial_amount="{{ purchase.amount if purchase else ''}}">
+            <view style="keypad-display">
+                <keypad:output style="keypad-display-text" />
+            </view>
+            <view style="keypad-numbers">
                 {% for i in range(1, 10) %}
-                    <keypad-number-btn display_number="{{ i }}" style="keypad-button">
+                    <keypad:number display_number="{{ i }}" style="keypad-button">
                         <text xmlns="https://hyperview.org/hyperview" style="keypad-button-text">{{ i }}</text>
-                    </keypad-number-btn>
+                    </keypad:number>
                 {% endfor %}
                 <view xmlns="https://hyperview.org/hyperview" style="keypad-button-empty" />
-                <keypad-number-btn display_number="0" style="keypad-button" text-style="keypad-button-text">
+                <keypad:number display_number="0" style="keypad-button">
                     <text xmlns="https://hyperview.org/hyperview" style="keypad-button-text">0</text>
-                </keypad-number-btn>
-                <keypad-delete-btn style="keypad-button" text-style="keypad-button-text">
+                </keypad:number>
+                <keypad:delete style="keypad-button">
                     <text xmlns="https://hyperview.org/hyperview" style="keypad-button-text">X</text>
-                </keypad-delete-btn>
-            </keypad-view>
-        </keypad-input>
+                </keypad:delete>
+            </view>
+        </keypad:input>
     </view>
     <view>
         <text style="category-select-label">Choose your category</text>
@@ -32,7 +36,11 @@
             {% for row in categories|batch(batch_size) %}
             <view style="category-select-row">
                 {% for category in row %}
-                <option value="{{ category.category_id }}" style="category-option">
+                <option 
+                    value="{{ category.category_id }}" 
+                    selected="{{ 'true' if purchase and purchase.category_id == category.category_id else 'false'}}"
+                    style="category-option" 
+                    >
                     <text style="category-option-text">{{ category.name }}</text>
                 </option>
                 {% endfor%}

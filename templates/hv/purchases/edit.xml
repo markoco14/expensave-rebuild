@@ -8,7 +8,7 @@
 <form id="purchase-form" style="container">
     <behavior trigger="refresh" action="reload"/>
     
-    {% include "hv/purchases/_old-form-fields.xml" %}
+    {% include "hv/purchases/_form-fields.xml" %}
 
     <view style="form-actions">
 
@@ -25,8 +25,8 @@
             <view 
                 verb="post"
                 href="/hv/purchases/{{ purchase.purchase_id }}/edit"
-                target="form-fields"
-                action="replace-inner"
+                action="replace" 
+                target="purchase-form" 
                 style="btn btn-primary form-action form-action--primary"
                 >
                 {% include "hv/svg/checkmark-primary.xml" %}
@@ -34,7 +34,7 @@
         </view>
         
         <view style="form-actions__column form-actions__column--right">
-            <view style="form-action form-action--delete">
+            <view id="delete-button" style="form-action form-action--delete">
 
                 <behavior
                     xmlns:alert="https://hyperview.org/hyperview-alert"
@@ -47,7 +47,7 @@
                         <behavior 
                             trigger="press"
                             action="append"
-                            target="form-fields"
+                            target="delete-button"
                             href="/hv/purchases/{{ purchase.purchase_id }}/delete" 
                             verb="post"
                         />

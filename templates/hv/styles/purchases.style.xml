@@ -1,3 +1,5 @@
+{% set button_width = grid_col_width(request, columns=3, gap=8, padding=8) %}
+
 <style 
     id="progress-track"
     backgroundColor="{{ red_500 }}"
@@ -65,4 +67,54 @@
     id="list-item-text"
     color="{{ gray_900 }}"
     fontSize="16"
+    />
+
+
+
+{# keypad styles #}
+
+<style id="keypad-display"
+    backgroundColor="white"
+    paddingVertical="8"
+    paddingHorizontal="8"
+    />
+
+<style id="keypad-display-text"
+    color="black"
+    fontSize="24"
+    textAlign="right"
+    />
+
+<style id="keypad-numbers"
+    display="flex"
+    flexDirection="row"
+    flexWrap="wrap"
+    gap="8"
+    marginTop="8"
+    />
+
+<style id="keypad-button"
+    width="{{ button_width }}"
+    height="50"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+    backgroundColor="white"
+    borderRadius="4"
+    borderWidth="1"
+    borderColor="{{ gray_300 }}"
+    >
+    <modifier pressed="true">
+        <style backgroundColor="{{ green_200 }}" />
+    </modifier>
+</style>
+
+<style id="keypad-button-empty" 
+    width="{{ button_width }}"
+    height="50"
+    />
+
+<style id="keypad-button-text" 
+    fontSize="24"
+    color="black"
     />
