@@ -1,14 +1,14 @@
 <view 
     xmlns="https://hyperview.org/hyperview" 
     xmlns:keypad="https://mysavemoneylife.com/hyperview/keypad"
-    style="content"
+    style="content content--top"
     >
     {% if saved == True %}
     <behavior trigger="load" action="dispatch-event" event-name="purchase-added" />
     <behavior trigger="load" action="back" />
     {% endif %}
     <view style="form-input-group">
-        <text style="header-text">How much did you spend</text>
+        <text style="category-label">Amount</text>
         <keypad:input initial_amount="{{ purchase.amount if purchase else ''}}">
             <view style="keypad-display">
                 <keypad:output style="keypad-display-text" />
@@ -30,7 +30,7 @@
         </keypad:input>
     </view>
     <view>
-        <text style="category-select-label">Choose your category</text>
+        <text style="category-label">Category</text>
         <select-single name="category" style="category-select">
         {% set batch_size = 3 %}
             {% for row in categories|batch(batch_size) %}

@@ -77,6 +77,9 @@
     backgroundColor="white"
     paddingVertical="8"
     paddingHorizontal="8"
+    borderWidth="1"
+    borderColor="{{ gray_300 }}"
+    borderRadius="4"
     />
 
 <style id="keypad-display-text"
@@ -145,4 +148,9 @@
 <style id="purchase-detail"
     fontSize="24"
     color="{{ gray_900 }}"
+    paddingVertical="8"
+    paddingHorizontal="12"
+    borderWidth="1"
+    borderColor="{{ gray_600 }}"
+    borderRadius="4"
     />
