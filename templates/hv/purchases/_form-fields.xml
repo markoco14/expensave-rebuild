@@ -41,7 +41,7 @@
                     selected="{{ 'true' if purchase and purchase.category_id == category.category_id else 'false'}}"
                     style="category-option" 
                     >
-                    <text style="category-option-text">{{ category.name }}</text>
+                    <text style="select-option-text" numberOfLines="1">{{ category.name }}</text>
                 </option>
                 {% endfor%}
                 {% for _ in range(batch_size - row|length) %}
