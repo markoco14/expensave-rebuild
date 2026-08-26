@@ -44,7 +44,7 @@ async def login(request: Request):
     if errors:
         return templates.TemplateResponse(
             request=request,
-            name="hv/auth/form.xml",
+            name="hv/auth/_form-fields.xml",
             context={
                 "previous_values": previous_values,
                 "errors": errors
@@ -67,7 +67,7 @@ async def login(request: Request):
 
     response = templates.TemplateResponse(
         request=request,
-        name="hv/auth/form.xml",
+        name="hv/auth/_form-fields.xml",
         context={
             "saved": True,
             "previous_values": {},
