@@ -1,22 +1,26 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark text-center">{{ category.name }}</text>
+<text style="header-text">{{ category.name }}</text>
 {% endblock header %}
 
 {% block content %}
 <view style="container">
-    <behavior trigger="refresh" action="reload"/>
-    <view style="content content--top">
+
+    <view style="content content--top category-fields">
+
         <view style="input-group">
-            <text style="label text-large text-dark">Name</text>
-            <text style="text-large text-dark">{{ category.name }}</text>
+            <text style="category-label">Name</text>
+            <text style="category-detail">{{ category.name }}</text>
         </view>
+
         <view style="input-group">
-            <text style="label text-large text-dark">Tracking</text>
-            <text style="text-large text-dark">{{ "Daily" if category.is_daily else "Monthly" }}</text>
+            <text style="category-label">Tracking</text>
+            <text style="category-detail">{{ "Daily" if category.is_daily else "Monthly" }}</text>
         </view>
+        
     </view>
+
     <view style="form-actions">
 
             <view style="form-actions__column form-actions__column--left">

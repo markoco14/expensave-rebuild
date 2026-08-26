@@ -122,3 +122,37 @@
     color="{{ gray_900 }}"
     textAlign="center"
     />
+
+<style id="category-fields"
+    display="flex"
+    flexDirection="column"
+    gap="16"
+    />
+
+<style id="category-field"
+    backgroundColor="white"
+    borderWidth="1"
+    borderColor="{{ gray_200 }}"
+    borderRadius="8"
+    padding="16"
+    />
+
+
+<style id="category-label"
+    fontSize="18"
+    color="{{ gray_600 }}"
+    fontWeight="600"
+    borderBottomWidth="1"
+    borderColor="{{ gray_600 }}"
+    marginBottom="8"
+    />
+
+<style id="category-detail"
+    fontSize="24"
+    color="{{ gray_900 }}"
+    paddingVertical="8"
+    paddingHorizontal="12"
+    borderWidth="1"
+    borderColor="{{ gray_600 }}"
+    borderRadius="4"
+    />

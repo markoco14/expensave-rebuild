@@ -1,9 +1,7 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<header style="header">
-    <text style="heading text-dark text-center">Server Error</text>
-</header>
+<text style="header-text">Server Error</text>
 {% endblock header%}
 
 {% block content %}

@@ -1,25 +1,29 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark text-center">Purchase</text>
+<text style="header-text">Purchase Info</text>
 {% endblock header%}
 
 {% block content %}
 <view style="container">
-    <behavior trigger="refresh" action="reload"/>
-    <view style="content content--top">
-        {% if not purchase %}
-        <text>No purchase found</text>
-        {% else %}
+
+    <view style="content content--top purchase-fields">
+
         <view style="input-group">
-            <text style="label text-large text-dark">Amount</text>
-            <text style="text-large text-dark">${{ purchase.amount }} {{ purchase.currency }}</text>
+            <text style="purchase-label">Amount</text>
+            <text style="purchase-detail">${{ purchase.amount }} {{ purchase.currency }}</text>
         </view>
+
         <view style="input-group">
-            <text style="label text-large text-dark">Time</text>
-            <text style="text-large text-dark">{{ purchase.purchased_at.strftime("%B %d at %H:%M:%S") }} ({{ purchase.timezone }})</text>
+            <text style="purchase-label">Time</text>
+            <text style="purchase-detail">{{ purchase.purchased_at.strftime("%B %d at %H:%M:%S") }}</text>
         </view>
-        {% endif %}
+
+        <view style="input-group">
+            <text style="purchase-label">Timezone</text>
+            <text style="purchase-detail">{{ purchase.timezone }}</text>
+        </view>
+
     </view>
     <view style="form-actions">
 

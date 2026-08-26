@@ -4,7 +4,21 @@
 {% endblock header %}
 
 {% block content %}
+<form id="login-form" xmlns="https://hyperview.org/hyperview" style="container--form">
+    <view style="content">
+        <view style="form-heading">
+            <text style="header-text">Login</text>
+        </view>
 
-{% include "hv/auth/form.xml" %}
+        {% include "hv/auth/_form-fields.xml"%}
+
+        <view verb="post" href="/hv/login" action="replace" target="form-fields" style="btn btn-primary">
+            <text id="login-text" style="btn-primary-text">Login</text>
+        </view>
+    </view>
+
+</form>
+
+{# {% include "hv/auth/form.xml" %} #}
 {% endblock content %}
 </doc>

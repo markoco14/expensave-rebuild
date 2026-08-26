@@ -1,12 +1,11 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark">Edit Purchase</text>
+<text style="header-text">Edit Purchase</text>
 {% endblock header%}
 
 {% block content %}
 <form id="purchase-form" style="container">
-    <behavior trigger="refresh" action="reload"/>
     
     {% include "hv/purchases/_form-fields.xml" %}
 

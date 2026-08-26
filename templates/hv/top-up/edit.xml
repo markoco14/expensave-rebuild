@@ -5,7 +5,7 @@
     <view style="header-placeholder" action="back">
         {% include "hv/svg/back.xml" %}
     </view>
-    <text style="heading text-dark text-center">Edit Top Up</text>
+    <text style="header-text">Edit Top Up</text>
     <view style="header-placeholder" action="reload" href="/hv/top-up/{{ top_up.top_up_id }}/edit">
         {% include "hv/svg/edit.xml" %}
     </view>

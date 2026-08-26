@@ -1,9 +1,11 @@
 {% extends "hv/layout.xml"%}
 
-{% block header %}{% endblock header %}
+{% block header %}
+<text style="header-text">New Purchase</text>
+{% endblock header %}
 
 {% block content %}
-<form id="purchase-form" style="container--form">
+<form id="purchase-form" style="container">
 
     {% include "hv/purchases/_form-fields.xml"%}
 

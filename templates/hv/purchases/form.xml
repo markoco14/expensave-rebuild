@@ -5,7 +5,7 @@
     {% endif %}
     <view style="content">
         <view>
-            <text style="heading">How much did you spend</text>
+            <text style="header-text">How much did you spend</text>
         </view>
         <keypad-input xmlns="https://mysavemoneylife.com/hyperview/keypad">
             <keypad-display style="keypad-display">

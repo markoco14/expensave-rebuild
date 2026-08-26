@@ -1,4 +1,5 @@
-<form id="login-form" xmlns="https://hyperview.org/hyperview" style="container--form">    
+<view id="form-fields" xmlns="https://hyperview.org/hyperview">
+
     {% if saved == True %}
         {# <behavior trigger="load" action="reload" href="/hv/today"/> #}
         <behavior
@@ -7,35 +8,28 @@
         event-name="reload-root-navigation"
         />
     {% endif %}
-    <view style="form-heading">
-        <text style="heading text-dark">Login</text>
-    </view>
 
     <view style="input-group">
-        <text style="text-dark">Email</text>
+        <text style="form-label">Email</text>
         <text-field name="email" 
             placeholder="Email"
             placeholderTextColor="#111827"
-            style="text-field text-dark"
+            style="text-field "
             value="{{ previous_values.get('email', '') if errors else ''}}"
             />
         <text style="error">{{ errors.get("email", "") if errors else ''}}</text>
     </view>
 
     <view style="input-group">
-        <text style="text-dark">Password</text>
+        <text style="form-label">Password</text>
         <text-field name="password" 
             placeholder="Password"
             placeholderTextColor="#111827"
             secure-text="true"
-            style="text-field text-dark"
+            style="text-field "
             value="{{ previous_values.get('password', '') if errors else ''}}"
             />
         <text style="error">{{ errors.get("password", "") if errors else ''}}</text>
     </view>
-
-    <view verb="post" href="/hv/login" action="replace" target="login-form" style="btn btn-primary">
-        <text id="login-text" style="btn-primary-text">Login</text>
-    </view>
-
-</form>
+    
+</view>

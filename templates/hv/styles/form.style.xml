@@ -12,16 +12,24 @@
     />
 
 <style id="input-group"
-    marginBottom="16"
+    marginBottom="24"
+    />
+
+<style id="form-label"
+    color="{{ gray_900 }}"
+    fontSize="18"
+    marginBottom="4"
     />
 
 <style id="text-field"
     color="{{ gray_900 }}"
     backgroundColor="{{ white }}"
-    padding="4"
+    paddingVertical="8"
+    paddingHorizontal="12"
     borderWidth="1"
     borderColor="{{ gray_900 }}"
     borderRadius="4"
+    fontSize="24"
     />
 
 <style id="text-end" textAlign="right"/>
@@ -137,9 +145,23 @@
 
 <style id="select-option"
     color="{{ gray_700 }}"
+    paddingVertical="8"
+    paddingHorizontal="12"
+    borderWidth="1"
+    borderColor="{{ gray_300 }}"
+    borderRadius="4"
     >
 
     <modifier selected="true">
-        <style color="{{ gray_900 }}" backgroundColor="{{ green_300 }}"/>
+        <style borderColor="{{ green_600 }}" backgroundColor="{{ green_300 }}"/>
+    </modifier>
+</style>
+
+<style id="select-option-text"
+    fontSize="24"
+    color="{{ gray_600 }}"
+    >
+    <modifier selected="true">
+        <style color="{{ green_900 }}" />
     </modifier>
 </style>
