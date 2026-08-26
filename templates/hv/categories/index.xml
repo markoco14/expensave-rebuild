@@ -1,7 +1,7 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-	<text style="heading">Categories</text>
+	<text style="header-text">Categories</text>
 {% endblock header %}
 
 {% block content %}

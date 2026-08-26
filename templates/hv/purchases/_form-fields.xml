@@ -8,7 +8,7 @@
     <behavior trigger="load" action="back" />
     {% endif %}
     <view style="form-input-group">
-        <text style="heading">How much did you spend</text>
+        <text style="header-text">How much did you spend</text>
         <keypad:input initial_amount="{{ purchase.amount if purchase else ''}}">
             <view style="keypad-display">
                 <keypad:output style="keypad-display-text" />

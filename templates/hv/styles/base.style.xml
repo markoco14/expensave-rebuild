@@ -72,7 +72,7 @@
 </style>
 
 
-<style id="heading"
+<style id="header-text"
     fontSize="32"
     color="{{ gray_900 }}"
     textAlign="center"

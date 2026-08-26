@@ -1,7 +1,7 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark text-center">Purchase Info</text>
+<text style="header-text">Purchase Info</text>
 {% endblock header%}
 
 {% block content %}

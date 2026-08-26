@@ -1,7 +1,7 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark text-center">Content Not Found</text>
+<text style="header-text">Content Not Found</text>
 {% endblock header%}
 
 {% block content %}

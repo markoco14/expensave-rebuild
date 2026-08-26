@@ -1,7 +1,7 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark text-center">{{ today_date.strftime("%B %d, %Y") }}</text>
+<text style="header-text">{{ today_date.strftime("%B %d, %Y") }}</text>
     <view id="logout-btn" style="">
         <behavior 
         trigger="press" 

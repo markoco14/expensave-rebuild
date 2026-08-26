@@ -1,7 +1,7 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark text-center">{{ category.name }}</text>
+<text style="header-text">{{ category.name }}</text>
 {% endblock header %}
 
 {% block content %}
