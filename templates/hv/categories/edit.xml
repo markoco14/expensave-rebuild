@@ -1,13 +1,12 @@
 {% extends "hv/layout.xml" %}
 
 {% block header %}
-<text style="heading text-dark text-center">{{ category.name }}</text>
+<text style="heading text-dark text-center">Edit {{ category.name }}</text>
 {% endblock header %}
 
 {% block content %}
 <form id="category-form" style="container">
-    <behavior trigger="refresh" action="reload"/>
-    
+
     {% include "hv/categories/_form-fields.xml" %}
 
     <view style="form-actions">

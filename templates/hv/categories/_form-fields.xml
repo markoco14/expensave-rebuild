@@ -1,20 +1,24 @@
-<view id="form-fields" xmlns="https://hyperview.org/hyperview" style="content">
+<view id="form-fields" xmlns="https://hyperview.org/hyperview" style="content content--top category-fields">
     {% if saved %}
         <behavior trigger="load" action="dispatch-event" event-name="category-added" />
         <behavior trigger="load" action="back" />
     {% endif %}
+    <view style="input-group">
+        <text style="category-label">Name</text>
+        <text-field name="name" style="text-field" value="{{ category.name if category and category.name else ''}}"/>
+    </view>
 
-    <text style="text-dark">Name</text>
-    <text-field name="name" style="text-field" value="{{ category.name if category and category.name else ''}}"/>
-    <text style="text-dark">Tracking</text>
-    <select-single name="is_daily">
-        <option value="0" style="select-option" selected="{{ 'true' if category and not category.is_daily else '' }}">
-            <text>Monthly</text>
-        </option>
+    <view style="input-group">
+        <text style="category-label">Tracking</text>
+        <select-single name="is_daily" style="category-select">
+            <option value="0" style="select-option" selected="{{ 'true' if category and not category.is_daily else '' }}">
+                <text style="select-option-text">Monthly</text>
+            </option>
 
-        <option value="1" style="select-option" selected="{{ 'true' if category and category.is_daily else '' }}">
-            <text>Daily</text>
-        </option>
-    </select-single>
+            <option value="1" style="select-option" selected="{{ 'true' if category and category.is_daily else '' }}">
+                <text style="select-option-text">Daily</text>
+            </option>
+        </select-single>
+    </view>
     
 </view>

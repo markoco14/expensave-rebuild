@@ -150,4 +150,9 @@
 <style id="category-detail"
     fontSize="24"
     color="{{ gray_900 }}"
+    paddingVertical="8"
+    paddingHorizontal="12"
+    borderWidth="1"
+    borderColor="{{ gray_600 }}"
+    borderRadius="4"
     />

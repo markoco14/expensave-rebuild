@@ -8,14 +8,17 @@
 <view style="container">
 
     <view style="content content--top category-fields">
-        <view style="category-field">
+
+        <view style="input-group">
             <text style="category-label">Name</text>
             <text style="category-detail">{{ category.name }}</text>
         </view>
-        <view style="category-field">
+
+        <view style="input-group">
             <text style="category-label">Tracking</text>
             <text style="category-detail">{{ "Daily" if category.is_daily else "Monthly" }}</text>
         </view>
+        
     </view>
 
     <view style="form-actions">
