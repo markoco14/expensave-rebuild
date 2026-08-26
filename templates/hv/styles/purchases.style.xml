@@ -133,7 +133,7 @@
     padding="16"
     />
 
-<style id="field-label"
+<style id="purchase-label"
     fontSize="18"
     color="{{ gray_600 }}"
     fontWeight="600"
@@ -142,8 +142,7 @@
     marginBottom="8"
     />
 
-<style id="field-detail"
+<style id="purchase-detail"
     fontSize="24"
     color="{{ gray_900 }}"
-    
     />
