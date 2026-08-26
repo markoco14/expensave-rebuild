@@ -25,7 +25,6 @@
     flexGrow="1"
     flexShrink="0"
     flexBasis="0"
-    minHeight="100%"
     />
 
 <style id="content"
@@ -37,6 +36,7 @@
     
 <style id="content--top"
     justifyContent="flex-start"
+    paddingVertical="24"
     />
     
 
@@ -76,6 +76,7 @@
     fontSize="32"
     color="{{ gray_900 }}"
     textAlign="center"
+    paddingTop="8"
     />
 
 <style id="header-placeholder"

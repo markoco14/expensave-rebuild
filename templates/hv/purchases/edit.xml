@@ -6,7 +6,6 @@
 
 {% block content %}
 <form id="purchase-form" style="container">
-    <behavior trigger="refresh" action="reload"/>
     
     {% include "hv/purchases/_form-fields.xml" %}
 
