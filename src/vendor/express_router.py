@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from fastapi import APIRouter, Depends
 
-class FastExpressRouter(APIRouter):
+class ExpressRouter(APIRouter):
 
     def get(self, path, endpoint, dependency=None):
         self.add_api_route(
