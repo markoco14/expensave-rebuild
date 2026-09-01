@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 class ExpressRouter(APIRouter):
 
