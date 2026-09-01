@@ -2,8 +2,9 @@ import sqlite3
 import time
 import logging
 from types import SimpleNamespace
+from typing import Annotated
 
-from fastapi import Request
+from fastapi import Depends, Request
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ def is_user(request: Request):
     
     return SimpleNamespace(**db_user)
 
-def is_purchase_owner(request: Request, purchase_id: int):
+def is_purchase_owner(request: Request, purchase_id: int, current_user: Annotated[any, Depends(is_user)]):
     request.state.purchase = None
 
     with sqlite3.connect("db.sqlite3") as conn:
@@ -80,7 +81,7 @@ def is_purchase_owner(request: Request, purchase_id: int):
     return
     
 
-def is_top_up_owner(request: Request, top_up_id: int):
+def is_top_up_owner(request: Request, top_up_id: int, current_user: Annotated[any, Depends(is_user)]):
     request.state.top_up = None
 
     if not request.state.user:

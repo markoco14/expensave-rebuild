@@ -3,50 +3,32 @@ from fastapi import APIRouter, Depends
 from src.controllers.web import user
 from src.controllers.web import application, auth, bucket, public, purchase, top_up
 from src.dependencies import is_purchase_owner, is_top_up_owner, is_user
+from src.vendor.express_router import ExpressRouter
 
-router = APIRouter()
+router = ExpressRouter()
 
-# ('HTTP method', 'URI path', 'handler function', 'dependencies')
-routes = [
-    ("GET",     "/",                                public.home,        [Depends(is_user)]),   # None
-    ("GET",     "/signup",                          public.signup,      [Depends(is_user)]),
-    ("GET",     "/login",                           public.login,       [Depends(is_user)]),
-
-    ("POST",    "/register",                        auth.register,      [Depends(is_user)]),
-    ("POST",    "/session",                         auth.session,       [Depends(is_user)]),
-    ("GET",     "/logout",                          auth.logout,        [Depends(is_user)]),
-
-    ("GET",     "/today",                           application.today,  [Depends(is_user)]),
-    ("POST",     "/today",                           application.store,  [Depends(is_user)]),
-    # ("GET",     "/stats",                           application.stats,  [Depends(is_user)]),
-    
-    ("GET",     "/purchases",                       purchase.list,      [Depends(is_user)]),
-    ("POST",    "/purchases",                       purchase.create,    [Depends(is_user)]),
-    ("GET",     "/purchases/new",                   purchase.new,       [Depends(is_user)]),
-    ("GET",     "/purchases/{purchase_id}",         purchase.show,      [Depends(is_user), Depends(is_purchase_owner)]),
-    ("GET",     "/purchases/{purchase_id}/edit",    purchase.edit,      [Depends(is_user), Depends(is_purchase_owner)]),
-    ("PUT",     "/purchases/{purchase_id}",         purchase.update,    [Depends(is_user), Depends(is_purchase_owner)]),
-    ("DELETE",  "/purchases/{purchase_id}",         purchase.delete,    [Depends(is_user), Depends(is_purchase_owner)]),
-
-    ("GET",     "/me",                              user.me,            [Depends(is_user)]),
-
-    ("POST",    "/buckets",                         bucket.create,      [Depends(is_user)]),
-    ("POST",    "/buckets/daily",                   bucket.create,      [Depends(is_user)]),
-    ("DELETE",  "/buckets/{bucket_id}",             bucket.delete,      [Depends(is_user)]),
-
-    ("POST",    "/buckets/{bucket_id}/top-up",      top_up.store,       [Depends(is_user)]),
-
-    ("DELETE",  "/top-up/{top_up_id}",              top_up.delete,      [Depends(is_user), Depends(is_top_up_owner)]),
-
-    ("DELETE",  "/toast/delete",                    application.delete_toast,   [])
-]
-
-for method, path, handler, dependencies in routes:
-    router.add_api_route(
-        path=path,
-        endpoint=handler,
-        methods=[method],
-        dependencies=dependencies
-    )
+# method | path | endpoint | permission
+router.get(     "/",                               public.home,               Depends(is_user))
+router.get(     "/signup",                         public.signup,             Depends(is_user))
+router.get(     "/login",                          public.login,              Depends(is_user))
+router.post(    "/register",                       auth.register,             Depends(is_user))
+router.post(    "/session",                        auth.session,              Depends(is_user))
+router.get(     "/logout",                         auth.logout,               Depends(is_user))
+router.get(     "/today",                          application.today,         Depends(is_user))
+router.post(    "/today",                          application.store,         Depends(is_user))
+router.get(     "/purchases",                      purchase.list,             Depends(is_user))
+router.post(    "/purchases",                      purchase.create,           Depends(is_user))
+router.get(     "/purchases/new",                  purchase.new,              Depends(is_user))
+router.get(     "/purchases/{purchase_id}",        purchase.show,             Depends(is_purchase_owner))
+router.get(     "/purchases/{purchase_id}/edit",   purchase.edit,             Depends(is_purchase_owner))
+router.put(     "/purchases/{purchase_id}",        purchase.update,           Depends(is_purchase_owner))
+router.delete(  "/purchases/{purchase_id}",        purchase.delete,           Depends(is_purchase_owner))
+router.get(     "/me",                             user.me,                   Depends(is_user))
+router.post(    "/buckets",                        bucket.create,             Depends(is_user))
+router.post(    "/buckets/daily",                  bucket.create,             Depends(is_user))
+router.delete(  "/buckets/{bucket_id}",            bucket.delete,             Depends(is_user))
+router.post(    "/buckets/{bucket_id}/top-up",     top_up.store,              Depends(is_user))
+router.delete(  "/top-up/{top_up_id}",             top_up.delete,             Depends(is_top_up_owner))
+router.delete(  "/toast/delete",                   application.delete_toast,  None)
 
 

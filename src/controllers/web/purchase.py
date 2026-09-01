@@ -2,9 +2,10 @@ from calendar import monthrange
 from datetime import date, datetime, timezone
 import sqlite3
 from types import SimpleNamespace
+from typing import Annotated
 from zoneinfo import ZoneInfo
 
-from fastapi import Request, Response
+from fastapi import Depends, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -69,7 +70,10 @@ async def new(request: Request):
     )
 
 
-async def create(request: Request):
+async def create(
+        request: Request,
+        conn: Annotated[sqlite3.Connection, Depends(get_db)]
+        ):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
@@ -159,11 +163,13 @@ async def create(request: Request):
     
     try:
         purchase_repository.store(
+            conn=conn,
             amount=amount,
             currency=currency,
             purchased_at=utc_naive,
             timezone=form_timezone,
-            user_id=current_user.user_id
+            user_id=current_user.user_id,
+            category_id=None
             )
     except Exception as e:
         print(f"something went wrong storing the purchase: {e}")

@@ -2,13 +2,15 @@ from calendar import monthrange
 from datetime import date, datetime, timedelta, timezone
 import sqlite3
 from types import SimpleNamespace
+from typing import Annotated
 from zoneinfo import ZoneInfo
 
-from fastapi import Request, Response
+from fastapi import Depends, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from src import utils
+from src.config import get_db
 from src.models.bucket import Bucket
 from src.models.user import User
 from src.respository import purchase_repository
@@ -143,7 +145,10 @@ async def today(request: Request):
     )
 
 
-async def store(request: Request):
+async def store(
+        request: Request,
+        conn: Annotated[sqlite3.Connection, Depends(get_db)]
+        ):
     if not request.state.user:
         return RedirectResponse(url="/login", status_code=303)
     
@@ -193,11 +198,13 @@ async def store(request: Request):
 
     try:
         purchase_repository.store(
+            conn=conn,
             amount=form_amount,
             currency="TWD",
             purchased_at=utc_string,
             timezone="Asia/Taipei",
-            user_id=current_user.user_id
+            user_id=current_user.user_id,
+            category_id=None
             )
     except Exception as e:
         print(f"something went wrong storing the purchase: {e}")
