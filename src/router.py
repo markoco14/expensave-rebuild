@@ -23,7 +23,7 @@ router.get(     "/purchases/{purchase_id}",        purchase.show,             De
 router.get(     "/purchases/{purchase_id}/edit",   purchase.edit,             Depends(is_purchase_owner))
 router.put(     "/purchases/{purchase_id}",        purchase.update,           Depends(is_purchase_owner))
 router.delete(  "/purchases/{purchase_id}",        purchase.delete,           Depends(is_purchase_owner))
-router.delete(  "/me",                             user.me,                   Depends(is_user))
+router.get(     "/me",                             user.me,                   Depends(is_user))
 router.post(    "/buckets",                        bucket.create,             Depends(is_user))
 router.post(    "/buckets/daily",                  bucket.create,             Depends(is_user))
 router.delete(  "/buckets/{bucket_id}",            bucket.delete,             Depends(is_user))
