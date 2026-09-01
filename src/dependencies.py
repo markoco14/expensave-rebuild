@@ -81,7 +81,7 @@ def is_purchase_owner(request: Request, purchase_id: int, current_user: Annotate
     return
     
 
-def is_top_up_owner(request: Request, top_up_id: int):
+def is_top_up_owner(request: Request, top_up_id: int, current_user: Annotated[any, Depends(is_user)]):
     request.state.top_up = None
 
     if not request.state.user:
